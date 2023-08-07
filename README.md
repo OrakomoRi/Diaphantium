@@ -32,7 +32,7 @@
 <h3 align="center">Default values</h3>
 <div>
 	<p>
-		Default kotkey to open menu: 
+		Default hotkey to open menu: 
 		<code align="center">Slash ('/')</code>
 	</p>
 	<p>
