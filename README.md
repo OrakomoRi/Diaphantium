@@ -43,20 +43,6 @@
 
 <hr>
 
-<h3 align="center">Credits</h3>
-<div>
-	<p>
-		Main developer: 
-		<a href="https://github.com/OrakomoRi">OrakomoRi</a>
-	</p>
-	<p>
-		Special thanks to 
-		<a href="https://github.com/Senijs">Senijs</a>
-	</p>
-</div>
-
-<hr>
-
 <h3 align="center">Custom design</h3>
 <p>There also was developed a code which changes the look of the game in the browser.</p>
 
@@ -69,3 +55,17 @@
 <img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/images/Tab_old.png" alt="Tab (old)">
 <h4 align="center">Tab design (new):</h4>
 <img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/images/Tab.png" alt="Tab (now)">
+
+<hr>
+
+<h3 align="center">Credits</h3>
+<div>
+	<p>
+		Main developer: 
+		<a href="https://github.com/OrakomoRi">OrakomoRi</a>
+	</p>
+	<p>
+		Special thanks to 
+		<a href="https://github.com/Senijs">Senijs</a>
+	</p>
+</div>
