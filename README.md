@@ -24,7 +24,7 @@
 
 <h3 align="center">Look of the popup window</h3>
 <div align="center">
-	<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/MainWindow.png" alt="Main Window">
+	<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/images/MainWindow.png" alt="Main Window">
 </div>
 
 <hr>
@@ -61,11 +61,11 @@
 <p>There also was developed a code which changes the look of the game in the browser.</p>
 
 <h4 align="center">Login design (old):</h4>
-<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/EnterGame_old.png" alt="Login (old)">
+<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/images/EnterGame_old.png" alt="Login (old)">
 <h4 align="center">Login design (new):</h4>
-<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/EnterGame.png" alt="Login (new)">
+<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/images/EnterGame.png" alt="Login (new)">
 
 <h4 align="center">Tab design (old):</h4>
-<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/Tab_old.png" alt="Tab (old)">
+<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/images/Tab_old.png" alt="Tab (old)">
 <h4 align="center">Tab design (new):</h4>
-<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/Tab.png" alt="Tab (now)">
+<img style="max-height: 50px" src="https://github.com/OrakomoRi/_personal_defender/blob/main/images/Tab.png" alt="Tab (now)">
