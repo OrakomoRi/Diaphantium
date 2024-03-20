@@ -1,2 +1,7 @@
-<h1 align="center">Diaphantium</h1>
-<h3 align="center">Reborn from ashes...</h3>
+![](./images/logo.png)
+
+# Diaphantium
+
+### :star: Reborn from ashes...
+
+---
