@@ -15,10 +15,10 @@
 ### Changed
 
 - Renamed to "Diaphantium"
-- Renamed the function ```popupMove()``` to ```elementMove()```. Changed the function, so it can be applied to every element
+- Renamed the function ```popupMove()``` to ```elementMove()```; changed the function, so it can be applied to every element
 - Now function ```elementMove()``` also works on mobile devices
-- Renamed the function ```initializePopup()``` to ```elementInitialize()```. Now it can work with any element
-- Also added support to the ```elementInitialize()``` function for complex items from ```localStorage```, e.g. ```item: {name: '', value: ''}, {name: '', value: ''}```. They can be saved via ```item[index]``` and retrieved the same way
+- Renamed the function ```initializePopup()``` to ```elementInitialize()```; now it can work with any element
+- Also added support to the ```elementInitialize()``` function for complex items from ```localStorage```, e.g. ```item: {name: '', value: ''}, {name: '', value: ''}```; they can be saved via ```item[index]``` and retrieved the same way
 - Optimized hotkeys' appearance to support different languages (if I were to add them later on)
 - Demo website update
 - Popup styles update (less rounded edges)

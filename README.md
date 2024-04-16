@@ -10,7 +10,7 @@ Free open-source tool. Made with love :heart:
 
 The idea was to create a popup with a simple UI that would allow a continuous input on the desired keys.
 
-Check the [demo website](https://orakomori.github.io/diaphantium/)
+Check the [demo website](https://orakomori.github.io/Diaphantium/)
 
 ```javascript
 /* WORK IN PROGRESS */
