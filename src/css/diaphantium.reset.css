@@ -1,0 +1,41 @@
+
+/* Reset for all elements inside popup container */
+
+.popup_container.diaphantium[author="OrakomoRi"],
+.popup_container.diaphantium[author="OrakomoRi"] * {
+	margin: 0;
+	padding: 0;
+	border: none;
+	outline: none;
+	box-sizing: border-box;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	font-family: sans-serif;
+	background: none;
+	color: inherit;
+}
+
+
+
+/* Default button reset styles */
+
+.popup_container.diaphantium[author="OrakomoRi"] button {
+	outline: none;
+	border: none;
+	background: none;
+	overflow: visible;
+	font: inherit;
+	line-height: normal;
+	/* Fon smoothing */
+	-webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+	/* IOS */
+	appearance: none;
+	border-radius: 0;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] button::-moz-focus-inner {
+	border: 0;
+    padding: 0;
+}

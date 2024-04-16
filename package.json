@@ -1,0 +1,22 @@
+{
+	"name": "diaphantium",
+	"version": "1.0.0",
+	"description": "<h1 align=\"center\">Diaphantium</h1>\r <h3 align=\"center\">Reborn from ashes</h3>",
+	"main": "diaphantium.user.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"fs": "^0.0.1-security",
+		"glob": "^10.3.10",
+		"gulp": "^4.0.2",
+		"gulp-concat": "^2.6.1",
+		"gulp-header": "^2.0.9",
+		"gulp-replace": "^1.1.4",
+		"gulp-uglify": "^3.0.2",
+		"gulp-wrap": "^0.15.0"
+	}
+}

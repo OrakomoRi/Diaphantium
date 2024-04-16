@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="demo/images/diaphantium.png">
+	<meta name="author" content="OrakomoRi">
+
+	<title>Diaphantium</title>
+
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+	<!-- Page styles -->
+	<link rel="stylesheet" href="demo/css/style.min.css">
+
+	<!-- Page scripts -->
+	<script src="demo/js/script.min.js"></script>
+
+	<!-- Diaphantium -->
+
+	<script src="release/diaphantium.min.js"></script>
+
+	<!-- <script src="src/js/defaultpopup.js" defer></script>
+	<script src="src/js/diaphantium.logiс.js" defer></script>
+	<script src="src/js/diaphantium.clicker.js" defer></script> -->
+</head>
+<body>
+	<div class="background">
+		<video preload="auto" autoplay="true" loop="true" playsinline="" muted="muted">
+			<source src="https://web-cdn.tankionline.com/alternativa/videos/tanki-video.mp4" type="video/mp4">
+		</video>
+	</div>
+	<header class="header">
+		<div class="header_inner">
+			<a class="header_logo" href="https://github.com/OrakomoRi/Diaphantium">
+				<img src="/demo/images/diaphantium.png" class="icon">
+				<div class="text">Diaphantium</div>
+			</a>
+		</div>
+	</header>
+
+	<main class="container">
+		<div class="container_inner">
+			<div class="instruction">
+				<span>By default popup opens on key <code>Slash</code></span>
+				<span>Your hotkey: <code class="actual_hotkey"></code></span><span>
+				<span>To utilize the clicker functionality, please follow these steps:</span>
+				<ol>
+					<li>Open the popup and navigate to the "Settings" page by clicking on the gear icon.</li>
+					<li>On the "Settings" page, set your preferred hotkeys for enabling the clickers.</li>
+				</ol>
+				<span>Enjoy :)</span>
+			</div>
+
+			<div class="console" data-simplebar>
+				<div class="header">Console</div>
+				<div class="content"></div>
+			</div>
+		</div>
+	</main>
+	
+	<footer class="footer">
+		<div class="footer_inner">
+			<p>&copy; 2023-2024 <span class="info">Diaphantium's demo page.</span> All rights reserved.</p>
+			<span>Author: <a href="https://github.com/OrakomoRi">OrakomoRi</a></span>
+		</div>
+	</footer>
+
+
+
+	<!-- Force version update for scripts (js) & links (css) -->
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			function updateResourceVersions() {
+				var styles = document.querySelectorAll('link[href^="styles.css"]'); // All styles
+				var scripts = document.querySelectorAll('script[src^="src/js/"], script[src*="script.js"]'); // All scripts
+
+				var currVersion = new Date().getTime(); // Get a unique value (timestamp)
+
+				styles.forEach(function(style) { // Update version for each style
+					style.href = `${style.href}?v=${currVersion}`;
+				});
+
+				scripts.forEach(function(script) { // Update version for each script
+					script.src = `${script.src}?v=${currVersion}`;
+				});
+			}
+
+			updateResourceVersions(); // Calls the function when the document is ready
+		});
+	</script>
+</body>
+</html>

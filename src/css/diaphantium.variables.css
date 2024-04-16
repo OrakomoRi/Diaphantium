@@ -1,0 +1,10 @@
+:root {
+	--diaphantium-background: 0, 0, 0;					/* Background color for the popup container | Default: 0, 0, 0 */
+	--diaphantium-opacity: .4;							/* Opacity of the popup container | Default: .4 */
+	--diaphantium-blur: .5em;							/* Blur effect for the popup container | Default: .5em */
+	--diaphantium-accent: 97, 181, 255;					/* Accent color for interactive elements | Default: 97, 181, 255 */
+	--diaphantium-active: 81, 221, 97;					/* Color for active or enabled state | Default: 81, 221, 97 */
+	--diaphantium-inactive: 221, 81, 81;				/* Color for inactive or disabled state | Default: 221, 81, 81 */
+	--diaphantium-background-primary: 50, 50, 50;		/* Primary background color for certain elements | Default: 50, 50, 50 */
+	--diaphantium-transition: .3s ease;					/* Transition duration and timing function | Default: .3s ease */
+}
