@@ -90,6 +90,8 @@ Some ideas: [N3onTechF0X](https://github.com/N3onTechF0X)
 
 Special thanks: [Senijs](https://github.com/Senijs)
 
+---
+
 ## :coin: Donate
 
 Any donations would be appreciated
