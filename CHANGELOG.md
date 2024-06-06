@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 4.0.1 (07.06.2024)
+
+### Changed
+
+- Userscript now uses built-in commands to update the script
+- Method of script auto-update
+- Method of script loading
+
+### Fixed
+
+- Update popup from SweetAlert2
+- Links for downloading and updating the script
+- Styles for sweetalert2
+
+---
+
 ## 4.0.0 (19.03.2024)
 
 ### Added
