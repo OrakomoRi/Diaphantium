@@ -12,11 +12,11 @@ The idea was to create a popup with a simple UI that would allow a continuous in
 
 Check the [demo website](https://orakomori.github.io/Diaphantium/)
 
+See the [changelog](CHANGELOG.md)
+
 ```javascript
 /* WORK IN PROGRESS */
 ```
-
-See the [changelog](CHANGELOG.md)
 
 ## :rocket: Browser compatibility
 
