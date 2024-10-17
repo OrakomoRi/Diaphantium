@@ -423,6 +423,8 @@ function setupMineDelay(popupSelector) {
 	});
 
 	$delay.keydown(function(event) {
+		// Stop event propagation to change delays' value everywhere
+		event.stopPropagation();
 		// Blur input when 'Enter' key is pressed
 		if (event.code === 'Enter') {
 			$(this).blur();
