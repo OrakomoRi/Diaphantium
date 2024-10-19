@@ -214,6 +214,11 @@ function popupAppearance(popupSelector) {
 			$(this).attr('data-state', 'off');
 		}
 	});
+
+	// To prevent input propagation when entering values in the window that has canvas
+	popupSelector.on('keydown', function (event) {
+		event.stopPropagation();
+	});
 }
 
 /**
@@ -423,8 +428,6 @@ function setupMineDelay(popupSelector) {
 	});
 
 	$delay.keydown(function(event) {
-		// Stop event propagation to change delays' value everywhere
-		event.stopPropagation();
 		// Blur input when 'Enter' key is pressed
 		if (event.code === 'Enter') {
 			$(this).blur();

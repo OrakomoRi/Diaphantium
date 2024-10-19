@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 4.0.2 (19.10.2024)
+
+### Fixed
+
+- Behavior of mine delay input in a window that has some interactive canvas(es)
+
+---
+
 ## 4.0.1 (07.06.2024)
 
 ### Changed
