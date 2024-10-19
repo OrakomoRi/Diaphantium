@@ -2,13 +2,13 @@
 
 # Diaphantium
 
-### :star: Reborn from ashes...
-
----
+## :star: Reborn from ashes...
 
 Free open-source tool. Made with love :heart:
 
 The idea was to create a popup with a simple UI that would allow a continuous input on the desired keys.
+
+To find out compatibility, check [browser compatibility](#-browser-compatibility)
 
 Check the [demo website](https://orakomori.github.io/Diaphantium/)
 
@@ -18,7 +18,23 @@ See the [changelog](CHANGELOG.md)
 /* WORK IN PROGRESS */
 ```
 
-## :rocket: Browser compatibility
+## :bulb: Getting Started
+
+1. Download [Tampermonkey](https://www.tampermonkey.net/)
+
+2. Add or update [script](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js) in Tampermonkey
+
+## :hash: Default Values
+
+Default hotkey to open menu: ```Slash ('/')```
+
+Default mines' delay (ms): ```100```
+
+## :fire: Appearance
+
+![](./images/changelog/4.0.0/popup.png)
+
+## :rocket: Browser Compatibility
 
 To use the code, you'll need the Tampermonkey extension installed. Here's a list of browsers and their compatible/incompatible versions:
 
@@ -49,31 +65,7 @@ Firefox for Android|123+
 Safary for iOS|16+
 Samsung Internet|15+
 
----
-
-## :fire: Look of the popup window
-
-![](./images/changelog/4.0.0/popup.png)
-
----
-
-## :bulb: How to use
-
-1. Download [Tampermonkey](https://www.tampermonkey.net/)
-
-2. Add or update [script](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js) in Tampermonkey
-
----
-
-## :hash: Default values
-
-Default hotkey to open menu: ```Slash ('/')```
-
-Default mines' delay (ms): ```100```
-
----
-
-## :zap: Powered by
+## :zap: Built With
 
 - [HTML5](https://developer.mozilla.org/en-US/docs/Web/HTML)
 - [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS)
@@ -81,17 +73,11 @@ Default mines' delay (ms): ```100```
 - [JQuery](https://jquery.com/)
 - [SweetAlert2](https://sweetalert2.github.io/)
 
----
+## :wave: Special Thanks
 
-## :sparkles: Credits
+- Contributors to logic: [N3onTechF0X](https://github.com/N3onTechF0X), [Senijs](https://github.com/Senijs)
 
-Main developer: [OrakomoRi](https://github.com/OrakomoRi)
-
-Some ideas: [N3onTechF0X](https://github.com/N3onTechF0X)
-
-Special thanks: [Senijs](https://github.com/Senijs)
-
----
+- Contributors to design: [Senijs](https://github.com/Senijs)
 
 ## :coin: Support me
 
@@ -103,3 +89,11 @@ Any donations would be appreciated
 - **USDT (BNB Smart Chain)**: *0x8c7393091428d9A3b44fF4436217d8EbD33e7990*
 - **USDT (Tron)**: *TQj3EjdQXv8fhRsf3eXWowxz7YpYvYEoLU*
 - **USDT (Solana)**: *2UKZe2J4TohqFsF1kQRqmCXqwCcdUJkAvcM6ByZiqds8*
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Acknowledgments
+
+* [CSS Autoprefixer](https://autoprefixer.github.io/)
