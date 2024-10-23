@@ -99,7 +99,7 @@
 						promptUpdate(githubVersion);
 						break;
 					case 0:
-						console.log(`You are using the latest version.`);
+						console.log(`You are using the latest stable version.`);
 						break;
 					case -1:
 						console.log(`You are using a version newer than the one on GitHub.`);

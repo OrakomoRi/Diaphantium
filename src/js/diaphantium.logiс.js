@@ -214,11 +214,6 @@ function popupAppearance(popupSelector) {
 			$(this).attr('data-state', 'off');
 		}
 	});
-
-	// To prevent input propagation when entering values in the window that has canvas
-	popupSelector.on('keydown', function (event) {
-		event.stopPropagation();
-	});
 }
 
 /**

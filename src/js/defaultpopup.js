@@ -57,7 +57,7 @@ function elementMove(elementSelector) {
 				// Coefficient
 				var scaleX = Math.abs(windowWidth / prevWindowWidth);
 				var scaleY = Math.abs(windowHeight / prevWindowHeight);
-				
+
 				// Updated coords
 				popupOffsetX = prevPopupOffsetX * scaleX;
 				popupOffsetY = prevPopupOffsetY * scaleY;
@@ -137,7 +137,7 @@ function elementMove(elementSelector) {
 			// Take position of the touch/cursor
 			const pageX = touch ? touch.pageX : event.pageX;
 			const pageY = touch ? touch.pageY : event.pageY;
-			
+
 			popupOffsetX = pageX - initialX;
 			popupOffsetY = pageY - initialY;
 
@@ -186,7 +186,7 @@ function elementInitialize(elementSelector, item, defaultXem, defaultYem, iconCl
 	// Window dimensions
 	var windowWidth = $(window).width();
 	var windowHeight = $(window).height();
-	
+
 	// Maximum possible coordinates
 	var maxX = windowWidth - elementWidth;
 	var maxY = windowHeight - elementHeight;
@@ -264,5 +264,14 @@ function elementInitialize(elementSelector, item, defaultXem, defaultYem, iconCl
 			// Save updated data to local storage
 			localStorage.setItem(item, JSON.stringify(existingData));
 		}
+	});
+
+	// To prevent input propagation when entering values in popup over a window that has canvas
+	$(elementSelector).on('focus', function (event) {
+		event.stopPropagation();
+	});
+
+	$(elementSelector).on('keydown', function (event) {
+		event.stopPropagation();
 	});
 }
