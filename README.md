@@ -90,10 +90,10 @@ Any donations would be appreciated
 - **USDT (Tron)**: *TQj3EjdQXv8fhRsf3eXWowxz7YpYvYEoLU*
 - **USDT (Solana)**: *2UKZe2J4TohqFsF1kQRqmCXqwCcdUJkAvcM6ByZiqds8*
 
-## License
+## :page_facing_up: License
 
 Distributed under the MIT License. See `LICENSE` for more information.
 
-## Acknowledgments
+## :star: Acknowledgments
 
 * [CSS Autoprefixer](https://autoprefixer.github.io/)
