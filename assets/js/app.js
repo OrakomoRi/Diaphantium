@@ -123,7 +123,8 @@ class DiaphantiumWebsite {
         try {
             const response = await fetch('./release/diaphantium.user.js');
             const text = await response.text();
-            const match = text.match(/@version\s+([\d.]+)/);
+            // Match semantic versioning: major.minor.patch[-prerelease][+build]
+            const match = text.match(/@version\s+([\d.]+(?:-[\w.]+)?(?:\+[\w.]+)?)/);
             if (match) {
                 const version = match[1];
                 

@@ -1,5 +1,6 @@
 {
 	"nav": {
+		"title": "Навигация",
 		"logo": "Diaphantium",
 		"quickstart": "Быстрый старт",
 		"features": "Возможности",
@@ -21,7 +22,7 @@
 		"step1": {
 			"title": "Установите Tampermonkey",
 			"description": "Скачайте и установите расширение Tampermonkey для своего браузера.",
-			"action": "Получить Tampermonkey"
+			"action": "Скачать Tampermonkey"
 		},
 		"step2": {
 			"title": "Добавьте скрипт",
