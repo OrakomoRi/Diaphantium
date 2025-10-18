@@ -83,10 +83,16 @@ export default class Popup {
     this.setupMiscellaneous();
     this.setupHotkeys();
 
-    // Store pointer lock
+    // Store pointer lock (only if element is valid and in DOM)
     this.lockedElement = document.pointerLockElement;
-    if (document.exitPointerLock) {
-      document.exitPointerLock();
+    if (this.lockedElement && document.contains(this.lockedElement)) {
+      if (document.exitPointerLock) {
+        try {
+          document.exitPointerLock();
+        } catch (e) {
+          console.debug('Failed to exit pointer lock:', e.message);
+        }
+      }
     }
 
     this.isOpen = true;
@@ -116,9 +122,14 @@ export default class Popup {
     // Remove popup
     $('.popup_container.diaphantium[author="OrakomoRi"]')?.remove();
 
-    // Restore pointer lock
-    if (this.lockedElement?.requestPointerLock) {
-      this.lockedElement.requestPointerLock();
+    // Restore pointer lock (check if element is still in DOM)
+    if (this.lockedElement?.requestPointerLock && document.contains(this.lockedElement)) {
+      try {
+        this.lockedElement.requestPointerLock();
+      } catch (e) {
+        // Silently ignore if pointer lock fails (element may have been removed)
+        console.debug('Pointer lock restoration failed:', e.message);
+      }
     }
 
     this.isOpen = false;
