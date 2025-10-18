@@ -1,6 +1,7 @@
 export class HeaderController {
     constructor() {
         this.header = document.querySelector('.header');
+        this.logo = document.querySelector('.logo');
         this.menuToggle = document.querySelector('.menu-toggle');
         this.mobileMenuOverlay = document.querySelector('.mobile-menu-overlay');
         this.mobileMenuClose = document.querySelector('.mobile-menu-close');
@@ -14,6 +15,16 @@ export class HeaderController {
         this.handleScroll();
         this.handleMobileMenu();
         this.handleActiveLink();
+        this.handleLogoClick();
+    }
+
+    handleLogoClick() {
+        if (this.logo) {
+            this.logo.addEventListener('click', (e) => {
+                e.preventDefault();
+                location.reload();
+            });
+        }
     }
 
     closeMenu(restoreScroll = true) {
