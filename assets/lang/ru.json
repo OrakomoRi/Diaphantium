@@ -95,6 +95,7 @@
 		"description": "Посмотрите Diaphantium в действии с симуляцией консоли в реальном времени",
 		"terminalTitle": "Терминал Diaphantium",
 		"ready": "Готов к запуску...",
+		"mobileNotSupported": "Мобильные устройства не поддерживаются",
 		"tipFull": "<strong>Совет:</strong> Чтобы открыть настоящее окно Diaphantium, установите скрипт и нажмите <strong class=\"hotkey-display-inline\">F2</strong> в Tanki Online",
 		"terminal": {
 			"readyMessage": "Готово! Нажмите {hotkey} чтобы открыть окно",

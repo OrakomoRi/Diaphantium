@@ -9,6 +9,10 @@ export class TerminalSimulator {
         this.setupKeyListener();
     }
 
+    isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    }
+
     getHotkey() {
         try {
             const hotkeyData = localStorage.getItem('Diaphantium.hotkeys');
@@ -30,18 +34,25 @@ export class TerminalSimulator {
     }
 
     async simulateInstallation() {
-        const hotkeyDisplay = this.hotkey === 'Slash' ? '/' : this.hotkey;
-        const readyMessage = this.i18n.t('console.terminal.readyMessage', { hotkey: hotkeyDisplay });
-        this.addLine(readyMessage, 'output');
+        if (this.isMobile()) {
+            const mobileMessage = this.i18n.t('console.mobileNotSupported');
+            this.addLine(mobileMessage, 'error');
+        } else {
+            const hotkeyDisplay = this.hotkey === 'Slash' ? '/' : this.hotkey;
+            const readyMessage = this.i18n.t('console.terminal.readyMessage', { hotkey: hotkeyDisplay });
+            this.addLine(readyMessage, 'output');
+        }
     }
 
     setupKeyListener() {
-        document.addEventListener('keydown', (e) => {
-            const keyCode = e.code;
-            const timestamp = new Date().toLocaleTimeString();
-            const keyMessage = this.i18n.t('console.terminal.keyPressed', { timestamp, key: keyCode });
-            this.addLine(keyMessage, 'command');
-        });
+        if (!this.isMobile()) {
+            document.addEventListener('keydown', (e) => {
+                const keyCode = e.code;
+                const timestamp = new Date().toLocaleTimeString();
+                const keyMessage = this.i18n.t('console.terminal.keyPressed', { timestamp, key: keyCode });
+                this.addLine(keyMessage, 'command');
+            });
+        }
     }
 
     addLine(text, type = 'output') {
@@ -60,8 +71,13 @@ export class TerminalSimulator {
     updateLanguage() {
         // Clear terminal and re-display ready message
         this.output.innerHTML = '';
-        const hotkeyDisplay = this.hotkey === 'Slash' ? '/' : this.hotkey;
-        const readyMessage = this.i18n.t('console.terminal.readyMessage', { hotkey: hotkeyDisplay });
-        this.addLine(readyMessage, 'output');
+        if (this.isMobile()) {
+            const mobileMessage = this.i18n.t('console.mobileNotSupported');
+            this.addLine(mobileMessage, 'error');
+        } else {
+            const hotkeyDisplay = this.hotkey === 'Slash' ? '/' : this.hotkey;
+            const readyMessage = this.i18n.t('console.terminal.readyMessage', { hotkey: hotkeyDisplay });
+            this.addLine(readyMessage, 'output');
+        }
     }
 }

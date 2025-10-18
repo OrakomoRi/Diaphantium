@@ -95,6 +95,7 @@
 		"description": "See Diaphantium in action with real-time console simulation",
 		"terminalTitle": "Diaphantium Terminal",
 		"ready": "Ready to start...",
+		"mobileNotSupported": "Mobile devices are not supported",
 		"tipFull": "<strong>Tip:</strong> To open the actual Diaphantium popup, install the script and press <strong class=\"hotkey-display-inline\">F2</strong> on Tanki Online",
 		"terminal": {
 			"readyMessage": "Ready! Press {hotkey} to open popup",

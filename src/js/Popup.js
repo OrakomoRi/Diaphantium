@@ -26,12 +26,7 @@ export default class Popup {
       }
     });
 
-    // Mobile icon click
-    on(document, 'click', (e) => {
-      if (e.target.closest('.diaphantium_mobile.icon.main[author="OrakomoRi"]') && !this.isOpen) {
-        this.show();
-      }
-    });
+    // Mobile support removed
 
     // Click outside popup to close
     on(document, 'click', (e) => {

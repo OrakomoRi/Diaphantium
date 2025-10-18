@@ -179,19 +179,8 @@ class DiaphantiumWebsite {
     }
 
     setupAnimations() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate-fade-in');
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
-
-        document.querySelectorAll('.feature-card, .step-card').forEach(el => {
-            observer.observe(el);
-        });
+        // Animations disabled for better mobile experience
+        // All elements are now visible by default
     }
 }
 

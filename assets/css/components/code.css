@@ -129,7 +129,8 @@
 }
 
 .terminal-error {
-	color: #f48771;
+	color: #ef4444;
+	font-weight: 500;
 }
 
 .terminal-success {
