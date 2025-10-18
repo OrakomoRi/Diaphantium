@@ -15,7 +15,13 @@
 			<!-- Clicker button -->
 			<div class="item" data-tab="clicker">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-					<path d="M448 225.64v99a64 64 0 01-40.23 59.42l-23.68 9.47A32 32 0 00364.6 417l-10 50.14A16 16 0 01338.88 480H173.12a16 16 0 01-15.69-12.86L147.4 417a32 32 0 00-19.49-23.44l-23.68-9.47A64 64 0 0164 324.67V224c0-105.92 85.77-191.81 191.65-192S448 119.85 448 225.64z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/><circle cx="168" cy="280" r="40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/><circle cx="344" cy="280" r="40" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 336l-16 48h32l-16-48zM256 448v32M208 448v32M304 448v32"/>
+					<path d="M315.27 33L96 304h128l-31.51 173.23a2.36 2.36 0 002.33 2.77h0a2.36 2.36 0 001.89-.95L416 208H288l31.66-173.25a2.45 2.45 0 00-2.44-2.75h0a2.42 2.42 0 00-1.95 1z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+				</svg>
+			</div>
+			<!-- Miscellaneous button -->
+			<div class="item" data-tab="miscellaneous">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+					<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M259.92 262.91 216.4 149.77a9 9 0 0 0-16.8 0l-43.52 113.14a9 9 0 0 1-5.17 5.17L37.77 311.6a9 9 0 0 0 0 16.8l113.14 43.52a9 9 0 0 1 5.17 5.17l43.52 113.14a9 9 0 0 0 16.8 0l43.52-113.14a9 9 0 0 1 5.17-5.17l113.14-43.52a9 9 0 0 0 0-16.8l-113.14-43.52a9 9 0 0 1-5.17-5.17M108 68 88 16 68 68 16 88l52 20 20 52 20-52 52-20zm318.67 49.33L400 48l-26.67 69.33L304 144l69.33 26.67L400 240l26.67-69.33L496 144z"/>
 				</svg>
 			</div>
 			<!-- Settings button -->
@@ -70,8 +76,33 @@
 					<!-- The delay value before next mine placing -->
 					<div class="mine_delay">
 						<label class="label">
-							Delay for mines (ms)
+							<p>Delay for mines (ms)</p>
 							<input type="text" class="text_input delay">
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Contents of miscellaneous page of the popup -->
+		<div class="content" data-tab="miscellaneous">
+			<!-- Header -->
+			<div class="header">Miscellaneous</div>
+			<!-- Inner -->
+			<div class="inner">
+				<div class="scrollable">
+					<!-- Anti-AFK toggle -->
+					<div class="miscellaneous_toggle">
+						<label class="label">
+							<p>Anti-AFK</p>
+							<input type="checkbox" class="checkbox anti_afk">
+						</label>
+					</div>
+					<!-- Auto-delete toggle -->
+					<div class="miscellaneous_toggle">
+						<label class="label">
+							<p>Auto-delete</p>
+							<input type="checkbox" class="checkbox auto_delete">
 						</label>
 					</div>
 				</div>

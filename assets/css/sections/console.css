@@ -1,0 +1,160 @@
+/* Console/Terminal Section */
+.console-section {
+	padding: var(--spacing-3xl) 0;
+	background: var(--color-background);
+	position: relative;
+	border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* Subtle animated gradient background */
+.console-section::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(135deg,
+			rgba(99, 102, 241, 0.03) 0%,
+			transparent 50%,
+			rgba(139, 92, 246, 0.03) 100%);
+	animation: gradientShift 15s ease infinite;
+	pointer-events: none;
+}
+
+@keyframes gradientShift {
+
+	0%,
+	100% {
+		opacity: 0.5;
+		transform: translateX(0);
+	}
+
+	50% {
+		opacity: 1;
+		transform: translateX(20px);
+	}
+}
+
+.console-wrapper {
+	max-width: 56.25rem;
+	margin: 0 auto;
+	position: relative;
+	z-index: 1;
+}
+
+.console-controls {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--spacing-sm);
+	margin-bottom: var(--spacing-md);
+}
+
+.console-btn {
+	padding: 0.5rem 1rem;
+	background: rgba(255, 255, 255, 0.05);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	color: var(--color-text-secondary);
+	font-size: var(--font-size-sm);
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+	transition: all var(--transition-fast);
+}
+
+.console-btn:hover:not(:disabled) {
+	background: rgba(255, 255, 255, 0.1);
+	color: var(--color-text-primary);
+	border-color: var(--color-primary);
+}
+
+.console-btn svg {
+	width: 1rem;
+	height: 1rem;
+}
+
+.console-btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.console-help {
+	margin-top: var(--spacing-md);
+	padding: var(--spacing-md);
+	background: linear-gradient(135deg,
+			rgba(99, 102, 241, 0.1),
+			rgba(139, 92, 246, 0.1));
+	border: 1px solid rgba(99, 102, 241, 0.3);
+	border-radius: var(--radius-md);
+	color: var(--color-text-secondary);
+	font-size: var(--font-size-sm);
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+}
+
+/* Shimmer animation on help tip */
+.console-help::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -100%;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg,
+			transparent,
+			rgba(255, 255, 255, 0.2),
+			transparent);
+	animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+	0% {
+		left: -100%;
+	}
+
+	100% {
+		left: 100%;
+	}
+}
+
+.console-help strong {
+	color: var(--color-primary-light);
+	position: relative;
+	z-index: 1;
+}
+
+@media (max-width: 768px) {
+	.console-section {
+		padding: var(--spacing-2xl) 0;
+	}
+
+	.console-wrapper {
+		max-width: 100%;
+	}
+
+	.terminal {
+		border-radius: var(--radius-md);
+	}
+
+	.console-help {
+		font-size: var(--font-size-xs);
+		padding: var(--spacing-sm);
+	}
+}
+
+@media (max-width: 480px) {
+	.terminal-body {
+		font-size: 0.75rem;
+		padding: var(--spacing-sm);
+	}
+
+	.terminal-header {
+		padding: var(--spacing-xs) var(--spacing-sm);
+	}
+
+	.terminal-title {
+		font-size: var(--font-size-xs);
+	}
+}

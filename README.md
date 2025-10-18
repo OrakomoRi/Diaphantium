@@ -70,8 +70,8 @@ Samsung Internet|15+
 - [HTML5](https://developer.mozilla.org/en-US/docs/Web/HTML)
 - [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS)
 - [JavaScript](https://www.javascript.com/)
-- [JQuery](https://jquery.com/)
 - [SweetAlert2](https://sweetalert2.github.io/)
+- [Ionicons](https://ionic.io/ionicons)
 
 ## :wave: Special Thanks
 

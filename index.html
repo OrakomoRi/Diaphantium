@@ -1,94 +1,543 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" href="demo/images/diaphantium.png">
+	<link rel="icon" type="image/png" href="./assets/images/icon.png">
 	<meta name="author" content="OrakomoRi">
+	<meta name="description"
+		content="Diaphantium - Professional browser automation userscript for Tanki Online with modern UI">
+	<meta name="keywords" content="Diaphantium, automation, Tanki Online, userscript, tampermonkey, clicker, hotkeys">
 
-	<title>Diaphantium</title>
+	<title>Diaphantium - Browser Automation</title>
 
-	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<!-- Google Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+		rel="stylesheet">
 
-	<!-- Page styles -->
-	<link rel="stylesheet" href="demo/css/style.min.css">
+	<!-- Ionicon -->
+	<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+	<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-	<!-- Page scripts -->
-	<script src="demo/js/script.min.js"></script>
+	<!-- BreeziumSelect -->
+	<script src="assets/libs/BreeziumSelect/BreeziumSelect.js"></script>
+	<link rel="stylesheet" href="assets/libs/BreeziumSelect/BreeziumSelect.css">
 
-	<!-- Diaphantium -->
+	<!-- Styles -->
+	<link rel="stylesheet" href="assets/css/main.css">
 
+	<!-- Scripts -->
+	<script type="module" src="assets/js/app.js"></script>
 	<script src="release/diaphantium.min.js"></script>
-
-	<!-- <script src="src/js/defaultpopup.js" defer></script>
-	<script src="src/js/diaphantium.logiс.js" defer></script>
-	<script src="src/js/diaphantium.clicker.js" defer></script> -->
 </head>
+
 <body>
-	<div class="background">
-		<video preload="auto" autoplay="true" loop="true" playsinline="" muted="muted">
-			<source src="https://web-cdn.tankionline.com/alternativa/videos/tanki-video.mp4" type="video/mp4">
-		</video>
-	</div>
+	<!-- Header/Navigation -->
 	<header class="header">
-		<div class="header_inner">
-			<a class="header_logo" href="https://github.com/OrakomoRi/Diaphantium">
-				<img src="https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/demo/images/diaphantium.png" class="icon">
-				<div class="text">Diaphantium</div>
-			</a>
+		<div class="container">
+			<div class="header-content">
+				<a href="/" class="logo">
+					<img src="./assets/images/icon.png" alt="Diaphantium"
+						style="width: 32px; height: 32px; margin-right: 0.5rem;">
+					<span class="logo-gradient" data-i18n-key="nav.logo">Diaphantium</span>
+				</a>
+
+				<nav class="nav-menu">
+					<a href="#quickstart" class="nav-link" data-i18n-key="nav.quickstart">Quick Start</a>
+					<a href="#features" class="nav-link" data-i18n-key="nav.features">Features</a>
+					<a href="#about" class="nav-link" data-i18n-key="nav.about">About</a>
+					<a href="#console" class="nav-link" data-i18n-key="nav.console">Console</a>
+				</nav>
+
+				<div class="nav-actions">
+					<div class="language-switcher"></div>
+					<a href="./release/diaphantium.user.js" class="btn btn-primary" data-download="diaphantium.user.js"
+						data-i18n-key="hero.downloadBtn">
+						Download
+					</a>
+				</div>
+
+				<button class="menu-toggle" aria-label="Toggle menu">
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+			</div>
 		</div>
 	</header>
 
-	<main class="container">
-		<div class="container_inner">
-			<div class="instruction">
-				<span>By default popup opens on key <code>Slash</code></span>
-				<span>Your hotkey: <code class="actual_hotkey"></code></span><span>
-				<span>To utilize the clicker functionality, please follow these steps:</span>
-				<ol>
-					<li>Open the popup and navigate to the "Settings" page by clicking on the gear icon.</li>
-					<li>On the "Settings" page, set your preferred hotkeys for enabling the clickers.</li>
-				</ol>
-				<span>Enjoy :)</span>
+	<!-- Mobile Menu Overlay -->
+	<div class="mobile-menu-overlay">
+		<div class="mobile-menu">
+			<div class="mobile-menu-header">
+				<span class="mobile-menu-title">Navigation</span>
+				<button class="mobile-menu-close" aria-label="Close menu">
+					<ion-icon name="close-outline"></ion-icon>
+				</button>
 			</div>
-
-			<div class="console" data-simplebar>
-				<div class="header">Console</div>
-				<div class="content"></div>
+			<nav class="mobile-menu-nav">
+				<a href="#quickstart" class="mobile-menu-link" data-i18n-key="nav.quickstart">Quick Start</a>
+				<a href="#features" class="mobile-menu-link" data-i18n-key="nav.features">Features</a>
+				<a href="#about" class="mobile-menu-link" data-i18n-key="nav.about">About</a>
+				<a href="#console" class="mobile-menu-link" data-i18n-key="nav.console">Console</a>
+			</nav>
+			<div class="mobile-menu-actions">
+				<div class="language-switcher mobile-language-switcher"></div>
+				<a href="./release/diaphantium.user.js" class="btn btn-primary" data-download="diaphantium.user.js"
+					data-i18n-key="hero.downloadBtn">
+					Download
+				</a>
 			</div>
 		</div>
-	</main>
-	
+	</div>
+
+	<!-- Hero Section -->
+	<section data-section="hero" class="hero">
+		<div class="hero-background">
+			<div class="hero-gradient hero-gradient-1"></div>
+			<div class="hero-gradient hero-gradient-2"></div>
+			<div class="hero-gradient hero-gradient-3"></div>
+			<div class="hero-particles"></div>
+		</div>
+
+		<div class="container">
+			<div class="hero-content">
+				<div class="hero-badge">
+					<ion-icon name="time-outline"></ion-icon>
+					<span class="hero-badge-text">
+						<span data-i18n-key="hero.badge">Version</span>
+						<span class="hero-version"></span>
+					</span>
+				</div>
+				<h1 class="hero-title" data-i18n-key="hero.title">
+					Diaphantium
+				</h1>
+
+				<p class="hero-description" data-i18n-key="hero.description">
+					Powerful userscript for Tanki Online with customizable hotkeys,
+					auto-clicking, and supply management. Built for efficiency and control.
+				</p>
+
+				<div class="hero-actions">
+					<a href="./release/diaphantium.user.js" class="btn btn-primary btn-lg"
+						data-download="diaphantium.user.js" data-i18n-key="hero.downloadBtn">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="7 10 12 15 17 10"></polyline>
+							<line x1="12" y1="15" x2="12" y2="3"></line>
+						</svg>
+						Download Script
+					</a>
+					<a href="https://github.com/OrakomoRi/Diaphantium" class="btn btn-outline btn-lg" target="_blank"
+						data-i18n-key="hero.githubBtn">
+						<svg viewBox="0 0 24 24" fill="currentColor">
+							<path
+								d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+						</svg>
+						View on GitHub
+					</a>
+				</div>
+			</div>
+		</div>
+
+	<div class="hero-scroll">
+		<span data-i18n-key="hero.scrollDown">Scroll to explore</span>
+		<ion-icon name="chevron-down-outline"></ion-icon>
+	</div>
+</section>	<!-- Quick Start Section -->
+	<section data-section="quickstart" class="quickstart">
+		<div class="container">
+			<div class="section-header">
+				<span class="section-badge" data-i18n-key="quickstart.badge">Get Started</span>
+				<h2 class="section-title" data-i18n-key="quickstart.title">Quick Start Guide</h2>
+				<p class="section-description" data-i18n-key="quickstart.description">
+					Get up and running with Diaphantium in just three simple steps
+				</p>
+			</div>
+
+			<div class="quickstart-steps">
+				<div class="step-card">
+					<div class="step-number">01</div>
+					<h3 class="step-title" data-i18n-key="quickstart.step1.title">Install Tampermonkey</h3>
+					<p class="step-description" data-i18n-key="quickstart.step1.description">
+						Download and install the Tampermonkey browser extension from the official website.
+					</p>
+					<div class="step-action">
+						<a href="https://www.tampermonkey.net/" class="btn btn-outline" target="_blank">
+							<span data-i18n-key="quickstart.step1.action">Get Tampermonkey</span> →
+						</a>
+					</div>
+				</div>
+
+				<div class="step-card">
+					<div class="step-number">02</div>
+					<h3 class="step-title" data-i18n-key="quickstart.step2.title">Add Script</h3>
+					<p class="step-description" data-i18n-key="quickstart.step2.description">
+						Click the download button to add Diaphantium script to your Tampermonkey dashboard.
+					</p>
+				<div class="download-info">
+					<div class="download-filename">diaphantium.user.js</div>
+					<a href="./release/diaphantium.user.js" class="download-icon-btn"
+						data-download="diaphantium.user.js">
+						<ion-icon name="download-outline"></ion-icon>
+					</a>
+				</div>
+				</div>
+
+				<div class="step-card">
+					<div class="step-number">03</div>
+					<h3 class="step-title" data-i18n-key="quickstart.step3.title">Configure Settings</h3>
+					<p class="step-description">
+						<span data-i18n-key="quickstart.step3.description">Press</span> <strong>Slash (/)</strong> <span
+							data-i18n-key="quickstart.step3.descriptionContinued">to open the popup menu and customize
+							your hotkeys in the Settings page.</span>
+					</p>
+					<div class="hotkey-display">
+						<span data-i18n-key="quickstart.step3.yourHotkey">Your hotkey:</span>
+						<kbd class="hotkey-key">F2</kbd>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Features Section -->
+	<section data-section="features" class="features">
+		<div class="container">
+			<div class="section-header">
+				<span class="section-badge" data-i18n-key="features.badge">Features</span>
+				<h2 class="section-title" data-i18n-key="features.title">Powerful Automation</h2>
+				<p class="section-description" data-i18n-key="features.description">
+					Everything you need for efficient gameplay automation
+				</p>
+			</div>
+
+			<div class="features-grid">
+				<div class="feature-card">
+					<div class="feature-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+							<polyline points="14 2 14 8 20 8"></polyline>
+							<line x1="16" y1="13" x2="8" y2="13"></line>
+							<line x1="16" y1="17" x2="8" y2="17"></line>
+							<polyline points="10 9 9 9 8 9"></polyline>
+						</svg>
+					</div>
+					<h3 class="feature-title" data-i18n-key="features.autoClicker.title">Auto Clicker</h3>
+					<p class="feature-description" data-i18n-key="features.autoClicker.description">
+						Automated clicking functionality with customizable intervals and precise timing control.
+					</p>
+				</div>
+
+				<div class="feature-card">
+					<div class="feature-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+							<polyline points="17 2 12 7 7 2"></polyline>
+						</svg>
+					</div>
+					<h3 class="feature-title" data-i18n-key="features.hotkeys.title">Customizable Hotkeys</h3>
+					<p class="feature-description" data-i18n-key="features.hotkeys.description">
+						Configure your own keyboard shortcuts for quick access and seamless workflow integration.
+					</p>
+				</div>
+
+				<div class="feature-card">
+					<div class="feature-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+							<path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+							<line x1="6" y1="1" x2="6" y2="4"></line>
+							<line x1="10" y1="1" x2="10" y2="4"></line>
+							<line x1="14" y1="1" x2="14" y2="4"></line>
+						</svg>
+					</div>
+					<h3 class="feature-title" data-i18n-key="features.supplies.title">Supply Management</h3>
+					<p class="feature-description" data-i18n-key="features.supplies.description">
+						Automated supply activation and management for optimized gameplay efficiency.
+					</p>
+				</div>
+
+				<div class="feature-card">
+					<div class="feature-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="12" cy="12" r="3"></circle>
+							<path d="M12 1v6m0 6v6"></path>
+							<path d="m4.22 4.22 4.24 4.24m5.08 5.08 4.24 4.24"></path>
+							<path d="M1 12h6m6 0h6"></path>
+							<path d="m4.22 19.78 4.24-4.24m5.08-5.08 4.24-4.24"></path>
+						</svg>
+					</div>
+					<h3 class="feature-title" data-i18n-key="features.settings.title">Advanced Settings</h3>
+					<p class="feature-description" data-i18n-key="features.settings.description">
+						Fine-tune every aspect of the script to your preferences with comprehensive configuration
+						options.
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- About Section -->
+	<section data-section="about" class="about-section">
+		<div class="container">
+			<div class="section-header">
+				<span class="section-badge" data-i18n-key="about.badge">What is Diaphantium?</span>
+				<h2 class="section-title" data-i18n-key="about.title">Professional Automation Tool</h2>
+				<p class="section-subtitle" data-i18n-key="about.subtitle">Built for Tanki Online Players</p>
+			</div>
+
+			<div class="about-intro">
+				<p class="about-intro-text" data-i18n-key="about.description">
+					Diaphantium is a free, open-source userscript that enhances your Tanki Online experience with
+					automated actions, customizable hotkeys, and efficient supply management. Born from the idea of
+					creating a simple popup interface for continuous key input, it has evolved into a comprehensive
+					automation solution.
+				</p>
+			</div>
+
+			<div class="about-why">
+				<h3 data-i18n-key="about.whyTitle">Why Diaphantium?</h3>
+				<p data-i18n-key="about.whyDescription">
+					This project demonstrates advanced front-end development skills including CSS animations, JavaScript
+					programming, cross-browser compatibility, and user experience design. It showcases the ability to
+					reverse-engineer existing interfaces and create comprehensive visual overhauls while maintaining
+					functionality.
+				</p>
+			</div>
+
+			<div class="version-history">
+				<h3 class="version-history-title" data-i18n-key="about.historyTitle">Evolution Through Versions</h3>
+
+				<div class="timeline">
+					<!-- Version 1.0 -->
+					<div class="timeline-item">
+						<div class="timeline-marker"></div>
+						<div class="timeline-content">
+							<span class="timeline-date" data-i18n-key="about.v1.date">May 2023</span>
+							<h4 class="timeline-title" data-i18n-key="about.v1.title">Version 1.0 - The Beginning</h4>
+							<p class="timeline-description" data-i18n-key="about.v1.description">
+								The initial release introduced a basic popup window with essential auto-clicking
+								functionality. The interface was simple but functional, laying the foundation for future
+								improvements.
+							</p>
+							<div class="timeline-image">
+								<img src="./images/changelog/1.0.0/popup.png" alt="Version 1.0" loading="lazy">
+							</div>
+						</div>
+					</div>
+
+					<!-- Version 2.0 -->
+					<div class="timeline-item">
+						<div class="timeline-marker"></div>
+						<div class="timeline-content">
+							<span class="timeline-date" data-i18n-key="about.v2.date">June 2023</span>
+							<h4 class="timeline-title" data-i18n-key="about.v2.title">Version 2.0 - Dual Interface</h4>
+							<p class="timeline-description" data-i18n-key="about.v2.description">
+								Added two-tab system with Main and Settings tabs. Improved window dragging mechanics -
+								users could now move the popup by any part except input fields. Enhanced visual design
+								with better color schemes.
+							</p>
+							<div class="timeline-image">
+								<img src="./images/changelog/2.0.0/popup.png" alt="Version 2.0" loading="lazy">
+							</div>
+						</div>
+					</div>
+
+					<!-- Version 3.0 -->
+					<div class="timeline-item">
+						<div class="timeline-marker"></div>
+						<div class="timeline-content">
+							<span class="timeline-date" data-i18n-key="about.v3.date">August 2023</span>
+							<h4 class="timeline-title" data-i18n-key="about.v3.title">Version 3.0 - Pro Features</h4>
+							<p class="timeline-description" data-i18n-key="about.v3.description">
+								Major overhaul with over 150 commits. Introduced navigation buttons, battle selection
+								system, and advanced features like nickname blur and skip login. Added support for both
+								team battles and deathmatch modes.
+							</p>
+							<div class="timeline-image">
+								<img src="./images/changelog/3.0.0/popup.png" alt="Version 3.0" loading="lazy">
+							</div>
+						</div>
+					</div>
+
+					<!-- Version 4.0 -->
+					<div class="timeline-item">
+						<div class="timeline-marker"></div>
+						<div class="timeline-content">
+							<span class="timeline-date" data-i18n-key="about.v4.date">March 2024</span>
+							<h4 class="timeline-title" data-i18n-key="about.v4.title">Version 4.0 - Modern Era</h4>
+							<p class="timeline-description" data-i18n-key="about.v4.description">
+								Complete redesign with mobile support, dynamic hotkey management, and improved UI. Added
+								ability to remove hotkeys, duplicate hotkey detection with visual warnings, and
+								comprehensive changelog tracking.
+							</p>
+							<div class="timeline-image">
+								<img src="./images/changelog/4.0.0/popup.png" alt="Version 4.0" loading="lazy">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Tech Stack -->
+			<div class="tech-stack">
+				<div class="tech-item">
+					<div class="tech-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+							<line x1="8" y1="21" x2="16" y2="21"></line>
+							<line x1="12" y1="17" x2="12" y2="21"></line>
+						</svg>
+					</div>
+					<div class="tech-name" data-i18n-key="about.compatibility">Cross-Browser Support</div>
+				</div>
+				<div class="tech-item">
+					<div class="tech-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="12" cy="12" r="10"></circle>
+							<path d="M8 12h8"></path>
+							<path d="M12 16V8"></path>
+						</svg>
+					</div>
+					<div class="tech-name" data-i18n-key="about.openSource">100% Open Source</div>
+				</div>
+				<div class="tech-item">
+					<div class="tech-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+							<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+						</svg>
+					</div>
+					<div class="tech-name" data-i18n-key="about.mitLicense">MIT License</div>
+				</div>
+				<div class="tech-item">
+					<div class="tech-icon">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M12 2v20"></path>
+							<path d="m19 15-7 7-7-7"></path>
+							<path d="m5 9 7-7 7 7"></path>
+						</svg>
+					</div>
+					<div class="tech-name" data-i18n-key="about.activeDev">Active Development</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Console Section -->
+	<section data-section="console" class="console-section">
+		<div class="container">
+			<div class="section-header">
+				<span class="section-badge" data-i18n-key="console.badge">Live Demo</span>
+				<h2 class="section-title" data-i18n-key="console.title">Console Output</h2>
+				<p class="section-description" data-i18n-key="console.description">
+					See Diaphantium in action with real-time console simulation
+				</p>
+			</div>
+
+			<div class="console-wrapper">
+				<div class="terminal">
+					<div class="terminal-header">
+						<div class="terminal-dots">
+							<div class="terminal-dot red"></div>
+							<div class="terminal-dot yellow"></div>
+							<div class="terminal-dot green"></div>
+						</div>
+						<div class="terminal-title" data-i18n-key="console.terminalTitle">Diaphantium Terminal</div>
+					</div>
+					<div class="terminal-body">
+						<div class="terminal-line terminal-output" data-i18n-key="console.ready">Ready to start...</div>
+					</div>
+				</div>
+
+				<div class="console-help">
+					<span data-i18n-key="console.tipFull">
+						<strong>Tip:</strong> To open the actual Diaphantium popup, install the script and press <strong
+							class="hotkey-display-inline">F2</strong> on Tanki Online
+					</span>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Footer -->
 	<footer class="footer">
-		<div class="footer_inner">
-			<p>&copy; 2023-2024 <span class="info">Diaphantium's demo page.</span> All rights reserved.</p>
-			<span>Author: <a href="https://github.com/OrakomoRi">OrakomoRi</a></span>
+		<div class="container">
+			<div class="footer-grid">
+				<div class="footer-section">
+					<h3>Diaphantium</h3>
+					<p class="footer-text" data-i18n-key="footer.description">
+						Professional open-source automation tool built with modern web technologies.
+						Enhance your Tanki Online gameplay with customizable hotkeys and advanced features.
+					</p>
+				<div class="social-links">
+					<a href="https://github.com/OrakomoRi/Diaphantium" target="_blank" class="social-link"
+						title="GitHub">
+						<ion-icon name="logo-github"></ion-icon>
+					</a>
+				</div>
+				</div>
+
+				<div class="footer-section">
+					<h3 data-i18n-key="footer.resources.title">Resources</h3>
+					<ul class="footer-links">
+						<li><a href="https://github.com/OrakomoRi/Diaphantium#readme" target="_blank"
+								class="footer-link" data-i18n-key="footer.resources.documentation">Documentation</a>
+						</li>
+						<li><a href="https://github.com/OrakomoRi/Diaphantium/blob/main/CHANGELOG.md" target="_blank"
+								class="footer-link" data-i18n-key="footer.resources.changelog">Changelog</a></li>
+						<li><a href="https://www.tampermonkey.net/" target="_blank" class="footer-link">Tampermonkey</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="footer-section">
+					<h3 data-i18n-key="footer.troubleshooting.title">Troubleshooting</h3>
+					<ul class="footer-links">
+						<li><a href="https://github.com/OrakomoRi/Diaphantium/issues" target="_blank"
+								class="footer-link" data-i18n-key="footer.troubleshooting.report">Report Issues</a></li>
+						<li><a href="https://github.com/OrakomoRi/Diaphantium/discussions" target="_blank"
+								class="footer-link" data-i18n-key="footer.troubleshooting.discussions">Discussions</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="footer-section">
+					<h3 data-i18n-key="footer.support.title">Support</h3>
+					<ul class="footer-links">
+						<li><a href="https://boosty.to/orakomori/donate" target="_blank" class="footer-link">Boosty</a>
+						</li>
+						<li><a href="https://www.patreon.com/orakomori" target="_blank" class="footer-link">Patreon</a>
+						</li>
+					</ul>
+				</div>
+
+				<div class="footer-section">
+					<h3 data-i18n-key="footer.legal.title">Legal</h3>
+					<ul class="footer-links">
+						<li><a href="https://github.com/OrakomoRi/Diaphantium/blob/main/LICENSE" target="_blank"
+								class="footer-link">MIT License</a></li>
+						<li><a href="https://github.com/OrakomoRi" target="_blank" class="footer-link">OrakomoRi</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="footer-bottom">
+				<p data-i18n-key="footer.copyright">&copy; 2023-2025 Diaphantium. All rights reserved.</p>
+				<p>
+					<span data-i18n-key="footer.developed">Developed with ❤️ by <a href="https://github.com/OrakomoRi"
+							target="_blank">OrakomoRi</a></span>
+				</p>
+			</div>
 		</div>
 	</footer>
-
-
-
-	<!-- Force version update for scripts (js) & links (css) -->
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			function updateResourceVersions() {
-				var styles = document.querySelectorAll('link[href^="styles.css"]'); // All styles
-				var scripts = document.querySelectorAll('script[src^="src/js/"], script[src*="script.js"]'); // All scripts
-
-				var currVersion = new Date().getTime(); // Get a unique value (timestamp)
-
-				styles.forEach(function(style) { // Update version for each style
-					style.href = `${style.href}?v=${currVersion}`;
-				});
-
-				scripts.forEach(function(script) { // Update version for each script
-					script.src = `${script.src}?v=${currVersion}`;
-				});
-			}
-
-			updateResourceVersions(); // Calls the function when the document is ready
-		});
-	</script>
 </body>
+
 </html>

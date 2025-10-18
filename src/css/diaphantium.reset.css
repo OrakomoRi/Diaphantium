@@ -1,19 +1,17 @@
 
-/* Reset for all elements inside popup container */
+/* Selective reset for all elements inside popup container */
 
 .popup_container.diaphantium[author="OrakomoRi"],
 .popup_container.diaphantium[author="OrakomoRi"] * {
+	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-	border: none;
-	outline: none;
-	box-sizing: border-box;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	user-select: none;
-	font-family: sans-serif;
-	background: none;
-	color: inherit;
+	border: 0;
+	background: transparent;
+	text-decoration: none;
+	list-style: none;
+	vertical-align: baseline;
+	font-size: 16px;
 }
 
 

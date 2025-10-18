@@ -1,0 +1,131 @@
+/* Feature Card */
+.feature-card {
+	background: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	transition: all var(--transition-base);
+	position: relative;
+	overflow: hidden;
+}
+
+.feature-card::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 0.1875rem;
+	background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+	opacity: 0;
+	transition: opacity var(--transition-base);
+}
+
+.feature-card:hover {
+	transform: translateY(-5px);
+	border-color: var(--color-primary);
+	box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+}
+
+.feature-card:hover::before {
+	opacity: 1;
+}
+
+.feature-card:hover .feature-icon {
+	transform: scale(1.1) rotate(5deg);
+	box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.feature-card:hover .feature-icon svg {
+	animation: iconBounce 0.6s ease;
+}
+
+@keyframes iconBounce {
+
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(-0.3125rem);
+	}
+}
+
+.feature-icon {
+	width: 3rem;
+	height: 3rem;
+	background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+	border-radius: var(--radius-md);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: var(--spacing-md);
+	transition: all var(--transition-base);
+}
+
+.feature-icon svg {
+	width: 1.5rem;
+	height: 1.5rem;
+	color: white;
+}
+
+.feature-title {
+	font-size: var(--font-size-xl);
+	font-weight: 600;
+	color: var(--color-text-primary);
+	margin-bottom: var(--spacing-sm);
+	transition: color var(--transition-fast);
+}
+
+.feature-card:hover .feature-title {
+	color: var(--color-primary-light);
+}
+
+.feature-description {
+	color: var(--color-text-secondary);
+	line-height: 1.7;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+	.feature-card {
+		padding: var(--spacing-lg);
+	}
+
+	.feature-icon {
+		width: 2.75rem;
+		height: 2.75rem;
+	}
+
+	.feature-title {
+		font-size: var(--font-size-lg);
+	}
+}
+
+@media (max-width: 480px) {
+	.feature-card {
+		padding: var(--spacing-md);
+	}
+
+	.feature-icon {
+		width: 2.5rem;
+		height: 2.5rem;
+	}
+
+	.feature-icon svg,
+	.feature-icon ion-icon {
+		width: 1.25rem;
+		height: 1.25rem;
+		font-size: 1.25rem;
+	}
+
+	.feature-title {
+		font-size: var(--font-size-base);
+	}
+
+	.feature-description {
+		font-size: var(--font-size-sm);
+		line-height: 1.6;
+	}
+}

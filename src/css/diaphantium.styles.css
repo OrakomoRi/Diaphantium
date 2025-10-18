@@ -2,7 +2,7 @@
 
 /* Popup container (overlay) */
 .popup_container.diaphantium[author="OrakomoRi"] {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100%; /* Full width */
@@ -17,6 +17,7 @@
 
 /* Popup window styles */
 .popup_container.diaphantium[author="OrakomoRi"] .popup {
+	all: unset;
 	position: absolute;
 	display: flex;
 	width: 30em;
@@ -24,22 +25,27 @@
 	border-radius: .25em;
 	padding: 1em 2.5em 1em .5em;
 	gap: 2em;
-	background: rgba(var(--diaphantium-background), var(--diaphantium-opacity));
+	background: var(--diaphantium-background);
 	-webkit-backdrop-filter: blur(var(--diaphantium-blur));
 	backdrop-filter: blur(var(--diaphantium-blur));
-	border: .1em solid rgba(255, 255, 255, calc(var(--diaphantium-opacity) * 1.5));
+	border: .1em solid rgba(255, 255, 255, .25);
 	box-shadow: 0 0 2em 0 rgba(255, 255, 255, .2);
 	color: rgb(255, 255, 255);
 	z-index: 889; /* z-index that is +1 to overlay container z-index */
+	user-select: none;
 }
 
 /* Content of any page */
 .popup_container.diaphantium[author="OrakomoRi"] .content {
+	all: unset;
 	display: none;
 	flex-direction: column;
 	align-items: center;
 	gap: 1em;
 	flex-grow: 1;
+	cursor: default;
+	padding: 0.5em;
+	overflow: hidden;
 }
 
 /* Content of the selected page */
@@ -49,23 +55,43 @@
 
 /* Close button on the popup */
 .popup_container.diaphantium[author="OrakomoRi"] .close {
+	all: unset;
 	position: absolute;
 	top: .5em;
 	right: .5em;
 	cursor: pointer;
-	color: rgb(255, 255, 255);
-	height: 2em;
-	width: 2em;
-	transition: color var(--diaphantium-transition);
+	color: rgba(255, 255, 255, .6);
+	height: 2.5em;
+	width: 2.5em;
+	transition: all var(--diaphantium-transition);
+	user-select: none;
+	z-index: 890;
+	pointer-events: all;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: .2em;
 }
 
 /* Close button hover behaviour */
 .popup_container.diaphantium[author="OrakomoRi"] .close:hover {
-	color: rgb(255, 70, 70);
+	color: var(--diaphantium-inactive);
+	background-color: rgba(255, 255, 255, .1);
+}
+
+/* SVG inside close button */
+.popup_container.diaphantium[author="OrakomoRi"] .close svg {
+	pointer-events: none;
+	display: block;
+	width: 80%;
+	height: 80%;
+	fill: none;
+	stroke: currentColor;
 }
 
 /* Header of any content page */
 .popup_container.diaphantium[author="OrakomoRi"] .header {
+	all: unset;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -75,103 +101,149 @@
 
 /* Inner of any content page */
 .popup_container.diaphantium[author="OrakomoRi"] .inner {
+	all: unset;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	align-items: center;
+	justify-content: flex-start;
 	gap: 1em;
 	flex-grow: 1;
 	padding: .5em 1em;
 	overflow: hidden;
+	min-height: 0;
 }
 
 /* Subheaders */
 .popup_container.diaphantium[author="OrakomoRi"] .subheader {
+	all: unset;
 	font-size: 1.2em;
 	font-weight: bold;
 }
 
 /* Container of scrollable content */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable {
+	all: unset;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
 	gap: 1em;
-	padding: 1em 2em;
-	overflow: hidden auto;
+	overflow-x: hidden;
+	overflow-y: auto;
+	flex: 1;
+	min-height: 0;
 }
 
-/* Custom scrollbar (works only in browsers that use webkit engine */
-.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-track {
-	background: transparent;
+/* Direct children of scrollable */
+.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable > * {
+	width: 100%;
 }
+
+/* Custom scrollbar (works only in browsers that use webkit engine) */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar {
-	width: .5em;
-	background: rgba(255, 255, 255, .2);
-	border-radius: .25em;
+	width: .4em;
+	display: block;
 }
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, .05);
+	border-radius: .2em;
+}
+
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-thumb {
-	background-color: rgb(90, 90, 90);
-	border-radius: 0.25em;
+	background-color: rgba(255, 255, 255, .2);
+	border-radius: .2em;
+	transition: background-color var(--diaphantium-transition);
 }
+
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-thumb:hover {
-	background-color: rgb(120, 120, 120);
+	background-color: rgb(255, 255, 255);
 }
 
 /* Labels (input + text) */
 .popup_container.diaphantium[author="OrakomoRi"] .inner .label {
+	all: unset;
 	display: flex;
 	align-items: center;
-	gap: .5em;
+	justify-content: space-between;
+	gap: .75em;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .inner .label p {
+	all: unset;
+	font-size: .9em;
+	display: inline;
+	margin: 0;
 }
 
 /* Text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input {
-	padding: .2em .5em;
-	background-color: rgb(var(--diaphantium-background-primary));
+	padding: .1em .2em;
+	background-color: rgba(0, 0, 0, .3);
 	color: rgb(255, 255, 255);
 	text-align: center;
-	border: .1em solid rgb(var(--diaphantium-accent));
+	border: .1em solid rgba(255, 255, 255, .15);
 	font-size: 1em;
-	border-radius: .2em;
+	border-radius: .25em;
 	transition: all var(--diaphantium-transition);
+	cursor: text;
+	user-select: text;
+	display: inline-block;
+	font-family: inherit;
 }
 
-/* Custom checkbox */
+/* Custom toggle switch checkbox */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox {
+	all: unset;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
-	font: inherit;
-	background-color: rgb(var(--diaphantium-background-primary));
-	color: rgb(var(--diaphantium-background-primary));
-	width: 1.2em;
-	height: 1.2em;
-	box-shadow: 0 0 0 .1em rgb(var(--diaphantium-accent));
-	border-radius: .2em;
+	position: relative;
+	width: 3em;
+	height: 1.5em;
+	background-color: rgba(255, 255, 255, .1);
+	border: .1em solid rgba(255, 255, 255, .2);
+	border-radius: 1em;
 	cursor: pointer;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	transition: all var(--diaphantium-transition);
+	display: inline-block;
+	vertical-align: middle;
 }
+
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox::before {
 	content: "";
-	width: .8em;
-	height: .8em;
-	border-radius: .2em;
-	background-color: rgb(var(--diaphantium-accent));
-	transform: scale(0);
+	position: absolute;
+	top: .15em;
+	left: .15em;
+	width: 1.1em;
+	height: 1.1em;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, .4);
 	transition: all var(--diaphantium-transition);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
 }
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:checked {
+	background-color: rgba(255, 255, 255, .4);
+	border-color: rgb(255, 255, 255);
+}
+
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:checked::before {
-	transform: scale(1);
+	left: calc(100% - 1.25em);
+	background-color: rgb(255, 255, 255);
 }
-.popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:focus-visible {
-	box-shadow: 0 0 0 .1em rgb(var(--diaphantium-accent)), 0 0 0 .2em rgb(var(--diaphantium-active));
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:hover {
+	border-color: rgba(255, 255, 255, .5);
 }
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:checked:hover {
+	filter: brightness(1.1);
+}
+
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:disabled {
-	box-shadow: 0 0 0 .1em rgb(170, 170, 170);
-}
-.popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:checked:disabled::before {
-	background-color: rgb(170, 170, 170);
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 
 
@@ -180,6 +252,7 @@
 
 /* Side navigation container */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation {
+	all: unset;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -189,24 +262,55 @@
 
 /* Side navigation buttons */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item {
-	border-radius: .2em;
-	padding: 0.5em;
+	all: unset;
+	position: relative;
+	border-radius: .3em;
+	padding: .5em;
 	cursor: pointer;
 	width: 2.5em;
 	height: 2.5em;
-	transition: color var(--diaphantium-transition), background-color var(--diaphantium-transition);
+	transition: all var(--diaphantium-transition);
+	user-select: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .navigation .item::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	border-radius: .3em;
+	z-index: -1;
+	opacity: .25;
+	transition: all var(--diaphantium-transition);
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .navigation .item svg {
+	display: block;
+	width: 1.5em;
+	height: 1.5em;
+	fill: none;
+	stroke: currentColor;
 }
 
 /* Side navigation buttons hover & focus behaviour */
-.popup_container.diaphantium[author="OrakomoRi"] .navigation .item:hover,
-.popup_container.diaphantium[author="OrakomoRi"] .navigation .item:focus {
-	color: rgb(var(--diaphantium-accent));
+.popup_container.diaphantium[author="OrakomoRi"] .navigation .item:hover::before,
+.popup_container.diaphantium[author="OrakomoRi"] .navigation .item:focus::before {
+	background-color: rgb(255, 255, 255);
 }
 
 /* Side navigation selected page button */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item.active {
 	pointer-events: none;
-	background-color: rgba(255, 255, 255, 0.25);
+	color: rgb(255, 255, 255);
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .navigation .item.active::before {
+	background-color: rgb(255, 255, 255);
 }
 
 
@@ -232,9 +336,12 @@
 /* Single supply button (icon) */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply {
 	width: 1.5em;
+	height: 1.5em;
 	cursor: pointer;
 	fill: rgb(150, 150, 150);
 	transition: all var(--diaphantium-transition);
+	user-select: none;
+	display: inline-block;
 }
 
 /* Behaviour for each icon (all colors was taken from the game) */
@@ -270,12 +377,38 @@
 
 /* Focused text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input:focus {
-	border-color: rgb(var(--diaphantium-active));
+	border-color: rgb(255, 255, 255);
+	background-color: rgba(0, 0, 0, .4);
+	outline: none;
+}
+
+/* Hover text inputs */
+.popup_container.diaphantium[author="OrakomoRi"] .text_input:hover:not(:focus) {
+	border-color: rgba(255, 255, 255, .25);
+	background-color: rgba(0, 0, 0, .35);
 }
 
 /* Mine delay input */
 .popup_container.diaphantium[author="OrakomoRi"] .mine_delay .text_input.delay {
-	width: 4em;
+	width: 5em;
+	min-width: 5em;
+}
+
+
+
+/* MISCELLANEOUS PAGE */
+
+/* Miscellaneous toggles container */
+.popup_container.diaphantium[author="OrakomoRi"] .miscellaneous_toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: .5em 0;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .miscellaneous_toggle .label {
+	width: 100%;
+	max-width: 15em;
 }
 
 
@@ -310,8 +443,11 @@
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey {
 	height: 1.5em;
 	width: 1.5em;
-	fill: rgb(150, 150, 150);
+	fill: rgba(255, 255, 255, .4);
 	cursor: pointer;
+	user-select: none;
+	transition: fill var(--diaphantium-transition);
+	display: inline-block;
 }
 /* Refresh hotkey button on hover */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey:hover {
@@ -321,6 +457,7 @@
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey svg {
 	width: 100%;
 	height: 100%;
+	display: block;
 }
 
 /* Hotkey input */
@@ -328,26 +465,35 @@
 	cursor: pointer;
 	font-weight: bold;
 	width: 5rem;
+	user-select: none;
+}
+
+/* When focused, allow text selection and change cursor */
+.popup_container.diaphantium[author="OrakomoRi"] .hotkeys .text_input.hotkey:focus {
+	user-select: text;
+	cursor: text;
 }
 
 /* Hotkey text */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .text {
 	font-size: 1em;
+	display: inline;
 }
 
 /* Warning input */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input.warning {
-	border-color: rgb(225, 255, 50);
+	border-color: rgb(255, 200, 50);
+	background-color: rgba(255, 200, 50, .05);
 }
 /* Focused warning text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input.warning:focus {
-	border-color: rgb(var(--diaphantium-active));
+	border-color: rgb(255, 255, 255);
 }
 
 /* Wrong hotkey input */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input.wrong_input {
 	user-select: none;
-	border-color: rgb(255, 50, 50);
+	border-color: rgb(185, 60, 60);
 	animation: shake .2s cubic-bezier(.36, .07, .19, .97) both;
 }
 

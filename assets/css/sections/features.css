@@ -1,0 +1,93 @@
+/* Features Section */
+.features {
+	padding: var(--spacing-3xl) 0;
+	position: relative;
+	overflow: hidden;
+}
+
+/* Floating gradient orbs */
+.features::before,
+.features::after {
+	content: '';
+	position: absolute;
+	width: 18.75rem;
+	height: 18.75rem;
+	border-radius: 50%;
+	filter: blur(5rem);
+	opacity: 0.4;
+	pointer-events: none;
+	animation: floatAround 20s ease-in-out infinite;
+}
+
+.features::before {
+	background: radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent);
+	top: 10%;
+	left: 0;
+	animation-delay: 0s;
+}
+
+.features::after {
+	background: radial-gradient(circle, rgba(99, 102, 241, 0.3), transparent);
+	bottom: 10%;
+	right: 0;
+	animation-delay: -10s;
+}
+
+@keyframes floatAround {
+
+	0%,
+	100% {
+		transform: translate(0, 0) scale(1);
+	}
+
+	33% {
+		transform: translate(1.875rem, -1.875rem) scale(1.1);
+	}
+
+	66% {
+		transform: translate(-1.875rem, 1.875rem) scale(0.9);
+	}
+}
+
+.features-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(18.75rem, 1fr));
+	gap: var(--spacing-xl);
+	position: relative;
+	z-index: 1;
+}
+
+/* Feature variants */
+.feature-card.highlight {
+	background: linear-gradient(135deg,
+			rgba(99, 102, 241, 0.1) 0%,
+			rgba(139, 92, 246, 0.1) 100%);
+	border-color: var(--color-primary);
+}
+
+.feature-card.highlight::before {
+	opacity: 1;
+}
+
+@media (max-width: 768px) {
+	.features {
+		padding: var(--spacing-2xl) 0;
+	}
+
+	.features-grid {
+		grid-template-columns: 1fr;
+		gap: var(--spacing-lg);
+	}
+
+	.features::before,
+	.features::after {
+		width: 12.5rem;
+		height: 12.5rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.features-grid {
+		gap: var(--spacing-md);
+	}
+}

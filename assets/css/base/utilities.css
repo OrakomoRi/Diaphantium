@@ -1,0 +1,171 @@
+/* Container utilities */
+.container {
+	max-width: 75rem;
+	margin: 0 auto;
+	padding: 0 var(--spacing-md);
+	width: 100%;
+}
+
+.container-wide {
+	max-width: 87.5rem;
+	margin: 0 auto;
+	padding: 0 var(--spacing-md);
+	width: 100%;
+}
+
+@media (max-width: 768px) {
+
+	.container,
+	.container-wide {
+		padding: 0 var(--spacing-md);
+	}
+}
+
+@media (max-width: 480px) {
+
+	.container,
+	.container-wide {
+		padding: 0 var(--spacing-sm);
+	}
+}
+
+/* Flexbox utilities */
+.flex {
+	display: flex;
+}
+
+.flex-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.flex-between {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flex-column {
+	display: flex;
+	flex-direction: column;
+}
+
+/* Text utilities */
+.text-center {
+	text-align: center;
+}
+
+.text-gradient {
+	background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+/* Visibility utilities */
+.hidden {
+	display: none;
+}
+
+.visible {
+	display: block;
+}
+
+/* Section divider */
+.section-divider {
+	height: 1px;
+	background: linear-gradient(90deg,
+			transparent 0%,
+			var(--color-border) 20%,
+			var(--color-border) 80%,
+			transparent 100%);
+	margin: 0;
+}
+
+.section-divider-gradient {
+	height: 1px;
+	background: linear-gradient(90deg,
+			transparent 0%,
+			rgba(99, 102, 241, 0.5) 50%,
+			transparent 100%);
+	margin: 0;
+	position: relative;
+}
+
+.section-divider-gradient::before {
+	content: '';
+	position: absolute;
+	top: -0.0625rem;
+	left: 0;
+	right: 0;
+	height: 0.1875rem;
+	background: linear-gradient(90deg,
+			transparent 0%,
+			var(--color-primary) 50%,
+			transparent 100%);
+	filter: blur(0.1875rem);
+	opacity: 0.6;
+	animation: dividerGlow 3s ease-in-out infinite;
+}
+
+@keyframes dividerGlow {
+
+	0%,
+	100% {
+		opacity: 0.3;
+	}
+
+	50% {
+		opacity: 0.8;
+	}
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(1.25rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes slideInLeft {
+	from {
+		opacity: 0;
+		transform: translateX(-1.875rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes slideInRight {
+	from {
+		opacity: 0;
+		transform: translateX(1.875rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.6s ease forwards;
+}
+
+.animate-slide-left {
+	animation: slideInLeft 0.6s ease forwards;
+}
+
+.animate-slide-right {
+	animation: slideInRight 0.6s ease forwards;
+}
