@@ -150,7 +150,7 @@ export class BackgroundAnimation {
 			const orbElement = document.createElement('div');
 			orbElement.className = `hero-orb hero-orb-${i}`;
 			container.appendChild(orbElement);
-			
+
 			this.orbs.push(new Orb(i, this.options));
 		}
 
@@ -177,16 +177,16 @@ export class BackgroundAnimation {
 		for (let i = 0; i < particleCount; i++) {
 			const particle = document.createElement('div');
 			particle.className = 'particle';
-			
+
 			const startX = Math.random() * 100;
 			const delay = Math.random() * 15;
 			const duration = 15 + Math.random() * 10;
-			
+
 			particle.style.left = `${startX}%`;
 			particle.style.bottom = '0';
 			particle.style.animationDelay = `${delay}s`;
 			particle.style.animationDuration = `${duration}s`;
-			
+
 			container.appendChild(particle);
 			this.particles.push(particle);
 		}
@@ -232,7 +232,7 @@ export class BackgroundAnimation {
 		if (deltaTime >= this.frameInterval) {
 			// Batch CSS updates for better performance
 			this.orbs.forEach(orb => orb.update());
-			
+
 			// Use single style update batch
 			requestAnimationFrame(() => {
 				this.orbs.forEach(orb => orb.updateCSS(this.documentRoot));

@@ -86,7 +86,7 @@ class I18nManager {
 		const oldLocale = this.i18n.locale;
 		await this.i18n.setLocale(locale, options);
 		this.updateDOM();
-		
+
 		// Dispatch custom event for components to listen to language changes
 		if (oldLocale !== this.i18n.locale) {
 			const event = new CustomEvent('languageChanged', {
@@ -97,7 +97,7 @@ class I18nManager {
 			});
 			document.dispatchEvent(event);
 		}
-		
+
 		return this;
 	}
 
@@ -151,7 +151,7 @@ class I18nManager {
 		document.documentElement.lang = this.i18n.locale;
 		document.documentElement.dir = this._isRTL() ? 'rtl' : 'ltr';
 	}
-	
+
 	/**
 	 * Check if current locale is RTL
 	 * @returns {boolean} - True if RTL language
