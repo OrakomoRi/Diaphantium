@@ -9,9 +9,9 @@ import '../css/diaphantium.styles.css';
 
 // Initialize application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  const popup = new Popup();
-  const clicker = new Clicker(popup);
-  // Mobile support removed
-  
-  console.log('🎮 Diaphantium initialized successfully!');
+	const popup = new Popup();
+	const clicker = new Clicker(popup);
+	// Mobile support removed
+
+	console.log('🎮 Diaphantium initialized successfully!');
 });

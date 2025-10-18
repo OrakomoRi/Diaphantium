@@ -2,320 +2,362 @@ import { getStorage, setStorage } from './storage.js';
 import { $, on } from './utils.js';
 
 export default class Clicker {
-  constructor(popup) {
-    this.popup = popup;
-    this.suppliesEnabled = false;
-    this.minesEnabled = false;
-    this.antiAfkEnabled = false;
-    this.autoDeleteEnabled = false;
-    this.keys = [];
-    this.antiAfkToggle = true; // для переключения между ArrowLeft и ArrowRight
-    
-    this.init();
-  }
+	constructor(popup) {
+		this.popup = popup;
+		this.suppliesEnabled = false;
+		this.minesEnabled = false;
+		this.antiAfkEnabled = false;
+		this.autoDeleteEnabled = false;
+		this.keys = [];
+		this.antiAfkToggle = true; // для переключения между ArrowLeft и ArrowRight
 
-  init() {
-    this.setupHotkeys();
-    this.setupCheckboxListeners();
-    this.loadState();
-  }
+		this.init();
+	}
 
-  setupHotkeys() {
-    on(document, 'keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return;
+	init() {
+		this.setupHotkeys();
+		this.setupCheckboxListeners();
+		this.loadState();
+	}
 
-      const hotkeys = getStorage('Diaphantium.hotkeys') || [];
-      
-      // Supplies hotkey
-      const suppliesHotkey = hotkeys.find(h => h.action === 'Click supplies');
-      if (suppliesHotkey && e.code === suppliesHotkey.value) {
-        e.preventDefault();
-        this.toggleSupplies();
-      }
+	setupHotkeys() {
+		on(document, 'keydown', (e) => {
+			if (e.target.tagName === 'INPUT') return;
 
-      // Mines hotkey
-      const minesHotkey = hotkeys.find(h => h.action === 'Click mines');
-      if (minesHotkey && e.code === minesHotkey.value) {
-        e.preventDefault();
-        this.toggleMines();
-      }
+			const hotkeys = getStorage('Diaphantium.hotkeys') || [];
 
-      // F5 reload
-      if (e.code === 'F5') {
-        location.reload();
-      }
-    });
-  }
+			// Supplies hotkey
+			const suppliesHotkey = hotkeys.find(h => h.action === 'Click supplies');
+			if (suppliesHotkey && e.code === suppliesHotkey.value) {
+				e.preventDefault();
+				this.toggleSupplies();
+			}
 
-  setupCheckboxListeners() {
-    // Listen for checkbox changes in popup
-    on(document, 'change', (e) => {
-      if (e.target.matches('.checkbox.supplies')) {
-        this.toggleSupplies();
-      }
-      if (e.target.matches('.checkbox.anti_afk')) {
-        this.toggleAntiAfk();
-      }
-      if (e.target.matches('.checkbox.auto_delete')) {
-        this.toggleAutoDelete();
-      }
-    });
-  }
+			// Mines hotkey
+			const minesHotkey = hotkeys.find(h => h.action === 'Click mines');
+			if (minesHotkey && e.code === minesHotkey.value) {
+				e.preventDefault();
+				this.toggleMines();
+			}
 
-  toggleSupplies() {
-    if (this.suppliesEnabled) {
-      this.stopSupplies();
-    } else {
-      this.startSupplies();
-    }
-  }
+			// F5 reload
+			if (e.code === 'F5') {
+				location.reload();
+			}
+		});
+	}
 
-  toggleMines() {
-    if (this.minesEnabled) {
-      this.stopMines();
-    } else {
-      this.startMines();
-    }
-  }
+	setupCheckboxListeners() {
+		// Listen for checkbox changes in popup
+		on(document, 'change', (e) => {
+			if (e.target.matches('.checkbox.supplies')) {
+				this.toggleSupplies();
+			}
+			if (e.target.matches('.checkbox.anti_afk')) {
+				this.toggleAntiAfk();
+			}
+			if (e.target.matches('.checkbox.auto_delete')) {
+				this.toggleAutoDelete();
+			}
+		});
+	}
 
-  toggleAntiAfk() {
-    if (this.antiAfkEnabled) {
-      this.stopAntiAfk();
-    } else {
-      this.startAntiAfk();
-    }
-  }
+	toggleSupplies() {
+		if (this.suppliesEnabled) {
+			this.stopSupplies();
+		} else {
+			this.startSupplies();
+		}
+	}
 
-  toggleAutoDelete() {
-    if (this.autoDeleteEnabled) {
-      this.stopAutoDelete();
-    } else {
-      this.startAutoDelete();
-    }
-  }
+	toggleMines() {
+		if (this.minesEnabled) {
+			this.stopMines();
+		} else {
+			this.startMines();
+		}
+	}
 
-  startSupplies() {
-    this.suppliesEnabled = true;
-    setStorage('Diaphantium.clickSuppliesState', true);
-    this.updateUIState();
-    this.clickSuppliesLoop();
-  }
+	toggleAntiAfk() {
+		if (this.antiAfkEnabled) {
+			this.stopAntiAfk();
+		} else {
+			this.startAntiAfk();
+		}
+	}
 
-  stopSupplies() {
-    this.suppliesEnabled = false;
-    setStorage('Diaphantium.clickSuppliesState', false);
-    this.updateUIState();
-  }
+	toggleAutoDelete() {
+		if (this.autoDeleteEnabled) {
+			this.stopAutoDelete();
+		} else {
+			this.startAutoDelete();
+		}
+	}
 
-  startMines() {
-    this.minesEnabled = true;
-    this.updateUIState();
-    this.clickMinesLoop();
-  }
+	startSupplies() {
+		this.suppliesEnabled = true;
+		setStorage('Diaphantium.clickSuppliesState', true);
+		this.updateUIState();
+		this.clickSuppliesLoop();
+	}
 
-  stopMines() {
-    this.minesEnabled = false;
-    this.updateUIState();
-  }
+	stopSupplies() {
+		this.suppliesEnabled = false;
+		setStorage('Diaphantium.clickSuppliesState', false);
+		this.updateUIState();
+	}
 
-  startAntiAfk() {
-    this.antiAfkEnabled = true;
-    setStorage('Diaphantium.antiAfkState', true);
-    this.updateUIState();
-    this.antiAfkLoop();
-  }
+	startMines() {
+		this.minesEnabled = true;
+		this.updateUIState();
+		this.clickMinesLoop();
+	}
 
-  stopAntiAfk() {
-    this.antiAfkEnabled = false;
-    setStorage('Diaphantium.antiAfkState', false);
-    this.updateUIState();
-  }
+	stopMines() {
+		this.minesEnabled = false;
+		this.updateUIState();
+	}
 
-  startAutoDelete() {
-    this.autoDeleteEnabled = true;
-    setStorage('Diaphantium.autoDeleteState', true);
-    this.updateUIState();
-    this.autoDeleteLoop();
-  }
+	startAntiAfk() {
+		this.antiAfkEnabled = true;
+		setStorage('Diaphantium.antiAfkState', true);
+		this.updateUIState();
+		this.antiAfkLoop();
+	}
 
-  stopAutoDelete() {
-    this.autoDeleteEnabled = false;
-    setStorage('Diaphantium.autoDeleteState', false);
-    this.updateUIState();
-  }
+	stopAntiAfk() {
+		this.antiAfkEnabled = false;
+		setStorage('Diaphantium.antiAfkState', false);
+		this.updateUIState();
+	}
 
-  updateUIState() {
-    // Update checkbox
-    const checkbox = $('.checkbox.supplies');
-    if (checkbox) {
-      checkbox.checked = this.suppliesEnabled;
-    }
+	startAutoDelete() {
+		this.autoDeleteEnabled = true;
+		setStorage('Diaphantium.autoDeleteState', true);
+		this.updateUIState();
+		this.autoDeleteLoop();
+	}
 
-    // Update anti-AFK checkbox
-    const antiAfkCheckbox = $('.checkbox.anti_afk');
-    if (antiAfkCheckbox) {
-      antiAfkCheckbox.checked = this.antiAfkEnabled;
-    }
+	stopAutoDelete() {
+		this.autoDeleteEnabled = false;
+		setStorage('Diaphantium.autoDeleteState', false);
+		this.updateUIState();
+	}
 
-    // Update auto-delete checkbox
-    const autoDeleteCheckbox = $('.checkbox.auto_delete');
-    if (autoDeleteCheckbox) {
-      autoDeleteCheckbox.checked = this.autoDeleteEnabled;
-    }
+	updateUIState() {
+		// Update checkbox
+		const checkbox = $('.checkbox.supplies');
+		if (checkbox) {
+			checkbox.checked = this.suppliesEnabled;
+		}
 
-    // Update mobile icon (supplies)
-    const suppliesIcon = $('.diaphantium_mobile.icon.supplies[author="OrakomoRi"]');
-    if (suppliesIcon) {
-      if (this.suppliesEnabled) {
-        suppliesIcon.classList.add('active');
-      } else {
-        suppliesIcon.classList.remove('active');
-      }
-    }
+		// Update anti-AFK checkbox
+		const antiAfkCheckbox = $('.checkbox.anti_afk');
+		if (antiAfkCheckbox) {
+			antiAfkCheckbox.checked = this.antiAfkEnabled;
+		}
 
-    // Update mobile icon (mines)
-    const minesIcon = $('.diaphantium_mobile.icon.mines[author="OrakomoRi"]');
-    if (minesIcon) {
-      if (this.minesEnabled) {
-        minesIcon.classList.add('active');
-      } else {
-        minesIcon.classList.remove('active');
-      }
-    }
-  }
+		// Update auto-delete checkbox
+		const autoDeleteCheckbox = $('.checkbox.auto_delete');
+		if (autoDeleteCheckbox) {
+			autoDeleteCheckbox.checked = this.autoDeleteEnabled;
+		}
 
-  clickSuppliesLoop() {
-    if (!this.suppliesEnabled) return;
+		// Update mobile icon (supplies)
+		const suppliesIcon = $('.diaphantium_mobile.icon.supplies[author="OrakomoRi"]');
+		if (suppliesIcon) {
+			if (this.suppliesEnabled) {
+				suppliesIcon.classList.add('active');
+			} else {
+				suppliesIcon.classList.remove('active');
+			}
+		}
 
-    this.updateKeys();
-    this.keys.forEach(key => this.simulateKey(key));
-    
-    requestAnimationFrame(() => this.clickSuppliesLoop());
-  }
+		// Update mobile icon (mines)
+		const minesIcon = $('.diaphantium_mobile.icon.mines[author="OrakomoRi"]');
+		if (minesIcon) {
+			if (this.minesEnabled) {
+				minesIcon.classList.add('active');
+			} else {
+				minesIcon.classList.remove('active');
+			}
+		}
+	}
 
-  clickMinesLoop() {
-    if (!this.minesEnabled) return;
+	clickSuppliesLoop() {
+		if (!this.suppliesEnabled) return;
 
-    this.simulateKey('5');
-    
-    const delay = getStorage('Diaphantium.mine_delay')?.[0] || 100;
-    setTimeout(() => this.clickMinesLoop(), delay);
-  }
+		this.updateKeys();
+		this.keys.forEach(key => this.simulateKey(key));
 
-  antiAfkLoop() {
-    if (!this.antiAfkEnabled) return;
+		requestAnimationFrame(() => this.clickSuppliesLoop());
+	}
 
-    // Переключаем между ArrowLeft и ArrowRight
-    const key = this.antiAfkToggle ? 'ArrowLeft' : 'ArrowRight';
-    this.antiAfkToggle = !this.antiAfkToggle;
-    
-    this.simulateArrowKey(key);
-    
-    // Интервал 2 секунды между нажатиями
-    setTimeout(() => this.antiAfkLoop(), 2000);
-  }
+	clickMinesLoop() {
+		if (!this.minesEnabled) return;
 
-  autoDeleteLoop() {
-    if (!this.autoDeleteEnabled) return;
+		this.simulateKey('5');
 
-    this.simulateDeleteKey();
-    
-    requestAnimationFrame(() => this.autoDeleteLoop());
-  }
+		const delay = getStorage('Diaphantium.mine_delay')?.[0] || 100;
+		setTimeout(() => this.clickMinesLoop(), delay);
+	}
 
-  updateKeys() {
-    this.keys = [];
-    const values = getStorage('Diaphantium.clickValues') || [];
-    values.forEach(item => {
-      if (item.value === 'on') {
-        this.keys.push(item.key);
-      }
-    });
-  }
+	antiAfkLoop() {
+		if (!this.antiAfkEnabled) return;
 
-  simulateKey(key) {
-    const down = new KeyboardEvent('keydown', {
-      bubbles: true,
-      cancelable: true,
-      key,
-      code: `Digit${key}`,
-      keyCode: key.charCodeAt(0),
-      which: key.charCodeAt(0)
-    });
+		// Toggle between ArrowLeft and ArrowRight each time
+		this.antiAfkToggle = !this.antiAfkToggle;
+		const key = this.antiAfkToggle ? 'ArrowLeft' : 'ArrowRight';
 
-    const up = new KeyboardEvent('keyup', {
-      bubbles: true,
-      cancelable: true,
-      key,
-      code: `Digit${key}`,
-      keyCode: key.charCodeAt(0),
-      which: key.charCodeAt(0)
-    });
+		// Hold key for a very short time (50-100 ms)
+		this.simulateArrowKeyDown(key);
+		const holdTime = 50 + Math.floor(Math.random() * 51); // 50-100 ms
+		setTimeout(() => {
+			this.simulateArrowKeyUp(key);
+		}, holdTime);
 
-    document.dispatchEvent(down);
-    document.dispatchEvent(up);
-  }
+		// Next press after 0.8-1.5 seconds
+		const nextDelay = 800 + Math.floor(Math.random() * 701); // 800-1500 ms
+		setTimeout(() => this.antiAfkLoop(), nextDelay);
+	}
 
-  simulateArrowKey(key) {
-    const keyMap = {
-      'ArrowLeft': 37,
-      'ArrowRight': 39
-    };
+	autoDeleteLoop() {
+		if (!this.autoDeleteEnabled) return;
 
-    const down = new KeyboardEvent('keydown', {
-      bubbles: true,
-      cancelable: true,
-      key,
-      code: key,
-      keyCode: keyMap[key],
-      which: keyMap[key]
-    });
+		this.simulateDeleteKey();
 
-    const up = new KeyboardEvent('keyup', {
-      bubbles: true,
-      cancelable: true,
-      key,
-      code: key,
-      keyCode: keyMap[key],
-      which: keyMap[key]
-    });
+		requestAnimationFrame(() => this.autoDeleteLoop());
+	}
 
-    document.dispatchEvent(down);
-    document.dispatchEvent(up);
-  }
+	updateKeys() {
+		this.keys = [];
+		const values = getStorage('Diaphantium.clickValues') || [];
+		values.forEach(item => {
+			if (item.value === 'on') {
+				this.keys.push(item.key);
+			}
+		});
+	}
 
-  simulateDeleteKey() {
-    const down = new KeyboardEvent('keydown', {
-      bubbles: true,
-      cancelable: true,
-      key: 'Delete',
-      code: 'Delete',
-      keyCode: 46,
-      which: 46
-    });
+	simulateKey(key) {
+		const down = new KeyboardEvent('keydown', {
+			bubbles: true,
+			cancelable: true,
+			key,
+			code: `Digit${key}`,
+			keyCode: key.charCodeAt(0),
+			which: key.charCodeAt(0)
+		});
 
-    const up = new KeyboardEvent('keyup', {
-      bubbles: true,
-      cancelable: true,
-      key: 'Delete',
-      code: 'Delete',
-      keyCode: 46,
-      which: 46
-    });
+		const up = new KeyboardEvent('keyup', {
+			bubbles: true,
+			cancelable: true,
+			key,
+			code: `Digit${key}`,
+			keyCode: key.charCodeAt(0),
+			which: key.charCodeAt(0)
+		});
 
-    document.dispatchEvent(down);
-    document.dispatchEvent(up);
-  }
+		document.dispatchEvent(down);
+		document.dispatchEvent(up);
+	}
 
-  loadState() {
-    if (getStorage('Diaphantium.clickSuppliesState') === true) {
-      this.startSupplies();
-    }
-    if (getStorage('Diaphantium.antiAfkState') === true) {
-      this.startAntiAfk();
-    }
-    if (getStorage('Diaphantium.autoDeleteState') === true) {
-      this.startAutoDelete();
-    }
-  }
+	simulateArrowKey(key) {
+		const keyMap = {
+			'ArrowLeft': 37,
+			'ArrowRight': 39
+		};
+
+		const down = new KeyboardEvent('keydown', {
+			bubbles: true,
+			cancelable: true,
+			key,
+			code: key,
+			keyCode: keyMap[key],
+			which: keyMap[key]
+		});
+
+		const up = new KeyboardEvent('keyup', {
+			bubbles: true,
+			cancelable: true,
+			key,
+			code: key,
+			keyCode: keyMap[key],
+			which: keyMap[key]
+		});
+
+		document.dispatchEvent(down);
+		document.dispatchEvent(up);
+	}
+
+	simulateArrowKeyDown(key) {
+		const keyMap = {
+			'ArrowLeft': 37,
+			'ArrowRight': 39
+		};
+
+		const down = new KeyboardEvent('keydown', {
+			bubbles: true,
+			cancelable: true,
+			key,
+			code: key,
+			keyCode: keyMap[key],
+			which: keyMap[key]
+		});
+
+		document.dispatchEvent(down);
+	}
+
+	simulateArrowKeyUp(key) {
+		const keyMap = {
+			'ArrowLeft': 37,
+			'ArrowRight': 39
+		};
+
+		const up = new KeyboardEvent('keyup', {
+			bubbles: true,
+			cancelable: true,
+			key,
+			code: key,
+			keyCode: keyMap[key],
+			which: keyMap[key]
+		});
+
+		document.dispatchEvent(up);
+	}
+
+	simulateDeleteKey() {
+		const down = new KeyboardEvent('keydown', {
+			bubbles: true,
+			cancelable: true,
+			key: 'Delete',
+			code: 'Delete',
+			keyCode: 46,
+			which: 46
+		});
+
+		const up = new KeyboardEvent('keyup', {
+			bubbles: true,
+			cancelable: true,
+			key: 'Delete',
+			code: 'Delete',
+			keyCode: 46,
+			which: 46
+		});
+
+		document.dispatchEvent(down);
+		document.dispatchEvent(up);
+	}
+
+	loadState() {
+		if (getStorage('Diaphantium.clickSuppliesState') === true) {
+			this.startSupplies();
+		}
+		if (getStorage('Diaphantium.antiAfkState') === true) {
+			this.startAntiAfk();
+		}
+		if (getStorage('Diaphantium.autoDeleteState') === true) {
+			this.startAutoDelete();
+		}
+	}
 }
