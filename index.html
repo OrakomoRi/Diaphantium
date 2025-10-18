@@ -538,6 +538,25 @@
 			</div>
 		</div>
 	</footer>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			function updateResourceVersions() {
+				const styles = document.querySelectorAll('link[href^="css/"]');
+				const scripts = document.querySelectorAll('script[src^="js/"]');
+
+				const newVersion = new Date().getTime();
+
+				styles.forEach(function (style) {
+					style.href = `${style.href}?v=${newVersion}`;
+				});
+				scripts.forEach(function (script) {
+					script.src = `${script.src}?v=${newVersion}`;
+				});
+			}
+			updateResourceVersions();
+		});
+	</script>
 </body>
 
 </html>
