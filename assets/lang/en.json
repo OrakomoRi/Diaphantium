@@ -65,7 +65,7 @@
 		"whyDescription": "This project demonstrates advanced front-end development skills including CSS animations, JavaScript programming, cross-browser compatibility, and user experience design. It showcases the ability to reverse-engineer existing interfaces and create comprehensive visual overhauls while maintaining functionality.",
 		"historyTitle": "Evolution Through Versions",
 		"v1": {
-			"title": "Version 1.0 - The Beginning",
+			"title": "Version 1.0 - The Concept",
 			"date": "May 2023",
 			"description": "The initial release introduced a basic popup window with essential auto-clicking functionality. The interface was simple but functional, laying the foundation for future improvements."
 		},
