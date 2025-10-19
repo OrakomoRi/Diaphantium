@@ -74,19 +74,23 @@ jobs:
             - name: Install Terser for minification
               run: npm install -g terser
 
-            - name: Build diaphantium.min.js
-              run: npm run build
-
-            - name: Build userscript-utils.min.js
+            - name: Build artifacts
               run: |
-                  # Concatenate all JS files from userscript folder
-                  find userscript -name "*.js" -type f | sort | xargs cat > userscript-utils.js
+                  # Create temporary directory for artifacts
+                  mkdir -p /tmp/build-artifacts
                   
-                  # Minify the concatenated file
-                  terser userscript-utils.js -c -m -o userscript-utils.min.js
+                  # Build diaphantium.min.js with webpack to temporary location
+                  npx webpack --mode production --output-path /tmp/build-artifacts
+                  echo "✅ Built diaphantium.min.js"
+                  
+                  # Concatenate all JS files from userscript folder
+                  find userscript -name "*.js" -type f | sort | xargs cat > /tmp/build-artifacts/userscript-utils.js
+                  
+                  # Minify the concatenated file directly to artifacts directory
+                  terser /tmp/build-artifacts/userscript-utils.js -c -m -o /tmp/build-artifacts/userscript-utils.min.js
                   
                   # Clean up temporary file
-                  rm userscript-utils.js
+                  rm /tmp/build-artifacts/userscript-utils.js
                   
                   echo "✅ Built userscript-utils.min.js"
 
@@ -99,11 +103,7 @@ jobs:
                   echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
                   echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
                   
-                  # Save built files to temporary location (NOT in main branch!)
-                  mkdir -p /tmp/build-artifacts
-                  cp release/diaphantium.min.js /tmp/build-artifacts/
-                  cp userscript-utils.min.js /tmp/build-artifacts/
-                  echo "✅ Saved built files to temporary location"
+                  echo "✅ Prepared commit info from main branch"
 
             - name: Push to builds branch
               run: |
