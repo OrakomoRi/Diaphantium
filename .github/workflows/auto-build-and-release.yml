@@ -110,6 +110,12 @@ jobs:
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
                   
+                  # Clean working directory before switching branches
+                  # Remove node_modules and other build artifacts to prevent them from being committed
+                  rm -rf node_modules
+                  git clean -fd -e /tmp
+                  echo "✅ Cleaned working directory"
+                  
                   # Switch to builds branch or create it
                   git fetch origin builds 2>/dev/null || true
                   if git ls-remote --heads origin builds | grep -q builds; then
