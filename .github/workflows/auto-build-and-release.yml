@@ -90,20 +90,25 @@ jobs:
                   
                   echo "✅ Built userscript-utils.min.js"
 
-            - name: Create version directory and copy builds
+            - name: Prepare commit info
+              id: prepare_commit
               run: |
-                  mkdir -p "versions/$VERSION"
-                  cp release/diaphantium.min.js "versions/$VERSION/"
-                  cp userscript-utils.min.js "versions/$VERSION/"
-                  echo "✅ Built files for version $VERSION"
-
-            - name: Update stable.json (only for stable versions)
-              if: steps.check_stable.outputs.is_stable == 'true'
-              run: |
-                  # Get commit info from main branch
-                  git checkout main
+                  # Get commit info from main branch (before switching)
                   COMMIT_HASH=$(git rev-parse HEAD)
                   COMMIT_DATE=$(git log -1 --format=%ad --date=short)
+                  echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+                  echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
+                  
+                  # Save built files to temporary location (NOT in main branch!)
+                  mkdir -p /tmp/build-artifacts
+                  cp release/diaphantium.min.js /tmp/build-artifacts/
+                  cp userscript-utils.min.js /tmp/build-artifacts/
+                  echo "✅ Saved built files to temporary location"
+
+            - name: Push to builds branch
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
                   
                   # Switch to builds branch or create it
                   git fetch origin builds 2>/dev/null || true
@@ -114,58 +119,46 @@ jobs:
                     git rm -rf . 2>/dev/null || true
                   fi
                   
-                  # Create stable.json if it doesn't exist
-                  mkdir -p .
-                  if [ ! -f stable.json ]; then
-                    echo '{"versions":[]}' > stable.json
-                  fi
+                  # Create versions directory ONLY in builds branch
+                  mkdir -p "versions/$VERSION"
                   
-                  # Check if this version already exists in stable.json
-                  if ! grep -q "\"version\": \"$VERSION\"" stable.json 2>/dev/null; then
-                    # Add new stable version using jq
-                    # Link points to userscript via jsDelivr CDN
-                    jq --arg version "$VERSION" \
-                       --arg date "$COMMIT_DATE" \
-                       --arg hash "$COMMIT_HASH" \
-                       --arg link "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@$COMMIT_HASH/release/diaphantium.user.js" \
-                       '.versions += [{"version": $version, "date": $date, "hash": $hash, "link": $link}]' \
-                       stable.json > stable_tmp.json
-                    mv stable_tmp.json stable.json
+                  # Copy built files from temporary location
+                  cp /tmp/build-artifacts/diaphantium.min.js "versions/$VERSION/"
+                  cp /tmp/build-artifacts/userscript-utils.min.js "versions/$VERSION/"
+                  echo "✅ Copied built files to versions/$VERSION"
+                  
+                  # Update stable.json if this is a stable version
+                  if [ "${{ steps.check_stable.outputs.is_stable }}" == "true" ]; then
+                    # Create stable.json if it doesn't exist
+                    if [ ! -f stable.json ]; then
+                      echo '{"versions":[]}' > stable.json
+                    fi
                     
-                    echo "✅ Added version $VERSION to stable.json"
-                  else
-                    echo "ℹ️ Version $VERSION already exists in stable.json"
-                  fi
-
-            - name: Push to builds branch
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  
-                  # Ensure we're on builds branch
-                  git fetch origin builds 2>/dev/null || true
-                  if git ls-remote --heads origin builds | grep -q builds; then
-                    git checkout builds
-                  else
-                    git checkout --orphan builds
-                    git rm -rf . 2>/dev/null || true
+                    # Check if this version already exists in stable.json
+                    if ! grep -q "\"version\": \"$VERSION\"" stable.json 2>/dev/null; then
+                      # Add new stable version using jq
+                      jq --arg version "$VERSION" \
+                         --arg date "$COMMIT_DATE" \
+                         --arg hash "$COMMIT_HASH" \
+                         --arg link "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@$COMMIT_HASH/release/diaphantium.user.js" \
+                         '.versions += [{"version": $version, "date": $date, "hash": $hash, "link": $link}]' \
+                         stable.json > stable_tmp.json
+                      mv stable_tmp.json stable.json
+                      
+                      echo "✅ Added version $VERSION to stable.json"
+                    else
+                      echo "ℹ️ Version $VERSION already exists in stable.json"
+                    fi
                   fi
                   
-                  # Copy built files from main
-                  git checkout main -- versions
-                  
-                  # Copy stable.json if it was updated
-                  if [ -f stable.json ]; then
-                    git add stable.json
-                  fi
-                  
-                  git add "versions/$VERSION"
+                  # Add all changes
+                  git add -A
                   
                   # Create commit message
                   if [ "${{ steps.check_stable.outputs.is_stable }}" == "true" ]; then
-                    echo -e "$VERSION\nbuild: release artifacts (stable)" > commit-msg.txt
+                    echo -e "$VERSION\n\nbuild: release artifacts (stable)" > commit-msg.txt
                   else
-                    echo -e "$VERSION\nbuild: release artifacts" > commit-msg.txt
+                    echo -e "$VERSION\n\nbuild: release artifacts" > commit-msg.txt
                   fi
                   
                   git commit -F commit-msg.txt || echo "No changes to commit"
