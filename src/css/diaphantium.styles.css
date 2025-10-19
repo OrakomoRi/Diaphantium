@@ -19,6 +19,8 @@ body.diaphantium-popup-open {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	--diaphantium-item-side-padding: .5em;
 }
 
 /* Popup window styles */
@@ -376,7 +378,10 @@ body.diaphantium-popup-open {
 
 /* Inner of supplies container (buttons with supplies icons) */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .subinner {
+	width: 100%;
 	display: flex;
+	align-items: center;
+	justify-content: center;
 	gap: 1em;
 	padding: .5em 0;
 }
@@ -449,7 +454,7 @@ body.diaphantium-popup-open {
 /* Checkbox container for supplies clicker state */
 .popup_container.diaphantium[author="OrakomoRi"] .click_enable {
 	align-self: stretch;
-	padding: .75em 0;
+	padding: .75em var(--diaphantium-item-side-padding);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .click_enable .label {
@@ -472,7 +477,7 @@ body.diaphantium-popup-open {
 
 /* Mine delay container */
 .popup_container.diaphantium[author="OrakomoRi"] .mine_delay {
-	padding: .75em 0 0 0;
+	padding: .75em var(--diaphantium-item-side-padding) 0 var(--diaphantium-item-side-padding);
 	align-self: stretch;
 }
 
@@ -497,12 +502,11 @@ body.diaphantium-popup-open {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: .75em 0;
+	padding: .75em var(--diaphantium-item-side-padding);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .miscellaneous_toggle .label {
 	width: 100%;
-	max-width: 15em;
 	margin: 0;
 }
 
@@ -532,14 +536,13 @@ body.diaphantium-popup-open {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: .75em 0;
+	padding: .75em var(--diaphantium-item-side-padding);
 	width: 100%;
 	box-sizing: border-box;
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .appearance_toggle .label {
 	width: 100%;
-	max-width: 15em;
 	margin: 0;
 }
 
@@ -559,7 +562,7 @@ body.diaphantium-popup-open {
 	align-items: center;
 	justify-content: flex-start;
 	gap: .75em;
-	padding: .75em 0;
+	padding: .75em var(--diaphantium-item-side-padding);
 }
 
 /* Refresh hotkey button */
