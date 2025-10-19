@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.0-alpha.3
+// @version			5.0.0-alpha.4
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -9,11 +9,10 @@
 
 // @icon			https://i.imgur.com/QhCfrV5.png
 
-// @require			https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js
-
 // @updateURL		https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js
 // @downloadURL		https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js
 
+// @connect			orakomori.github.io
 // @connect			raw.githubusercontent.com
 // @connect			cdn.jsdelivr.net
 
@@ -23,8 +22,6 @@
 // @grant			GM_getValue
 // @grant			GM_setValue
 // @grant			GM_openInTab
-
-// @require			https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.min.js
 
 // @require			https://cdn.jsdelivr.net/npm/sweetalert2@11
 // @require			https://cdn.jsdelivr.net/gh/OrakomoRi/CompareVersions@main/JS/compareversions.min.js
@@ -39,17 +36,24 @@
 	/**
 	 * Configs
 	 * 
-	 * @param {Boolean} updateCheck - Checks for userscript updates
+	 * @param {boolean} updateCheck - Checks for userscript updates
 	 * 
-	 * @param {Array} customModal - Enable custom modal
+	 * @param {object} customModal - Enable custom modal
 	 * Uses SweetAlert2 library (https://cdn.jsdelivr.net/npm/sweetalert2@11) for the modal
-	 * @param {Boolean} customModal.enable - When set to false, the default modal will be used
-	 * @param {*} customModal.timer - Can be set (number | false): used to set the time
+	 * @param {boolean} customModal.enable - When set to false, the default modal will be used
+	 * @param {number|false} customModal.timer - Can be set (number | false): used to set the time
 	 * the custom modal should wait for response untill it closes
 	 * 
-	 * @param {Boolean} hasIgnoredUpdate - Used for the updater
+	 * @param {object} script - Script metadata
+	 * @param {string} script.version - Version of the main userscript
+	 * @param {string} script.name - Name of the main userscript
+	 * @param {string} script.mainJS - Main JS content loaded from builds
+	 * @param {string} script.utilsJS - Utils JS content loaded from builds
 	 * 
-	 * @param {String} GITHUB_SCRIPT_URL - Link to the script to update
+	 * @param {string} GITHUB_SCRIPT_URL - Link to the script to update
+	 * @param {string} STABLE_JSON_URL - Link to the JSON with stable versions and their links
+	 * 
+	 * @type {Logger} - Instance of the Logger class used for structured logging
 	*/
 	
 	const updateCheck = true;
@@ -59,80 +63,167 @@
 		timer: 5000,
 	};
 
+	const script = {
+		version: GM_info.script.version,
+		name: GM_info.script.name,
+		mainJS: null,
+		utilsJS: null,
+	};
+
 	const GITHUB_SCRIPT_URL = GM_info.script.updateURL;
+	const STABLE_JSON_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/stable.json?v=${script.version}`;
+	
+	let logger = null; // Will be initialized after loading utils
 
 
 	// ======== CODE ========
 
 	/**
+	 * Fetches a resource from a given URL
+	 *
+	 * @param {string} url - The URL of the resource to fetch
+	 * @param {'text'|'json'} [format='text'] - The format to return the resource in
+	 * @returns {Promise<string|Object>} - Resolves with the resource content in the specified format
+	 */
+	async function fetchResource(url, format = 'text') {
+		return new Promise((resolve, reject) => {
+			GM_xmlhttpRequest({
+				method: 'GET',
+				url,
+				onload: (response) => {
+					if (response.status === 200) {
+						if (format === 'json') {
+							try {
+								const jsonData = JSON.parse(response.responseText);
+								if (typeof jsonData !== 'object' || jsonData === null) {
+									throw new Error('Parsed JSON is not an object');
+								}
+								resolve(jsonData);
+							} catch (error) {
+								if (logger) {
+									logger.log(`Failed to parse JSON from ${url}: ${error.message}`, 'error');
+								}
+								reject(new Error(`Failed to parse JSON from ${url}: ${error.message}`));
+							}
+						} else {
+							resolve(response.responseText);
+						}
+					} else {
+						if (logger) {
+							logger.log(`Failed to fetch resource from ${url} (${response.status})`, 'error');
+						}
+						reject(new Error(`Failed to fetch resource from ${url}`));
+					}
+				},
+				onerror: (error) => reject(error),
+			});
+		});
+	}
+
+	/**
 	 * Function to check if the script is updated 
-	*/
+	 */
 	function checkForUpdates() {
 		GM_xmlhttpRequest({
 			method: 'GET',
 			url: GITHUB_SCRIPT_URL,
 			onload: function(response) {
+				if (response.status !== 200) {
+					if (logger) {
+						logger.log(`Failed to fetch GitHub script: ${response.status}`, 'error');
+					}
+					return;
+				}
+
 				// Script from GitHub
 				const data = response.responseText;
-
 				// Try to extract version from the script on GitHub
-				const match = data.match(/@version\s+([\w.-]+)/);
+				const match = data.match(/@version\s+([\w.+-]+)/);
 				if (!match) {
-					console.log(`========\n${GM_info.script.name}\nUnable to extract version from the GitHub script.\n========`);
+					if (logger) {
+						logger.log(`Unable to extract version from the GitHub script.`, 'error');
+					}
 					return;
 				}
 
 				// Version on GitHub
 				const githubVersion = match[1];
-				// Current version
-				const currentVersion = GM_info.script.version;
-
 				// Compare versions
-				const compareResult = compareVersions(githubVersion, currentVersion);
+				const compareResult = compareVersions(githubVersion, script.version);
 
-				console.log(`========\n${GM_info.script.name}\n`);
-				
-				switch (compareResult) {
-					case 1:
-						console.log(`A new version is available. Please update your script.\n`);
-						console.log(`GitHub × Your: ${githubVersion} × ${currentVersion}`);
-						promptUpdate(githubVersion);
-						break;
-					case 0:
-						console.log(`You are using the latest stable version.`);
-						break;
-					case -1:
-						console.log(`You are using a version newer than the one on GitHub.`);
-						break;
-					case -2:
-						console.log(`Error comparing versions.`);
-						break;
+				if (logger) {
+					logger.logVersionComparison(compareResult, script.version, githubVersion);
 				}
 
-				console.log(`Your: ${currentVersion} --- GitHub: ${githubVersion}`);
-				console.log(`\n========`);
+				if (compareResult === 1) {
+					findLatestStableVersion();
+				}
 			},
 			onerror: function(error) {
-				console.error('Failed to check for updates:', error);
+				if (logger) {
+					logger.log(`Failed to check for updates: ${error}`, 'error');
+				}
 			}
 		});
 	}
 
-	function promptUpdate(newVersion) {
+	/**
+	 * Find the latest version
+	 * 
+	 * @param {array} versions - Array of stable versions
+	 * @returns {Object|null} - The object representing the latest version, or `null` if the array is empty or invalid
+	 */
+	function getLatestVersion(versions) {
+		if (!Array.isArray(versions) || versions.length === 0) return null;
+
+		return versions.reduce((latest, current) =>
+			compareVersions(current.version, latest.version) > 0 ? current : latest
+		);
+	}
+
+	/**
+	 * Check for updates by parsing stable.json with multiple versions
+	 */
+	async function findLatestStableVersion() {
+		try {
+			const stableData = await fetchResource(STABLE_JSON_URL, 'json');
+			const latestVersionData = getLatestVersion(stableData.versions);
+			const { version: latestVersion, link: latestLink } = latestVersionData || {};
+
+			if (latestVersionData && compareVersions(latestVersion, script.version) === 1) {
+				promptUpdate(latestVersion, latestLink);
+			} else {
+				if (logger) {
+					logger.log(`${script.name.toUpperCase()}: No valid stable versions found.`, 'warn');
+				}
+			}
+		} catch (error) {
+			if (logger) {
+				logger.log(`${script.name.toUpperCase()}: Failed to fetch stable versions.\n${error}`, 'error');
+			}
+		}
+	}
+
+	/**
+	 * Prompts the user to update to a new version using a modal or confirm dialog
+	 *
+	 * @param {string} newVersion - The new version available for update
+	 * @param {string} downloadUrl - The URL to download the new version (userscript URL)
+	 */
+	function promptUpdate(newVersion, downloadUrl) {
 		const skippedVersion = GM_getValue('skippedVersion', '');
 		if (skippedVersion === newVersion) return;
 
 		if (customModal.enable) {
 			const style = document.createElement('style');
-			style.textContent = '.swal2-container { z-index: 8888; } .swal2-container h1, .swal2-container h2, .swal2-container h3, .swal2-container h4, .swal2-container span, .swal2-container p { color: #000000; } ';
+			style.textContent = '.swal2-container { z-index: 8888; }';
 			document.head.appendChild(style);
 
 			Swal.fire({
 				position: 'top-end',
 				backdrop: false,
-				color: "#000000",
-				background: "#ffffff",
-				title: `${GM_info.script.name}: new version is available!`,
+				theme: 'dark',
+				title: `${script.name}: new version is available!`,
 				text: `Do you want to update to version ${newVersion}?`,
 				icon: 'info',
 				showCancelButton: true,
@@ -154,13 +245,76 @@
 				}
 			});
 		} else {
-			var result = window.confirm(`${GM_info.script.name}: A new version is available. Please update your script.`);
-
-			if (result) {
+			if (confirm(`${script.name}: A new stable version is available. Update now?`)) {
 				GM_openInTab(GITHUB_SCRIPT_URL, { active: true });
 			}
 		}
 	}
 
-	if (updateCheck) checkForUpdates();
+	/**
+	 * Load main script resources from builds
+	 */
+	async function loadResources() {
+		try {
+			const cachedVersion = GM_getValue('DiaphantiumVersion', '');
+			const isSameVersion = cachedVersion === script.version;
+
+			if (isSameVersion) {
+				// Load from cache
+				if (logger) logger.log(`Loading resources from cache.`, 'info');
+				script.utilsJS = GM_getValue('DiaphantiumUtilsJS', null);
+				script.mainJS = GM_getValue('DiaphantiumMainJS', null);
+			} else {
+				// Fetch from CDN
+				if (logger) logger.log(`Fetching resources from CDN.`, 'info');
+				
+				const UTILS_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${script.version}/userscript-utils.min.js`;
+				const MAIN_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${script.version}/diaphantium.min.js`;
+
+				script.utilsJS = await fetchResource(UTILS_JS_URL);
+				script.mainJS = await fetchResource(MAIN_JS_URL);
+
+				// Cache the resources
+				GM_setValue('DiaphantiumUtilsJS', script.utilsJS);
+				GM_setValue('DiaphantiumMainJS', script.mainJS);
+				GM_setValue('DiaphantiumVersion', script.version);
+
+				if (logger) logger.log(`Resources cached.`, 'success');
+			}
+
+			// Inject utils first (contains Logger)
+			if (script.utilsJS) {
+				const utilsScript = document.createElement('script');
+				utilsScript.textContent = script.utilsJS;
+				(document.head || document.documentElement).appendChild(utilsScript);
+
+				// Initialize logger after utils are loaded
+				if (typeof Logger !== 'undefined') {
+					logger = new Logger(script.name);
+					// logger.enableLogging(); // Uncomment for debugging
+				}
+			}
+
+			// Inject main script
+			if (script.mainJS) {
+				const mainScript = document.createElement('script');
+				mainScript.textContent = script.mainJS;
+				(document.head || document.documentElement).appendChild(mainScript);
+				
+				if (logger) logger.log(`Main script injected successfully.`, 'success');
+			}
+
+		} catch (error) {
+			console.error(`${script.name}: Error loading resources:`, error);
+		}
+	}
+
+	// Main execution
+	(async () => {
+		await loadResources();
+		
+		if (updateCheck) {
+			checkForUpdates();
+		}
+	})();
 })();

@@ -71,14 +71,31 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Install Terser for minification
+              run: npm install -g terser
+
             - name: Build diaphantium.min.js
               run: npm run build
 
-            - name: Create version directory and copy build
+            - name: Build userscript-utils.min.js
+              run: |
+                  # Concatenate all JS files from userscript folder
+                  find userscript -name "*.js" -type f | sort | xargs cat > userscript-utils.js
+                  
+                  # Minify the concatenated file
+                  terser userscript-utils.js -c -m -o userscript-utils.min.js
+                  
+                  # Clean up temporary file
+                  rm userscript-utils.js
+                  
+                  echo "✅ Built userscript-utils.min.js"
+
+            - name: Create version directory and copy builds
               run: |
                   mkdir -p "versions/$VERSION"
                   cp release/diaphantium.min.js "versions/$VERSION/"
-                  echo "✅ Built diaphantium.min.js for version $VERSION"
+                  cp userscript-utils.min.js "versions/$VERSION/"
+                  echo "✅ Built files for version $VERSION"
 
             - name: Update stable.json (only for stable versions)
               if: steps.check_stable.outputs.is_stable == 'true'
@@ -106,10 +123,11 @@ jobs:
                   # Check if this version already exists in stable.json
                   if ! grep -q "\"version\": \"$VERSION\"" stable.json 2>/dev/null; then
                     # Add new stable version using jq
+                    # Link points to userscript via jsDelivr CDN
                     jq --arg version "$VERSION" \
                        --arg date "$COMMIT_DATE" \
                        --arg hash "$COMMIT_HASH" \
-                       --arg link "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@$COMMIT_HASH/versions/$VERSION/diaphantium.min.js" \
+                       --arg link "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@$COMMIT_HASH/release/diaphantium.user.js" \
                        '.versions += [{"version": $version, "date": $date, "hash": $hash, "link": $link}]' \
                        stable.json > stable_tmp.json
                     mv stable_tmp.json stable.json

@@ -9,7 +9,7 @@ export default class Clicker {
 		this.antiAfkEnabled = false;
 		this.autoDeleteEnabled = false;
 		this.keys = [];
-		this.antiAfkToggle = true; // для переключения между ArrowLeft и ArrowRight
+		this.antiAfkToggle = true;
 
 		this.init();
 	}
