@@ -1,5 +1,11 @@
 /* MAIN */
 
+/* Block page scroll when popup is open */
+html.diaphantium-popup-open,
+body.diaphantium-popup-open {
+	overflow: hidden !important;
+}
+
 /* Popup container (overlay) */
 .popup_container.diaphantium[author="OrakomoRi"] {
 	position: fixed;
@@ -21,15 +27,17 @@
 	position: absolute;
 	display: flex;
 	width: 30em;
-	height: 20em;
-	border-radius: .25em;
+	height: 24em;
+	border-radius: .6em;
 	padding: 1em 2.5em 1em .5em;
 	gap: 2em;
 	background: var(--diaphantium-background);
 	-webkit-backdrop-filter: blur(var(--diaphantium-blur));
 	backdrop-filter: blur(var(--diaphantium-blur));
-	border: .1em solid rgba(255, 255, 255, .25);
-	box-shadow: 0 0 2em 0 rgba(255, 255, 255, .2);
+	border: .1em solid rgba(255, 255, 255, .3);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, .4), 
+	            0 0 0 1px rgba(255, 255, 255, .1) inset,
+	            0 0 2em 0 rgba(255, 255, 255, .15);
 	color: rgb(255, 255, 255);
 	z-index: 889; /* z-index that is +1 to overlay container z-index */
 	user-select: none;
@@ -41,7 +49,7 @@
 	display: none;
 	flex-direction: column;
 	align-items: center;
-	gap: 1em;
+	gap: .75em;
 	flex-grow: 1;
 	cursor: default;
 	padding: 0.5em;
@@ -57,12 +65,12 @@
 .popup_container.diaphantium[author="OrakomoRi"] .close {
 	all: unset;
 	position: absolute;
-	top: .5em;
-	right: .5em;
+	top: .7em;
+	right: .7em;
 	cursor: pointer;
-	color: rgba(255, 255, 255, .6);
-	height: 2.5em;
-	width: 2.5em;
+	color: rgba(255, 255, 255, .5);
+	height: 2.2em;
+	width: 2.2em;
 	transition: all var(--diaphantium-transition);
 	user-select: none;
 	z-index: 890;
@@ -70,13 +78,22 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	border-radius: .2em;
+	border-radius: .35em;
+	border: 1px solid rgba(255, 255, 255, .1);
+	background: rgba(255, 255, 255, .03);
 }
 
 /* Close button hover behaviour */
 .popup_container.diaphantium[author="OrakomoRi"] .close:hover {
-	color: var(--diaphantium-inactive);
-	background-color: rgba(255, 255, 255, .1);
+	color: rgb(255, 255, 255);
+	background-color: rgba(221, 81, 81, .3);
+	border-color: rgba(221, 81, 81, .5);
+	box-shadow: 0 0 12px rgba(221, 81, 81, .2);
+	transform: rotate(90deg);
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .close:active {
+	transform: rotate(90deg) scale(0.95);
 }
 
 /* SVG inside close button */
@@ -96,17 +113,25 @@
 	align-items: center;
 	justify-content: center;
 	font-size: 1.5em;
-	font-weight: bold;
+	font-weight: 700;
+	letter-spacing: .02em;
+	text-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+	background: linear-gradient(135deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .75));
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+	margin-bottom: -.25em;
 }
 
 /* Inner of any content page */
 .popup_container.diaphantium[author="OrakomoRi"] .inner {
 	all: unset;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 1em;
+	gap: .65em;
 	flex-grow: 1;
 	padding: .5em 1em;
 	overflow: hidden;
@@ -116,48 +141,45 @@
 /* Subheaders */
 .popup_container.diaphantium[author="OrakomoRi"] .subheader {
 	all: unset;
-	font-size: 1.2em;
-	font-weight: bold;
+	font-size: .85em;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: .08em;
+	color: rgba(255, 255, 255, .5);
+	margin-bottom: .75em;
+	padding-bottom: .5em;
+	border-bottom: 1px solid rgba(255, 255, 255, .15);
+	width: 100%;
+	text-align: center;
+}
+
+/* Divider element */
+.popup_container.diaphantium[author="OrakomoRi"] .divider {
+	width: 100%;
+	height: 1px;
+	background: rgba(255, 255, 255, .1);
+	margin: 0;
 }
 
 /* Container of scrollable content */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable {
 	all: unset;
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 1em;
+	gap: .65em;
 	overflow-x: hidden;
 	overflow-y: auto;
 	flex: 1;
 	min-height: 0;
+	padding-right: .5em;
 }
 
 /* Direct children of scrollable */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable > * {
 	width: 100%;
-}
-
-/* Custom scrollbar (works only in browsers that use webkit engine) */
-.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar {
-	width: .4em;
-	display: block;
-}
-
-.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-track {
-	background: rgba(255, 255, 255, .05);
-	border-radius: .2em;
-}
-
-.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-thumb {
-	background-color: rgba(255, 255, 255, .2);
-	border-radius: .2em;
-	transition: background-color var(--diaphantium-transition);
-}
-
-.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-thumb:hover {
-	background-color: rgb(255, 255, 255);
 }
 
 /* Labels (input + text) */
@@ -166,30 +188,33 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: .75em;
+	gap: 1em;
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .inner .label p {
 	all: unset;
-	font-size: .9em;
+	font-size: .95em;
 	display: inline;
 	margin: 0;
+	font-weight: 500;
+	letter-spacing: .01em;
 }
 
 /* Text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input {
-	padding: .1em .2em;
+	padding: .4em .6em;
 	background-color: rgba(0, 0, 0, .3);
 	color: rgb(255, 255, 255);
 	text-align: center;
 	border: .1em solid rgba(255, 255, 255, .15);
 	font-size: 1em;
-	border-radius: .25em;
+	border-radius: .35em;
 	transition: all var(--diaphantium-transition);
 	cursor: text;
 	user-select: text;
 	display: inline-block;
 	font-family: inherit;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
 }
 
 /* Custom toggle switch checkbox */
@@ -199,51 +224,60 @@
 	-moz-appearance: none;
 	appearance: none;
 	position: relative;
-	width: 3em;
-	height: 1.5em;
-	background-color: rgba(255, 255, 255, .1);
-	border: .1em solid rgba(255, 255, 255, .2);
-	border-radius: 1em;
+	width: 3.2em;
+	height: 1.7em;
+	background-color: rgba(255, 255, 255, .08);
+	border: .1em solid rgba(255, 255, 255, .15);
+	border-radius: 1.5em;
 	cursor: pointer;
-	transition: all var(--diaphantium-transition);
+	transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
 	display: inline-block;
 	vertical-align: middle;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox::before {
 	content: "";
 	position: absolute;
-	top: .15em;
-	left: .15em;
-	width: 1.1em;
-	height: 1.1em;
+	top: .2em;
+	left: .2em;
+	width: 1.2em;
+	height: 1.2em;
 	border-radius: 50%;
-	background-color: rgba(255, 255, 255, .4);
-	transition: all var(--diaphantium-transition);
-	box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
+	background-color: rgba(255, 255, 255, .5);
+	transition: all .4s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:checked {
-	background-color: rgba(255, 255, 255, .4);
-	border-color: rgb(255, 255, 255);
+	background: linear-gradient(135deg, rgba(97, 181, 255, .3), rgba(81, 221, 97, .3));
+	border-color: rgba(81, 221, 97, .6);
+	box-shadow: 0 0 12px rgba(81, 221, 97, .2), inset 0 1px 3px rgba(0, 0, 0, .2);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:checked::before {
-	left: calc(100% - 1.25em);
-	background-color: rgb(255, 255, 255);
+	left: calc(100% - 1.4em);
+	background: linear-gradient(135deg, rgb(255, 255, 255), rgba(81, 221, 97, .8));
+	box-shadow: 0 2px 8px rgba(81, 221, 97, .5);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:hover {
-	border-color: rgba(255, 255, 255, .5);
+	border-color: rgba(255, 255, 255, .3);
+	background-color: rgba(255, 255, 255, .12);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:checked:hover {
-	filter: brightness(1.1);
+	filter: brightness(1.15);
+	box-shadow: 0 0 16px rgba(81, 221, 97, .3), inset 0 1px 3px rgba(0, 0, 0, .2);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:disabled {
 	opacity: 0.5;
 	cursor: not-allowed;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox:active::before {
+	width: 1.4em;
 }
 
 
@@ -264,7 +298,7 @@
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item {
 	all: unset;
 	position: relative;
-	border-radius: .3em;
+	border-radius: .4em;
 	padding: .5em;
 	cursor: pointer;
 	width: 2.5em;
@@ -274,6 +308,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	border: 1px solid rgba(255, 255, 255, .1);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item::before {
@@ -283,10 +318,11 @@
 	left: 0;
 	bottom: 0;
 	right: 0;
-	border-radius: .3em;
+	border-radius: .4em;
 	z-index: -1;
-	opacity: .25;
+	opacity: .2;
 	transition: all var(--diaphantium-transition);
+	background: rgba(255, 255, 255, .05);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item svg {
@@ -298,19 +334,27 @@
 }
 
 /* Side navigation buttons hover & focus behaviour */
+.popup_container.diaphantium[author="OrakomoRi"] .navigation .item:hover {
+	border-color: rgba(255, 255, 255, .2);
+}
+
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item:hover::before,
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item:focus::before {
-	background-color: rgb(255, 255, 255);
+	background-color: rgba(255, 255, 255, .15);
+	opacity: .3;
 }
 
 /* Side navigation selected page button */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item.active {
 	pointer-events: none;
 	color: rgb(255, 255, 255);
+	border-color: rgba(255, 255, 255, .4);
+	box-shadow: 0 0 12px rgba(255, 255, 255, .2);
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item.active::before {
-	background-color: rgb(255, 255, 255);
+	background: linear-gradient(135deg, rgba(97, 181, 255, .3), rgba(255, 255, 255, .2));
+	opacity: .4;
 }
 
 
@@ -322,26 +366,45 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 1em;
+	gap: .75em;
 	font-size: 1em;
 	font-weight: bold;
+	padding: .75em 0;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 /* Inner of supplies container (buttons with supplies icons) */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .subinner {
 	display: flex;
 	gap: 1em;
+	padding: .5em 0;
 }
 
 /* Single supply button (icon) */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply {
-	width: 1.5em;
-	height: 1.5em;
+	width: 2.2em;
+	height: 2.2em;
 	cursor: pointer;
-	fill: rgb(150, 150, 150);
+	fill: rgba(150, 150, 150, .7);
 	transition: all var(--diaphantium-transition);
 	user-select: none;
 	display: inline-block;
+	padding: .3em;
+	border-radius: .3em;
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, .15);
+	box-sizing: content-box;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .supplies .supply:hover {
+	background: rgba(255, 255, 255, .05);
+	border-color: rgba(255, 255, 255, .3);
+	transform: scale(1.05);
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .supplies .supply:active {
+	transform: scale(0.98);
 }
 
 /* Behaviour for each icon (all colors was taken from the game) */
@@ -357,41 +420,72 @@
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply[data-key="4"]:hover {
 	fill: rgb(164, 164, 72);
 }
+
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply[data-state="on"][data-key="1"] {
 	fill: rgb(191, 229, 0);
+	background: rgba(191, 229, 0, .15);
+	border-color: rgba(191, 229, 0, .4);
+	box-shadow: 0 0 12px rgba(191, 229, 0, .3), 0 2px 8px rgba(0, 0, 0, .3);
 }
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply[data-state="on"][data-key="2"] {
 	fill: rgb(234, 220, 153);
+	background: rgba(234, 220, 153, .15);
+	border-color: rgba(234, 220, 153, .4);
+	box-shadow: 0 0 12px rgba(234, 220, 153, .3), 0 2px 8px rgba(0, 0, 0, .3);
 }
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply[data-state="on"][data-key="3"] {
 	fill: rgb(255, 51, 51);
+	background: rgba(255, 51, 51, .15);
+	border-color: rgba(255, 51, 51, .4);
+	box-shadow: 0 0 12px rgba(255, 51, 51, .3), 0 2px 8px rgba(0, 0, 0, .3);
 }
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply[data-state="on"][data-key="4"] {
 	fill: rgb(255, 255, 0);
+	background: rgba(255, 255, 0, .15);
+	border-color: rgba(255, 255, 0, .4);
+	box-shadow: 0 0 12px rgba(255, 255, 0, .3), 0 2px 8px rgba(0, 0, 0, .3);
 }
 
 /* Checkbox container for supplies clicker state */
 .popup_container.diaphantium[author="OrakomoRi"] .click_enable {
-	align-self: center;
+	align-self: stretch;
+	padding: .75em 0;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .click_enable .label {
+	margin: 0;
 }
 
 /* Focused text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input:focus {
 	border-color: rgb(255, 255, 255);
-	background-color: rgba(0, 0, 0, .4);
+	background-color: rgba(0, 0, 0, .5);
 	outline: none;
+	box-shadow: 0 0 0 3px rgba(255, 255, 255, .1), inset 0 1px 3px rgba(0, 0, 0, .3);
 }
 
 /* Hover text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input:hover:not(:focus) {
-	border-color: rgba(255, 255, 255, .25);
+	border-color: rgba(255, 255, 255, .3);
 	background-color: rgba(0, 0, 0, .35);
+}
+
+/* Mine delay container */
+.popup_container.diaphantium[author="OrakomoRi"] .mine_delay {
+	padding: .75em 0 0 0;
+	align-self: stretch;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .mine_delay .label {
+	margin: 0;
 }
 
 /* Mine delay input */
 .popup_container.diaphantium[author="OrakomoRi"] .mine_delay .text_input.delay {
 	width: 5em;
 	min-width: 5em;
+	font-weight: 600;
+	font-size: 1.05em;
 }
 
 
@@ -403,12 +497,13 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	padding: .5em 0;
+	padding: .75em 0;
 }
 
 .popup_container.diaphantium[author="OrakomoRi"] .miscellaneous_toggle .label {
 	width: 100%;
 	max-width: 15em;
+	margin: 0;
 }
 
 
@@ -417,9 +512,35 @@
 
 /* Inner of settings container */
 .popup_container.diaphantium[author="OrakomoRi"] .content[data-tab="settings"] .subinner {
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	gap: .5em;
+}
+
+/* Appearance settings container */
+.popup_container.diaphantium[author="OrakomoRi"] .content[data-tab="settings"] .appearance_settings {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 0;
+}
+
+/* Appearance toggle container */
+.popup_container.diaphantium[author="OrakomoRi"] .appearance_toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: .75em 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .appearance_toggle .label {
+	width: 100%;
+	max-width: 15em;
+	margin: 0;
 }
 
 /* Hotkeys container on settings page */
@@ -428,15 +549,17 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: 1.5em;
+	gap: 0;
+	padding: .75em 0;
 }
 
 /* Hotkey block line */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .hotkey_block {
 	display: flex;
 	align-items: center;
-	gap: .5em;
-	padding: .2em 1em;
+	justify-content: flex-start;
+	gap: .75em;
+	padding: .75em 0;
 }
 
 /* Refresh hotkey button */
@@ -446,12 +569,21 @@
 	fill: rgba(255, 255, 255, .4);
 	cursor: pointer;
 	user-select: none;
-	transition: fill var(--diaphantium-transition);
+	transition: all var(--diaphantium-transition);
 	display: inline-block;
+	padding: .3em;
+	border-radius: .3em;
+	background: rgba(255, 255, 255, .05);
 }
 /* Refresh hotkey button on hover */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey:hover {
 	fill: rgb(255, 255, 255);
+	background: rgba(255, 255, 255, .1);
+	transform: rotate(180deg);
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey:active {
+	transform: rotate(180deg) scale(0.95);
 }
 /* Refresh hotkey icon */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey svg {
@@ -493,7 +625,9 @@
 /* Wrong hotkey input */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input.wrong_input {
 	user-select: none;
+	color: rgb(255, 100, 100);
 	border-color: rgb(185, 60, 60);
+	box-shadow: 0 0 12px rgba(255, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, .3);
 	animation: shake .2s cubic-bezier(.36, .07, .19, .97) both;
 }
 
@@ -513,4 +647,65 @@
 	40%, 60% {
 		transform: translate3d(.4rem, 0, 0);
 	}
+}
+
+/* Smooth entrance animation */
+@keyframes popupFadeIn {
+	from {
+		opacity: 0;
+		transform: scale(0.95) translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1) translateY(0);
+	}
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup {
+	animation: popupFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Scrollbar improvements */
+.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(128, 128, 128, .3) transparent;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar {
+	width: .3em;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-track {
+	background: transparent;
+	margin: .25em;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-thumb {
+	background: rgba(128, 128, 128, .3);
+	border-radius: .15em;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable::-webkit-scrollbar-thumb:hover {
+	background: rgba(128, 128, 128, .5);
+}
+
+/* Popup signature (footer) */
+.popup_container.diaphantium[author="OrakomoRi"] .popup_signature {
+	position: absolute;
+	bottom: .5em;
+	right: .75em;
+	font-size: .7em;
+	color: rgba(128, 128, 128, .55);
+	user-select: none;
+	pointer-events: none;
+	letter-spacing: .02em;
+	font-weight: 400;
+	opacity: 1;
+	transition: opacity var(--diaphantium-transition);
+}
+
+/* Hidden signature */
+.popup_container.diaphantium[author="OrakomoRi"] .popup_signature.hidden {
+	opacity: 0;
+	pointer-events: none;
 }

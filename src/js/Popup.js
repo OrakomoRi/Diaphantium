@@ -82,6 +82,7 @@ export default class Popup {
 		this.setupMineDelay();
 		this.setupMiscellaneous();
 		this.setupHotkeys();
+		this.setupSignature();
 
 		// Store pointer lock (only if element is valid and in DOM)
 		this.lockedElement = document.pointerLockElement;
@@ -94,6 +95,9 @@ export default class Popup {
 				}
 			}
 		}
+
+		// Block page scroll
+		this.blockPageScroll();
 
 		this.isOpen = true;
 	}
@@ -131,6 +135,9 @@ export default class Popup {
 				console.debug('Pointer lock restoration failed:', e.message);
 			}
 		}
+
+		// Unblock page scroll
+		this.unblockPageScroll();
 
 		this.isOpen = false;
 	}
@@ -448,5 +455,53 @@ export default class Popup {
 				input.classList.add('warning');
 			}
 		});
+	}
+
+	// Setup signature visibility toggle
+	setupSignature() {
+		const popup = $(this.selector);
+		if (!popup) return;
+
+		const checkbox = $('.checkbox.show_signature', popup);
+		const signature = $('.popup_signature', popup.parentElement);
+
+		if (!checkbox || !signature) return;
+
+		// Load saved state (default: true - shown)
+		const showSignature = getStorage('Diaphantium.showSignature');
+		if (showSignature === false) {
+			checkbox.checked = false;
+			signature.classList.add('hidden');
+		} else {
+			checkbox.checked = true;
+			signature.classList.remove('hidden');
+		}
+
+		// Toggle on change
+		on(checkbox, 'change', () => {
+			const isChecked = checkbox.checked;
+			
+			if (isChecked) {
+				signature.classList.remove('hidden');
+			} else {
+				signature.classList.add('hidden');
+			}
+
+			setStorage('Diaphantium.showSignature', isChecked);
+		});
+	}
+
+	// Block page scroll when popup is open
+	blockPageScroll() {
+		// Add class to block scroll on both html and body
+		document.documentElement.classList.add('diaphantium-popup-open');
+		document.body.classList.add('diaphantium-popup-open');
+	}
+
+	// Unblock page scroll when popup is closed
+	unblockPageScroll() {
+		// Remove class from both html and body
+		document.documentElement.classList.remove('diaphantium-popup-open');
+		document.body.classList.remove('diaphantium-popup-open');
 	}
 }
