@@ -8,8 +8,9 @@ module.exports = (env, argv) => {
 		entry: './src/js/index.js',
 		output: {
 			filename: 'diaphantium.min.js',
-			path: path.resolve(__dirname, 'release'),
-			clean: {
+			// Dev builds go to /dist (not committed), production to /release (committed)
+			path: isDevelopment ? path.resolve(__dirname, 'dist') : path.resolve(__dirname, 'release'),
+			clean: isDevelopment ? true : {
 				keep: /diaphantium\.user\.js$/,
 			},
 		},
