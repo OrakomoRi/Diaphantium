@@ -21,6 +21,7 @@ class DiaphantiumWebsite {
 		this.loadHotkey();
 		await this.setupDownloadButtons();
 		this.setupDevButton();
+		await this.loadDiaphantiumScript();
 		this.initializeComponents();
 		this.setupAnimations();
 		console.log('✓ Diaphantium website loaded');
@@ -167,6 +168,41 @@ class DiaphantiumWebsite {
 	generateLatestDevUrl() {
 		const timestamp = new Date().getTime();
 		return `https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js?t=${timestamp}`;
+	}
+
+	async loadDiaphantiumScript() {
+		try {
+			const timestamp = new Date().getTime();
+			const response = await fetch(`https://raw.githubusercontent.com/OrakomoRi/Diaphantium/builds/stable.json?t=${timestamp}`);
+			
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+
+			if (data?.versions?.length > 0) {
+				const latestVersion = data.versions[data.versions.length - 1];
+				const script = document.createElement('script');
+				script.src = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${latestVersion.version}/diaphantium.min.js`;
+				script.onerror = () => {
+					console.error('Failed to load diaphantium.min.js from CDN');
+				};
+				document.head.appendChild(script);
+				console.log(`✓ Loaded diaphantium.min.js v${latestVersion.version}`);
+			} else {
+				throw new Error('No stable versions found');
+			}
+		} catch (error) {
+			console.warn('Failed to load latest stable diaphantium.min.js:', error);
+			// Fallback - load from local release folder if exists
+			const script = document.createElement('script');
+			script.src = './release/diaphantium.min.js';
+			script.onerror = () => {
+				console.error('Failed to load diaphantium.min.js fallback');
+			};
+			document.head.appendChild(script);
+		}
 	}
 
 	async setupDownloadButtons() {
