@@ -84,6 +84,11 @@
 			"date": "March 2024",
 			"description": "Complete redesign with mobile support, dynamic hotkey management, and improved UI. Added ability to remove hotkeys, duplicate hotkey detection with visual warnings, and comprehensive changelog tracking."
 		},
+		"v5": {
+			"title": "Version 5.0 - Reborn from Ashes",
+			"date": "October 2025",
+			"description": "Revolutionary rewrite with modern website, automated builds, and professional GitHub workflow. Complete project restructure with Webpack bundling, internationalization support, and enhanced user experience. New landing page with interactive demos and comprehensive documentation."
+		},
 		"techStack": "Built With",
 		"openSource": "100% Open Source",
 		"mitLicense": "MIT License",
