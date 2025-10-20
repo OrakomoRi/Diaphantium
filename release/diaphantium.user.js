@@ -69,7 +69,7 @@
 	};
 
 	const GITHUB_SCRIPT_URL = GM_info.script.updateURL;
-	const STABLE_JSON_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/stable.json?v=${script.version}`;
+	const STABLE_JSON_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/stable.json`;
 	
 	const logger = new Logger(script.name);
 	// logger.enableLogging();
