@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.0-alpha.10
+// @version			5.0.0-alpha.11
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -110,10 +110,12 @@
 							resolve(response.responseText);
 						}
 					} else {
-						if (logger) {
+						// Don't log 404 for stable.json - it's expected for dev versions
+						const isStableJson = url.includes('stable.json');
+						if (logger && !(isStableJson && response.status === 404)) {
 							logger.log(`Failed to fetch resource from ${url} (${response.status})`, 'error');
 						}
-						reject(new Error(`Failed to fetch resource from ${url}`));
+						reject(new Error(`Failed to fetch resource from ${url} (${response.status})`));
 					}
 				},
 				onerror: (error) => reject(error),
@@ -199,7 +201,9 @@
 				}
 			}
 		} catch (error) {
-			if (logger) {
+			// Don't log error for dev versions - stable.json might not exist yet
+			const isDevVersion = /[-+]/.test(script.version);
+			if (logger && !isDevVersion) {
 				logger.log(`${script.name.toUpperCase()}: Failed to fetch stable versions.\n${error}`, 'error');
 			}
 		}
@@ -282,6 +286,7 @@
 			// Inject main script
 			if (script.mainJS) {
 				const mainScript = document.createElement('script');
+				mainScript.setAttribute('data-resource', 'DiaphantiumJS');
 				mainScript.textContent = script.mainJS;
 				(document.body || document.documentElement).appendChild(mainScript);
 				
