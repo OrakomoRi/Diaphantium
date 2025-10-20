@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.0-alpha.9
+// @version			5.0.0-alpha.10
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -16,15 +16,17 @@
 // @connect			raw.githubusercontent.com
 // @connect			cdn.jsdelivr.net
 
+// @require			https://cdn.jsdelivr.net/npm/sweetalert2@11
+// @require			https://cdn.jsdelivr.net/gh/OrakomoRi/CompareVersions@main/JS/compareversions.min.js
+
+// @require			https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/userscript/Logger.js
+
 // @run-at			document-start
 // @grant			GM_xmlhttpRequest
 // @grant			unsafeWindow
 // @grant			GM_getValue
 // @grant			GM_setValue
 // @grant			GM_openInTab
-
-// @require			https://cdn.jsdelivr.net/npm/sweetalert2@11
-// @require			https://cdn.jsdelivr.net/gh/OrakomoRi/CompareVersions@main/JS/compareversions.min.js
 
 // ==/UserScript==
 
@@ -48,7 +50,6 @@
 	 * @param {string} script.version - Version of the main userscript
 	 * @param {string} script.name - Name of the main userscript
 	 * @param {string} script.mainJS - Main JS content loaded from builds
-	 * @param {string} script.utilsJS - Utils JS content loaded from builds
 	 * 
 	 * @param {string} GITHUB_SCRIPT_URL - Link to the script to update
 	 * @param {string} STABLE_JSON_URL - Link to the JSON with stable versions and their links
@@ -67,13 +68,13 @@
 		version: GM_info.script.version,
 		name: GM_info.script.name,
 		mainJS: null,
-		utilsJS: null,
 	};
 
 	const GITHUB_SCRIPT_URL = GM_info.script.updateURL;
 	const STABLE_JSON_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/stable.json?v=${script.version}`;
 	
-	let logger = null; // Will be initialized after loading utils
+	const logger = new Logger(script.name);
+	// logger.enableLogging();
 
 
 	// ======== CODE ========
@@ -88,7 +89,7 @@
 	async function fetchResource(url, format = 'text') {
 		return new Promise((resolve, reject) => {
 			GM_xmlhttpRequest({
-				method: 'GET',
+				method: 'GET', 
 				url,
 				onload: (response) => {
 					if (response.status === 200) {
@@ -262,44 +263,27 @@
 			if (isSameVersion) {
 				// Load from cache
 				if (logger) logger.log(`Loading resources from cache.`, 'info');
-				script.utilsJS = GM_getValue('DiaphantiumUtilsJS', null);
 				script.mainJS = GM_getValue('DiaphantiumMainJS', null);
 			} else {
 				// Fetch from CDN
 				if (logger) logger.log(`Fetching resources from CDN.`, 'info');
 				
-				const UTILS_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${script.version}/userscript-utils.min.js`;
 				const MAIN_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${script.version}/diaphantium.min.js`;
 
-				script.utilsJS = await fetchResource(UTILS_JS_URL);
 				script.mainJS = await fetchResource(MAIN_JS_URL);
 
 				// Cache the resources
-				GM_setValue('DiaphantiumUtilsJS', script.utilsJS);
 				GM_setValue('DiaphantiumMainJS', script.mainJS);
 				GM_setValue('DiaphantiumVersion', script.version);
 
 				if (logger) logger.log(`Resources cached.`, 'success');
 			}
 
-			// Inject utils first (contains Logger)
-			if (script.utilsJS) {
-				const utilsScript = document.createElement('script');
-				utilsScript.textContent = script.utilsJS;
-				(document.head || document.documentElement).appendChild(utilsScript);
-
-				// Initialize logger after utils are loaded
-				if (typeof Logger !== 'undefined') {
-					logger = new Logger(script.name);
-					// logger.enableLogging(); // Uncomment for debugging
-				}
-			}
-
 			// Inject main script
 			if (script.mainJS) {
 				const mainScript = document.createElement('script');
 				mainScript.textContent = script.mainJS;
-				(document.head || document.documentElement).appendChild(mainScript);
+				(document.body || document.documentElement).appendChild(mainScript);
 				
 				if (logger) logger.log(`Main script injected successfully.`, 'success');
 			}

@@ -71,9 +71,6 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Install Terser for minification
-              run: npm install -g terser
-
             - name: Build artifacts
               run: |
                   # Create temporary directory for artifacts
@@ -82,17 +79,6 @@ jobs:
                   # Build diaphantium.min.js with webpack to temporary location
                   npx webpack --mode production --output-path /tmp/build-artifacts
                   echo "✅ Built diaphantium.min.js"
-                  
-                  # Concatenate all JS files from userscript folder
-                  find userscript -name "*.js" -type f | sort | xargs cat > /tmp/build-artifacts/userscript-utils.js
-                  
-                  # Minify the concatenated file directly to artifacts directory
-                  terser /tmp/build-artifacts/userscript-utils.js -c -m -o /tmp/build-artifacts/userscript-utils.min.js
-                  
-                  # Clean up temporary file
-                  rm /tmp/build-artifacts/userscript-utils.js
-                  
-                  echo "✅ Built userscript-utils.min.js"
 
             - name: Prepare commit info
               id: prepare_commit
@@ -130,7 +116,6 @@ jobs:
                   
                   # Copy built files from temporary location
                   cp /tmp/build-artifacts/diaphantium.min.js "versions/$VERSION/"
-                  cp /tmp/build-artifacts/userscript-utils.min.js "versions/$VERSION/"
                   echo "✅ Copied built files to versions/$VERSION"
                   
                   # Update stable.json if this is a stable version
