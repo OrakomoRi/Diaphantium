@@ -242,14 +242,14 @@
 				}
 			}).then((result) => {
 				if (result.isConfirmed) {
-					GM_openInTab(GITHUB_SCRIPT_URL, { active: true });
+					GM_openInTab(downloadUrl, { active: true });
 				} else if (result.isDenied) {
 					GM_setValue('skippedVersion', newVersion);
 				}
 			});
 		} else {
 			if (confirm(`${script.name}: A new stable version is available. Update now?`)) {
-				GM_openInTab(GITHUB_SCRIPT_URL, { active: true });
+				GM_openInTab(downloadUrl, { active: true });
 			}
 		}
 	}
