@@ -6,7 +6,7 @@
 
 Free open-source tool. Made with love :heart:
 
-The idea was to create a popup with a simple UI that would allow a continuous input on the desired keys.
+The idea was to create a popup with a simple UI that would allow a continuous input on the desired keys. Now evolved into a professional automation userscript for Tanki Online with customizable hotkeys, auto-clicking, and supply management. Features modern website, internationalization support, and automated builds.
 
 To find out compatibility, check [browser compatibility](#-browser-compatibility)
 
@@ -22,7 +22,7 @@ See the [changelog](CHANGELOG.md)
 
 1. Download [Tampermonkey](https://www.tampermonkey.net/)
 
-2. Add or update [script](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js) in Tampermonkey
+2. Add or update [script](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@f0c899ab84209fdc7465376aa39729f7cf8b09d8/release/diaphantium.user.js) in Tampermonkey
 
 ## :hash: Default Values
 
@@ -32,7 +32,7 @@ Default mines' delay (ms): ```100```
 
 ## :fire: Appearance
 
-![](./images/changelog/4.0.0/popup.png)
+![](./images/changelog/5.0.0/popup.png)
 
 ## :rocket: Browser Compatibility
 
@@ -70,8 +70,10 @@ Samsung Internet|15+
 - [HTML5](https://developer.mozilla.org/en-US/docs/Web/HTML)
 - [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS)
 - [JavaScript](https://www.javascript.com/)
+- [Webpack](https://webpack.js.org/)
 - [SweetAlert2](https://sweetalert2.github.io/)
 - [Ionicons](https://ionic.io/ionicons)
+- [BreeziumSelect](https://github.com/OrakomoRi/BreeziumSelect)
 
 ## :wave: Special Thanks
 

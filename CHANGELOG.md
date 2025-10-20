@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## 5.0.0 (20.10.2025)
+
+### Added
+
+- :tada: Complete project rewrite with modern website :tada:
+- Automated `GitHub Actions` for builds and releases
+- Webpack bundling for production
+- Interactive console demo on landing page
+- Download manager with auto-detection of latest stable version
+
+### Changed
+
+- Project structure from monolithic to modular architecture
+- Migrated to `ES6` modules
+- Updated to `Webpack 5`
+- Improved popup window `UI`/`UX`
+- Enhanced mobile responsiveness
+- Modernized `CSS` with custom properties
+
+### Fixed
+
+- Cross-browser inconsistencies
+- Performance optimizations
+- Memory leaks in event listeners
+
+### Removed
+
+- Mobile device support
+
+### Look of the popup window:
+
+![](./images/changelog/5.0.0/popup.png)
+
+---
+
 ## 4.0.2 (19.10.2024)
 
 ### Fixed
