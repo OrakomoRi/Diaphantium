@@ -1,0 +1,22 @@
+{
+	"versions": [
+		{
+			"version": "4.0.0",
+			"date": "2024-04-16",
+			"hash": "b31f9afb72a3243acc02a39ce364a4f7dc4297ae",
+			"link": "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@3ea3560fd6854a589b2d606ca65f820884b3f1d7/release/diaphantium.user.js"
+		},
+		{
+			"version": "4.0.1",
+			"date": "2024-06-07",
+			"hash": "bb45babe0a6b5bdbde06beaf73385527baaf4ffe",
+			"link": "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@bb45babe0a6b5bdbde06beaf73385527baaf4ffe/release/diaphantium.user.js"
+		},
+		{
+			"version": "4.0.2",
+			"date": "2024-10-23",
+			"hash": "b31f9afb72a3243acc02a39ce364a4f7dc4297ae",
+			"link": "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@b31f9afb72a3243acc02a39ce364a4f7dc4297ae/release/diaphantium.user.js"
+		}
+	]
+}
