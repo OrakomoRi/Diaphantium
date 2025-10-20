@@ -22,7 +22,7 @@ See the [changelog](CHANGELOG.md)
 
 1. Download [Tampermonkey](https://www.tampermonkey.net/)
 
-2. Add or update [script](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@f0c899ab84209fdc7465376aa39729f7cf8b09d8/release/diaphantium.user.js) in Tampermonkey
+2. Add or update [script](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@3a639420c6dc6d6c86bdd9439d283d90adebac9f/release/diaphantium.user.js) in Tampermonkey
 
 ## :hash: Default Values
 
