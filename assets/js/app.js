@@ -2,7 +2,6 @@ import { BackgroundAnimation } from './components/BackgroundAnimation.js';
 import { SmoothScroll } from './components/SmoothScroll.js';
 import { HeaderController } from './components/HeaderController.js';
 import { TerminalSimulator } from './components/TerminalSimulator.js';
-import { DownloadManager } from './components/DownloadManager.js';
 import I18n from '../libs/i18n/i18n.js';
 import I18nManager from './components/I18nManager.js';
 
@@ -20,6 +19,8 @@ class DiaphantiumWebsite {
 		await this.initI18n();
 		this.loadScriptVersion();
 		this.loadHotkey();
+		await this.setupDownloadButtons();
+		this.setupDevButton();
 		this.initializeComponents();
 		this.setupAnimations();
 		console.log('✓ Diaphantium website loaded');
@@ -139,6 +140,69 @@ class DiaphantiumWebsite {
 		}
 	}
 
+	async getLatestStableVersion() {
+		const timestamp = new Date().getTime();
+		const fallbackUrl = `https://orakomori.github.io/Diaphantium/release/diaphantium.user.js?t=${timestamp}`;
+
+		try {
+			const response = await fetch(`https://raw.githubusercontent.com/OrakomoRi/Diaphantium/builds/stable.json?t=${timestamp}`);
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+
+			if (data?.versions?.length > 0) {
+				const latestVersion = data.versions[data.versions.length - 1];
+				return latestVersion.link || fallbackUrl;
+			}
+		} catch (error) {
+			console.warn('Error fetching latest stable version:', error);
+		}
+
+		return fallbackUrl;
+	}
+
+	generateLatestDevUrl() {
+		const timestamp = new Date().getTime();
+		return `https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js?t=${timestamp}`;
+	}
+
+	async setupDownloadButtons() {
+		const downloadButtons = document.querySelectorAll('[data-download]');
+		
+		if (downloadButtons.length === 0) {
+			console.warn('No download buttons found');
+			return;
+		}
+
+		try {
+			const stableLink = await this.getLatestStableVersion();
+			
+			downloadButtons.forEach(button => {
+				button.href = stableLink;
+			});
+
+			console.log('✓ Download buttons configured with stable version');
+		} catch (error) {
+			console.error('Error setting up download buttons:', error);
+		}
+	}
+
+	setupDevButton() {
+		const devButton = document.querySelector('[data-dev-download]');
+		if (!devButton) return;
+
+		devButton.removeAttribute('href');
+		devButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			window.open(this.generateLatestDevUrl(), '_blank');
+		});
+
+		console.log('✓ Dev button configured');
+	}
+
 	loadHotkey() {
 		try {
 			const hotkeyData = localStorage.getItem('Diaphantium.hotkeys');
@@ -171,7 +235,6 @@ class DiaphantiumWebsite {
 		this.components.backgroundAnimation = new BackgroundAnimation();
 		this.components.smoothScroll = new SmoothScroll();
 		this.components.header = new HeaderController();
-		this.components.downloadManager = new DownloadManager();
 
 		const terminalElement = document.querySelector('.terminal');
 		if (terminalElement && this.components.i18n) {

@@ -52,6 +52,7 @@
 	transition: color var(--transition-fast);
 	font-size: var(--font-size-sm);
 	line-height: 1.5;
+	cursor: pointer;
 }
 
 .footer-link:hover {

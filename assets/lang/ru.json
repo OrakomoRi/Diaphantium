@@ -108,7 +108,8 @@
 		"resources": {
 			"title": "Ресурсы",
 			"documentation": "Документация",
-			"changelog": "История изменений"
+			"changelog": "История изменений",
+			"devVersion": "Dev-версия"
 		},
 		"troubleshooting": {
 			"title": "Помощь",

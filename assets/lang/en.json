@@ -108,7 +108,8 @@
 		"resources": {
 			"title": "Resources",
 			"documentation": "Documentation",
-			"changelog": "Changelog"
+			"changelog": "Changelog",
+			"devVersion": "Dev-version"
 		},
 		"troubleshooting": {
 			"title": "Troubleshooting",
