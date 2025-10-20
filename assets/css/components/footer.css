@@ -94,6 +94,9 @@
 }
 
 .footer-bottom p {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	margin-bottom: var(--spacing-xs);
 }
 
@@ -104,6 +107,11 @@
 
 .footer-bottom a:hover {
 	color: var(--color-primary-light);
+}
+
+.footer-bottom ion-icon {
+	color: var(--color-accent);
+	font-size: var(--font-size-lg);
 }
 
 @media (max-width: 768px) {
