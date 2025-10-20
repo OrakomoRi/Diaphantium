@@ -7,11 +7,20 @@ import '../css/diaphantium.reset.css';
 import '../css/diaphantium.variables.css';
 import '../css/diaphantium.styles.css';
 
-// Initialize application when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize function
+function initDiaphantium() {
 	const popup = new Popup();
 	const clicker = new Clicker(popup);
 	// Mobile support removed
 
 	console.log('🎮 Diaphantium initialized successfully!');
-});
+}
+
+// Initialize application when DOM is ready
+if (document.readyState === 'loading') {
+	// DOM is still loading, wait for DOMContentLoaded
+	document.addEventListener('DOMContentLoaded', initDiaphantium);
+} else {
+	// DOM is already loaded, initialize immediately
+	initDiaphantium();
+}

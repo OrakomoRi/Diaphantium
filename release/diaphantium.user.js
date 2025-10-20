@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.0-alpha.11
+// @version			5.0.0-alpha.12
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -29,8 +29,6 @@
 // @grant			GM_openInTab
 
 // ==/UserScript==
-
-// Other stuff
 
 (function() {
 	'use strict';
