@@ -242,11 +242,11 @@
 	}
 
 	.download-info {
-		flex-direction: column;
-		align-items: flex-start;
+		justify-content: center;
 	}
 
 	.download-filename {
 		font-size: var(--font-size-xs);
+		flex: none;
 	}
 }
