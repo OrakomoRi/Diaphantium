@@ -96,6 +96,14 @@ export default class Popup {
 			}
 		}
 
+		popup.on('focus', (e) => {
+			e.stopPropagation();
+		});
+
+		popup.on('keydown', (e) => {
+			e.stopPropagation();
+		});
+
 		// Block page scroll
 		this.blockPageScroll();
 
