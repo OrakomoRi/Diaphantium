@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.0+build.5
+// @version			5.0.0+build.6
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -9,8 +9,8 @@
 
 // @icon			https://i.imgur.com/QhCfrV5.png
 
-// @updateURL		https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js
-// @downloadURL		https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js
+// @updateURL		https://orakomori.github.io/Diaphantium/release/diaphantium.user.js
+// @downloadURL		https://orakomori.github.io/Diaphantium/release/diaphantium.user.js
 
 // @connect			orakomori.github.io
 // @connect			raw.githubusercontent.com
