@@ -39,30 +39,6 @@ jobs:
                     echo "ℹ️ Version $VERSION is not stable (dev/alpha/beta/rc)"
                   fi
 
-            - name: Check if build for this version already exists
-              id: check_build
-              run: |
-                  git fetch origin builds 2>/dev/null || echo "builds branch does not exist yet"
-                  
-                  if git ls-remote --heads origin builds | grep -q builds; then
-                    git checkout builds
-                    if [ -d "versions/$VERSION" ]; then
-                      echo "exists=true" >> $GITHUB_OUTPUT
-                      echo "Build for version $VERSION already exists, skipping."
-                      exit 0
-                    else
-                      echo "exists=false" >> $GITHUB_OUTPUT
-                    fi
-                    git checkout main
-                  else
-                    echo "exists=false" >> $GITHUB_OUTPUT
-                    echo "builds branch does not exist yet, will be created"
-                  fi
-
-            - name: Stop if build exists
-              if: steps.check_build.outputs.exists == 'true'
-              run: exit 0
-
             - name: Set up Node.js
               uses: actions/setup-node@v4
               with:
@@ -141,6 +117,43 @@ jobs:
                       echo "ℹ️ Version $VERSION already exists in stable.json"
                     fi
                   fi
+                  
+                  # Create vercel.json for deployment configuration
+                  cat > vercel.json << 'EOF'
+                  {
+                    "version": 2,
+                    "public": true,
+                    "headers": [
+                      {
+                        "source": "stable.json",
+                        "headers": [
+                          {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=0, must-revalidate"
+                          },
+                          {
+                            "key": "Access-Control-Allow-Origin",
+                            "value": "*"
+                          }
+                        ]
+                      },
+                      {
+                        "source": "versions/(.*)",
+                        "headers": [
+                          {
+                            "key": "Cache-Control",
+                            "value": "public, max-age=300, must-revalidate"
+                          },
+                          {
+                            "key": "Access-Control-Allow-Origin",
+                            "value": "*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                  EOF
+                  echo "✅ Created vercel.json"
                   
                   # Add all changes
                   git add -A

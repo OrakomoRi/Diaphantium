@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.0+build.2
+// @version			5.0.0+build.3
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -69,7 +69,7 @@
 	};
 
 	const GITHUB_SCRIPT_URL = GM_info.script.updateURL;
-	const STABLE_JSON_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/stable.json`;
+	const STABLE_JSON_URL = `https://diaphantium-builds.vercel.app/stable.json?v=${script.version}`;
 	
 	const logger = new Logger(script.name);
 	// logger.enableLogging();
@@ -270,7 +270,7 @@
 				// Fetch from CDN
 				if (logger) logger.log(`Fetching resources from CDN.`, 'info');
 				
-				const MAIN_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${script.version}/diaphantium.min.js`;
+				const MAIN_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${script.version}/diaphantium.min.js?t=${Date.now()}`;
 
 				script.mainJS = await fetchResource(MAIN_JS_URL);
 
