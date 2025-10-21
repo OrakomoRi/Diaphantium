@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.0+build.4
+// @version			5.0.0+build.5
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -15,7 +15,7 @@
 // @connect			orakomori.github.io
 // @connect			raw.githubusercontent.com
 // @connect			cdn.jsdelivr.net
-// @connect			*.vercel.app
+// @connect			diaphantium-builds.vercel.app
 
 // @require			https://cdn.jsdelivr.net/npm/sweetalert2@11
 // @require			https://cdn.jsdelivr.net/gh/OrakomoRi/CompareVersions@main/JS/compareversions.min.js
