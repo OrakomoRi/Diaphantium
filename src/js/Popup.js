@@ -96,11 +96,11 @@ export default class Popup {
 			}
 		}
 
-		popup.on('focus', (e) => {
+		on(popup, 'focus', (e) => {
 			e.stopPropagation();
 		});
 
-		popup.on('keydown', (e) => {
+		on(popup, 'keydown', (e) => {
 			e.stopPropagation();
 		});
 
