@@ -1,6 +1,20 @@
 # CHANGELOG
 
-## 5.0.0 (20.10.2025)
+## [5.0.1] - 2025-10-22
+
+### Changed
+
+- Migrated builds hosting from GitHub raw to Vercel for improved stability
+- Updated download URLs to use GitHub Pages
+- Improved CDN caching with cache-busting timestamps
+- Changelog formatting standardization
+
+### Fixed
+
+- Event propagation issues in popup window (focus and keydown)
+- Build workflow optimization (removed redundant checks)
+
+## [5.0.0] - 2025-10-20
 
 ### Added
 
@@ -33,17 +47,13 @@
 
 ![](./images/changelog/5.0.0/popup.png)
 
----
-
-## 4.0.2 (19.10.2024)
+## [4.0.2] - 2024-10-19
 
 ### Fixed
 
 - Behavior of mine delay input in a window that has some interactive canvas(es)
 
----
-
-## 4.0.1 (07.06.2024)
+## [4.0.1] - 2024-06-07
 
 ### Changed
 
@@ -57,9 +67,7 @@
 - Links for downloading and updating the script
 - Styles for sweetalert2
 
----
-
-## 4.0.0 (19.03.2024)
+## [4.0.0] - 2024-03-19
 
 ### Added
 
@@ -85,8 +93,14 @@
 ### Fixed
 
 - Modified mine delay check when closing popup. Now it should be fine!
-- The behavior of hotkeys when they are pressed inside some ```inputs```
+- The behavior of hotkeys when they are pressed inside some `inputs`
 - Bugs related to device's orientation change
+
+### Removed
+
+- Removed battle actions due to instability
+- Removed user nickname blur feature
+- Removed 'skip login' feature
 
 ### Look of the popup window on computers:
 
@@ -96,44 +110,45 @@
 
 ![](./images/changelog/4.0.0/mobile.png)
 
----
+## [3.0.0] - 2023-08-25
 
-## 3.0.0 - 3.x.x (25.08.2023)
+### Added
 
-More than 150 commits were pushed to git before the project was ready to take the next step into 3.x.x versions.
+- Tab with action buttons for selected battles to click in the battle automatically
+- User nickname blur feature
+- 'Skip login' feature to skip annoying login steps
+
+### Changed
+
+- Main window improved with enhanced UI
+
+### Fixed
+
+- Popup movement restrictions (previously only worked with colored rectangle)
 
 ### The main window was impoved one more time:
 
 ![](./images/changelog/3.0.0/popup.png)
 
-On the screenshot the three navigation buttons can be seen (left side). The middle button appeared only when user had selected battle in pro battles list. This button would lead the user to a tab where user would see action buttons. If the selected battle was a team battle on the tab were rendered three buttons: 'click alfa', 'click both' and 'clich bravo'. Alternatively, if the battle mode was DM (deathmatch) then only one button was rendered: 'click in'.
+## [2.0.0] - 2023-06-23
 
-It was deleted later on as it was too unstable in my opinion.
+### Added
 
-Also, in the settings tab 2 more features were added: user nickname blur and 'skip login' that skipped many annoying steps on the login stage.
-
----
-
-## 2.0.0 - 2.x.x (23.06.2023)
-
-After many patches and days of work the result was finally published on github. The popup had 2 tabs: main and settings.
+- Popup with 2 tabs: main and settings
+- Ability to move popup by the colored rectangle
+- Project functionality
 
 ### Main tab design:
 
 ![](./images/changelog/2.0.0/popup.png)
 
-It has many bugs and weaknesses, for example the popup could be moved on the screen only by colored rectangle on the top-left side of the window (pink on the screenshot). In the next 2 days I improved the code, so the user could move the popup by any part of the window except input fields.
+## [1.0.0] - 2023-05-25
 
----
+### Added
 
-## 1.0.0 - 1.x.x (25.05.2023)
-
-The idea was to create a popup which would have some useful functions.
+- Initial popup with useful functions
+- Basic project structure
 
 ### First take:
 
 ![](./images/changelog/1.0.0/popup.png)
-
-The project took almost a month of work untill I finished the first unstable release.
-
----
