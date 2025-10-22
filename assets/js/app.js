@@ -17,7 +17,7 @@ class DiaphantiumWebsite {
 		await this.waitForDOM();
 		await this.loadTranslationsConfig();
 		await this.initI18n();
-		this.loadScriptVersion();
+		await this.loadStableVersion();
 		this.loadHotkey();
 		await this.setupDownloadButtons();
 		this.setupDevButton();
@@ -121,23 +121,43 @@ class DiaphantiumWebsite {
 		console.log('Language switchers initialized with locale:', currentLang);
 	}
 
-	async loadScriptVersion() {
+	async loadStableVersion() {
 		try {
-			const response = await fetch('./release/diaphantium.user.js');
-			const text = await response.text();
-			// Match semantic versioning: major.minor.patch[-prerelease][+build]
-			const match = text.match(/@version\s+([\d.]+(?:-[\w.]+)?(?:\+[\w.]+)?)/);
-			if (match) {
-				const version = match[1];
+			const timestamp = new Date().getTime();
+			const response = await fetch(`https://diaphantium-builds.vercel.app/stable.json?t=${timestamp}`);
+			
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+
+			if (data?.versions?.length > 0) {
+				const latestStable = data.versions[data.versions.length - 1];
+				const version = latestStable.version;
 
 				// Update hero badge version
 				const heroVersion = document.querySelector('.hero-version');
 				if (heroVersion) {
 					heroVersion.textContent = version;
 				}
+				console.log('✓ Stable version loaded:', version);
+			} else {
+				throw new Error('No stable versions found');
 			}
 		} catch (e) {
-			console.warn('Failed to load script version:', e);
+			console.warn('Failed to load stable version:', e);
+			// Fallback to package.json version
+			this.loadFallbackVersion();
+		}
+	}
+
+	loadFallbackVersion() {
+		// Fallback: show version from package.json (hardcoded as it's a build-time constant)
+		const heroVersion = document.querySelector('.hero-version');
+		if (heroVersion) {
+			heroVersion.textContent = '-';
+			console.log('✓ Using fallback version: -');
 		}
 	}
 
