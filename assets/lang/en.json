@@ -114,7 +114,7 @@
 			"title": "Resources",
 			"documentation": "Documentation",
 			"changelog": "Changelog",
-			"devVersion": "Dev-version"
+			"devVersion": "Dev version"
 		},
 		"troubleshooting": {
 			"title": "Troubleshooting",

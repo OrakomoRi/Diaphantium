@@ -146,7 +146,7 @@ class DiaphantiumWebsite {
 		const fallbackUrl = `https://orakomori.github.io/Diaphantium/release/diaphantium.user.js?t=${timestamp}`;
 
 		try {
-			const response = await fetch(`https://raw.githubusercontent.com/OrakomoRi/Diaphantium/builds/stable.json?t=${timestamp}`);
+			const response = await fetch(`https://diaphantium-builds.vercel.app/stable.json?t=${timestamp}`);
 
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
@@ -167,7 +167,7 @@ class DiaphantiumWebsite {
 
 	generateLatestDevUrl() {
 		const timestamp = new Date().getTime();
-		return `https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js?t=${timestamp}`;
+		return `https://orakomori.github.io/Diaphantium/release/diaphantium.user.js?t=${timestamp}`;
 	}
 
 	async loadDiaphantiumScript() {
@@ -176,7 +176,7 @@ class DiaphantiumWebsite {
 		try {
 			const timestamp = new Date().getTime();
 			console.log('📡 Fetching stable.json from builds branch...');
-			const response = await fetch(`https://raw.githubusercontent.com/OrakomoRi/Diaphantium/builds/stable.json?t=${timestamp}`);
+			const response = await fetch(`https://diaphantium-builds.vercel.app/stable.json?t=${timestamp}`);
 			
 			if (!response.ok) {
 				throw new Error(`HTTP error! status: ${response.status}`);
