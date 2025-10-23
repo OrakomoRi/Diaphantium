@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.1+build.3
+// @version			5.0.1+build.4
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -66,7 +66,7 @@
 		mainJS: null,
 	};
 
-	const GITHUB_SCRIPT_URL = `${GM_info.script.updateURL}?t=${Date.now()}`;
+	const GITHUB_SCRIPT_URL = `https://orakomori.github.io/Diaphantium/release/diaphantium.user.js?v=${script.version}`;
 	const STABLE_JSON_URL = `https://diaphantium-builds.vercel.app/stable.json?v=${script.version}`;
 	
 	const logger = new Logger(script.name);
