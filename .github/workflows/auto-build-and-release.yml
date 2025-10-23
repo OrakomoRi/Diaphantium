@@ -181,7 +181,7 @@ jobs:
                       
                       **Download:**
                       - [diaphantium.user.js](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js)
-                      - [diaphantium.min.js](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@${{ github.sha }}/versions/${{ env.VERSION }}/diaphantium.min.js)
+                      - [diaphantium.min.js](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${{ env.VERSION }}/diaphantium.min.js)
                   files: |
                       versions/${{ env.VERSION }}/diaphantium.min.js
               env:
