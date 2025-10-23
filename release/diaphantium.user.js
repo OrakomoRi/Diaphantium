@@ -1,16 +1,13 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.1+build.1
+// @version			5.0.1+build.2
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
 // @match			https://*.tankionline.com/*
 
 // @icon			https://i.imgur.com/QhCfrV5.png
-
-// @updateURL		https://orakomori.github.io/Diaphantium/release/diaphantium.user.js
-// @downloadURL		https://orakomori.github.io/Diaphantium/release/diaphantium.user.js
 
 // @connect			orakomori.github.io
 // @connect			raw.githubusercontent.com
