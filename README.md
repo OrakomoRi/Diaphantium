@@ -14,10 +14,6 @@ Check the [demo website](https://orakomori.github.io/Diaphantium/)
 
 See the [changelog](CHANGELOG.md)
 
-```javascript
-/* WORK IN PROGRESS */
-```
-
 ## :bulb: Getting Started
 
 1. Download [Tampermonkey](https://www.tampermonkey.net/)
