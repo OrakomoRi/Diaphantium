@@ -73,7 +73,6 @@ Samsung Internet|15+
 - [Webpack](https://webpack.js.org/)
 - [SweetAlert2](https://sweetalert2.github.io/)
 - [Ionicons](https://ionic.io/ionicons)
-- [BreeziumSelect](https://github.com/OrakomoRi/BreeziumSelect)
 
 ## :wave: Special Thanks
 
