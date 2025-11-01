@@ -14,10 +14,6 @@ Check the [demo website](https://orakomori.github.io/Diaphantium/)
 
 See the [changelog](CHANGELOG.md)
 
-```javascript
-/* WORK IN PROGRESS */
-```
-
 ## :bulb: Getting Started
 
 1. Download [Tampermonkey](https://www.tampermonkey.net/)
@@ -73,7 +69,6 @@ Samsung Internet|15+
 - [Webpack](https://webpack.js.org/)
 - [SweetAlert2](https://sweetalert2.github.io/)
 - [Ionicons](https://ionic.io/ionicons)
-- [BreeziumSelect](https://github.com/OrakomoRi/BreeziumSelect)
 
 ## :wave: Special Thanks
 
