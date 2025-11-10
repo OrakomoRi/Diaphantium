@@ -51,12 +51,6 @@ class Logger {
 	 * @param {string} githubVersion - The latest version from GitHub.
 	 */
 	logVersionComparison(compareResult, currentVersion, githubVersion) {
-		let state = false;
-		if (!this.logging) {
-			this.logging = true;
-			state = true;
-		}
-		
 		switch (compareResult) {
 			case 1:
 				this.log(`A new version is available on GitHub: ${githubVersion}. Checking for stable version...`, 'info');
@@ -74,10 +68,6 @@ class Logger {
 				break;
 			default:
 				this.log(`Default case`);
-		}
-
-		if (state) {
-			this.logging = false;
 		}
 
 		this.log(`Your × GitHub:\n${currentVersion} × ${githubVersion}`, 'info');
