@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.1+build.5
+// @version			5.0.1+build.6
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -253,6 +253,16 @@
 	}
 
 	/**
+	 * Extract MAJOR.MINOR.PATCH from SemVer version
+	 * @param {string} version - Full SemVer version
+	 * @returns {string|null} - Base version (e.g., "5.0.1") or null if invalid
+	 */
+	function extractStableBase(version) {
+		const match = version.match(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)/);
+		return match ? match[0] : null;
+	}
+
+	/**
 	 * Load main script resources from builds
 	 */
 	async function loadResources() {
@@ -268,7 +278,13 @@
 				// Fetch from CDN
 				if (logger) logger.log(`Fetching resources from CDN.`, 'info');
 				
-				const MAIN_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${script.version}/diaphantium.min.js?t=${Date.now()}`;
+				// Extract stable base version (MAJOR.MINOR.PATCH)
+				const STABLE_BASE = extractStableBase(script.version);
+				
+				const MAIN_JS_URL = `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${STABLE_BASE}/${script.version}/diaphantium.min.js?t=${Date.now()}`;
+				
+				if (logger) logger.log(`Stable base: ${STABLE_BASE}`, 'info');
+				if (logger) logger.log(`Resolved JS path: ${MAIN_JS_URL}`, 'info');
 
 				script.mainJS = await fetchResource(MAIN_JS_URL);
 

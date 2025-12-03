@@ -24,6 +24,16 @@ jobs:
                   version=$(grep -oP '@version\s+\K[\w.+-]+' release/diaphantium.user.js)
                   echo "VERSION=$version" >> $GITHUB_ENV
                   echo "version=$version" >> $GITHUB_OUTPUT
+                  
+                  # Extract MAJOR.MINOR.PATCH using SemVer regex
+                  stable_base=$(echo "$version" | grep -oP '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)')
+                  if [ -z "$stable_base" ]; then
+                    echo "❌ Invalid SemVer format: $version"
+                    exit 1
+                  fi
+                  echo "STABLE_BASE=$stable_base" >> $GITHUB_ENV
+                  echo "stable_base=$stable_base" >> $GITHUB_OUTPUT
+                  echo "📦 Version: $version (base: $stable_base)"
 
             - name: Check if version is stable (SemVer)
               id: check_stable
@@ -87,12 +97,12 @@ jobs:
                     git rm -rf . 2>/dev/null || true
                   fi
                   
-                  # Create versions directory ONLY in builds branch
-                  mkdir -p "versions/$VERSION"
+                  # Create nested directory structure ONLY in builds branch
+                  mkdir -p "versions/$STABLE_BASE/$VERSION"
                   
                   # Copy built files from temporary location
-                  cp /tmp/build-artifacts/diaphantium.min.js "versions/$VERSION/"
-                  echo "✅ Copied built files to versions/$VERSION"
+                  cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"SE/$VERSION/"
+                  echo "✅ Copied built files to versions/$STABLE_BASE/$VERSION"
                   
                   # Update stable.json if this is a stable version
                   if [ "${{ steps.check_stable.outputs.is_stable }}" == "true" ]; then
@@ -181,8 +191,8 @@ jobs:
                       
                       **Download:**
                       - [diaphantium.user.js](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js)
-                      - [diaphantium.min.js](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${{ env.VERSION }}/diaphantium.min.js)
+                      - [diaphantium.min.js](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${{ env.STABLE_BASE }}/${{ env.VERSION }}/diaphantium.min.js)
                   files: |
-                      versions/${{ env.VERSION }}/diaphantium.min.js
+                      versions/${{ env.STABLE_BASE }}/${{ env.VERSION }}/diaphantium.min.js
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
