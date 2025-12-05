@@ -101,7 +101,7 @@ jobs:
                   mkdir -p "versions/$STABLE_BASE/$VERSION"
                   
                   # Copy built files from temporary location
-                  cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"SE/$VERSION/"
+                  cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"
                   echo "✅ Copied built files to versions/$STABLE_BASE/$VERSION"
                   
                   # Update stable.json if this is a stable version
