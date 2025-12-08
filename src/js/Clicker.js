@@ -4,12 +4,50 @@ import { $, on } from './utils.js';
 export default class Clicker {
 	constructor(popup) {
 		this.popup = popup;
-		this.suppliesEnabled = false;
-		this.minesEnabled = false;
-		this.antiAfkEnabled = false;
-		this.autoDeleteEnabled = false;
 		this.keys = [];
 		this.antiAfkToggle = true;
+
+		this.features = {
+			supplies: {
+				enabled: false,
+				storageKey: 'Diaphantium.clickSuppliesState',
+				action: () => {
+					this.updateKeys();
+					this.keys.forEach(key => this.simulateKeyPress(key));
+				},
+				scheduler: (fn) => requestAnimationFrame(fn)
+			},
+			mines: {
+				enabled: false,
+				storageKey: null,
+				action: () => this.simulateKeyPress('5'),
+				scheduler: (fn) => setTimeout(fn, getStorage('Diaphantium.mine_delay')?.[0] || 100)
+			},
+			antiAfk: {
+				enabled: false,
+				storageKey: 'Diaphantium.antiAfkState',
+				action: () => {
+					this.antiAfkToggle = !this.antiAfkToggle;
+					const key = this.antiAfkToggle ? 'ArrowLeft' : 'ArrowRight';
+					this.simulateKeyPress(key, { downOnly: true });
+					const holdTime = 50 + Math.floor(Math.random() * 51);
+					setTimeout(() => this.simulateKeyPress(key, { upOnly: true }), holdTime);
+				},
+				scheduler: (fn) => setTimeout(fn, 800 + Math.floor(Math.random() * 701))
+			},
+			autoDelete: {
+				enabled: false,
+				storageKey: 'Diaphantium.autoDeleteState',
+				action: () => this.simulateKeyPress('Delete'),
+				scheduler: (fn) => requestAnimationFrame(fn)
+			}
+		};
+
+		this.keyMap = {
+			'ArrowLeft': { code: 'ArrowLeft', keyCode: 37 },
+			'ArrowRight': { code: 'ArrowRight', keyCode: 39 },
+			'Delete': { code: 'Delete', keyCode: 46 }
+		};
 
 		this.init();
 	}
@@ -21,343 +59,125 @@ export default class Clicker {
 	}
 
 	setupHotkeys() {
+		const hotkeyMap = {
+			'Click supplies': 'supplies',
+			'Click mines': 'mines'
+		};
+
 		on(document, 'keydown', (e) => {
 			if (e.target.tagName === 'INPUT') return;
 
 			const hotkeys = getStorage('Diaphantium.hotkeys') || [];
 
-			// Supplies hotkey
-			const suppliesHotkey = hotkeys.find(h => h.action === 'Click supplies');
-			if (suppliesHotkey && e.code === suppliesHotkey.value) {
-				e.preventDefault();
-				this.toggleSupplies();
-			}
+			Object.entries(hotkeyMap).forEach(([action, feature]) => {
+				const hotkey = hotkeys.find(h => h.action === action);
+				if (hotkey && e.code === hotkey.value) {
+					e.preventDefault();
+					this.toggle(feature);
+				}
+			});
 
-			// Mines hotkey
-			const minesHotkey = hotkeys.find(h => h.action === 'Click mines');
-			if (minesHotkey && e.code === minesHotkey.value) {
-				e.preventDefault();
-				this.toggleMines();
-			}
-
-			// F5 reload
-			if (e.code === 'F5') {
-				location.reload();
-			}
+			if (e.code === 'F5') location.reload();
 		});
 	}
 
 	setupCheckboxListeners() {
-		// Listen for checkbox changes in popup
+		const checkboxMap = {
+			'.checkbox.supplies': 'supplies',
+			'.checkbox.anti_afk': 'antiAfk',
+			'.checkbox.auto_delete': 'autoDelete'
+		};
+
 		on(document, 'change', (e) => {
-			if (e.target.matches('.checkbox.supplies')) {
-				this.toggleSupplies();
-			}
-			if (e.target.matches('.checkbox.anti_afk')) {
-				this.toggleAntiAfk();
-			}
-			if (e.target.matches('.checkbox.auto_delete')) {
-				this.toggleAutoDelete();
-			}
+			Object.entries(checkboxMap).forEach(([selector, feature]) => {
+				if (e.target.matches(selector)) this.toggle(feature);
+			});
 		});
 	}
 
-	toggleSupplies() {
-		if (this.suppliesEnabled) {
-			this.stopSupplies();
-		} else {
-			this.startSupplies();
-		}
+	toggle(feature) {
+		this.features[feature].enabled ? this.stop(feature) : this.start(feature);
 	}
 
-	toggleMines() {
-		if (this.minesEnabled) {
-			this.stopMines();
-		} else {
-			this.startMines();
-		}
-	}
-
-	toggleAntiAfk() {
-		if (this.antiAfkEnabled) {
-			this.stopAntiAfk();
-		} else {
-			this.startAntiAfk();
-		}
-	}
-
-	toggleAutoDelete() {
-		if (this.autoDeleteEnabled) {
-			this.stopAutoDelete();
-		} else {
-			this.startAutoDelete();
-		}
-	}
-
-	startSupplies() {
-		this.suppliesEnabled = true;
-		setStorage('Diaphantium.clickSuppliesState', true);
+	start(feature) {
+		const feat = this.features[feature];
+		feat.enabled = true;
+		if (feat.storageKey) setStorage(feat.storageKey, true);
 		this.updateUIState();
-		this.clickSuppliesLoop();
+		this.runLoop(feature);
 	}
 
-	stopSupplies() {
-		this.suppliesEnabled = false;
-		setStorage('Diaphantium.clickSuppliesState', false);
+	stop(feature) {
+		const feat = this.features[feature];
+		feat.enabled = false;
+		if (feat.storageKey) setStorage(feat.storageKey, false);
 		this.updateUIState();
 	}
 
-	startMines() {
-		this.minesEnabled = true;
-		this.updateUIState();
-		this.clickMinesLoop();
-	}
-
-	stopMines() {
-		this.minesEnabled = false;
-		this.updateUIState();
-	}
-
-	startAntiAfk() {
-		this.antiAfkEnabled = true;
-		setStorage('Diaphantium.antiAfkState', true);
-		this.updateUIState();
-		this.antiAfkLoop();
-	}
-
-	stopAntiAfk() {
-		this.antiAfkEnabled = false;
-		setStorage('Diaphantium.antiAfkState', false);
-		this.updateUIState();
-	}
-
-	startAutoDelete() {
-		this.autoDeleteEnabled = true;
-		setStorage('Diaphantium.autoDeleteState', true);
-		this.updateUIState();
-		this.autoDeleteLoop();
-	}
-
-	stopAutoDelete() {
-		this.autoDeleteEnabled = false;
-		setStorage('Diaphantium.autoDeleteState', false);
-		this.updateUIState();
+	runLoop(feature) {
+		const feat = this.features[feature];
+		if (!feat.enabled) return;
+		feat.action();
+		feat.scheduler(() => this.runLoop(feature));
 	}
 
 	updateUIState() {
-		// Update checkbox
-		const checkbox = $('.checkbox.supplies');
-		if (checkbox) {
-			checkbox.checked = this.suppliesEnabled;
-		}
+		const uiMap = {
+			supplies: { checkbox: '.checkbox.supplies', icon: '.diaphantium_mobile.icon.supplies[author="OrakomoRi"]' },
+			antiAfk: { checkbox: '.checkbox.anti_afk', icon: null },
+			autoDelete: { checkbox: '.checkbox.auto_delete', icon: null },
+			mines: { checkbox: null, icon: '.diaphantium_mobile.icon.mines[author="OrakomoRi"]' }
+		};
 
-		// Update anti-AFK checkbox
-		const antiAfkCheckbox = $('.checkbox.anti_afk');
-		if (antiAfkCheckbox) {
-			antiAfkCheckbox.checked = this.antiAfkEnabled;
-		}
-
-		// Update auto-delete checkbox
-		const autoDeleteCheckbox = $('.checkbox.auto_delete');
-		if (autoDeleteCheckbox) {
-			autoDeleteCheckbox.checked = this.autoDeleteEnabled;
-		}
-
-		// Update mobile icon (supplies)
-		const suppliesIcon = $('.diaphantium_mobile.icon.supplies[author="OrakomoRi"]');
-		if (suppliesIcon) {
-			if (this.suppliesEnabled) {
-				suppliesIcon.classList.add('active');
-			} else {
-				suppliesIcon.classList.remove('active');
+		Object.entries(uiMap).forEach(([feature, { checkbox, icon }]) => {
+			const enabled = this.features[feature].enabled;
+			if (checkbox) {
+				const el = $(checkbox);
+				if (el) el.checked = enabled;
 			}
-		}
-
-		// Update mobile icon (mines)
-		const minesIcon = $('.diaphantium_mobile.icon.mines[author="OrakomoRi"]');
-		if (minesIcon) {
-			if (this.minesEnabled) {
-				minesIcon.classList.add('active');
-			} else {
-				minesIcon.classList.remove('active');
+			if (icon) {
+				const el = $(icon);
+				if (el) el.classList.toggle('active', enabled);
 			}
-		}
-	}
-
-	clickSuppliesLoop() {
-		if (!this.suppliesEnabled) return;
-
-		this.updateKeys();
-		this.keys.forEach(key => this.simulateKey(key));
-
-		requestAnimationFrame(() => this.clickSuppliesLoop());
-	}
-
-	clickMinesLoop() {
-		if (!this.minesEnabled) return;
-
-		this.simulateKey('5');
-
-		const delay = getStorage('Diaphantium.mine_delay')?.[0] || 100;
-		setTimeout(() => this.clickMinesLoop(), delay);
-	}
-
-	antiAfkLoop() {
-		if (!this.antiAfkEnabled) return;
-
-		// Toggle between ArrowLeft and ArrowRight each time
-		this.antiAfkToggle = !this.antiAfkToggle;
-		const key = this.antiAfkToggle ? 'ArrowLeft' : 'ArrowRight';
-
-		// Hold key for a very short time (50-100 ms)
-		this.simulateArrowKeyDown(key);
-		const holdTime = 50 + Math.floor(Math.random() * 51); // 50-100 ms
-		setTimeout(() => {
-			this.simulateArrowKeyUp(key);
-		}, holdTime);
-
-		// Next press after 0.8-1.5 seconds
-		const nextDelay = 800 + Math.floor(Math.random() * 701); // 800-1500 ms
-		setTimeout(() => this.antiAfkLoop(), nextDelay);
-	}
-
-	autoDeleteLoop() {
-		if (!this.autoDeleteEnabled) return;
-
-		this.simulateDeleteKey();
-
-		requestAnimationFrame(() => this.autoDeleteLoop());
+		});
 	}
 
 	updateKeys() {
-		this.keys = [];
-		const values = getStorage('Diaphantium.clickValues') || [];
-		values.forEach(item => {
-			if (item.value === 'on') {
-				this.keys.push(item.key);
-			}
-		});
+		this.keys = (getStorage('Diaphantium.clickValues') || [])
+			.filter(item => item.value === 'on')
+			.map(item => item.key);
 	}
 
-	simulateKey(key) {
-		const down = new KeyboardEvent('keydown', {
-			bubbles: true,
-			cancelable: true,
-			key,
+	simulateKeyPress(key, options = {}) {
+		const config = this.keyMap[key] || {
 			code: `Digit${key}`,
-			keyCode: key.charCodeAt(0),
-			which: key.charCodeAt(0)
-		});
-
-		const up = new KeyboardEvent('keyup', {
-			bubbles: true,
-			cancelable: true,
-			key,
-			code: `Digit${key}`,
-			keyCode: key.charCodeAt(0),
-			which: key.charCodeAt(0)
-		});
-
-		document.dispatchEvent(down);
-		document.dispatchEvent(up);
-	}
-
-	simulateArrowKey(key) {
-		const keyMap = {
-			'ArrowLeft': 37,
-			'ArrowRight': 39
+			keyCode: key.charCodeAt(0)
 		};
 
-		const down = new KeyboardEvent('keydown', {
+		const createEvent = (type) => new KeyboardEvent(type, {
 			bubbles: true,
 			cancelable: true,
 			key,
-			code: key,
-			keyCode: keyMap[key],
-			which: keyMap[key]
+			code: config.code,
+			keyCode: config.keyCode,
+			which: config.keyCode
 		});
 
-		const up = new KeyboardEvent('keyup', {
-			bubbles: true,
-			cancelable: true,
-			key,
-			code: key,
-			keyCode: keyMap[key],
-			which: keyMap[key]
-		});
-
-		document.dispatchEvent(down);
-		document.dispatchEvent(up);
-	}
-
-	simulateArrowKeyDown(key) {
-		const keyMap = {
-			'ArrowLeft': 37,
-			'ArrowRight': 39
-		};
-
-		const down = new KeyboardEvent('keydown', {
-			bubbles: true,
-			cancelable: true,
-			key,
-			code: key,
-			keyCode: keyMap[key],
-			which: keyMap[key]
-		});
-
-		document.dispatchEvent(down);
-	}
-
-	simulateArrowKeyUp(key) {
-		const keyMap = {
-			'ArrowLeft': 37,
-			'ArrowRight': 39
-		};
-
-		const up = new KeyboardEvent('keyup', {
-			bubbles: true,
-			cancelable: true,
-			key,
-			code: key,
-			keyCode: keyMap[key],
-			which: keyMap[key]
-		});
-
-		document.dispatchEvent(up);
-	}
-
-	simulateDeleteKey() {
-		const down = new KeyboardEvent('keydown', {
-			bubbles: true,
-			cancelable: true,
-			key: 'Delete',
-			code: 'Delete',
-			keyCode: 46,
-			which: 46
-		});
-
-		const up = new KeyboardEvent('keyup', {
-			bubbles: true,
-			cancelable: true,
-			key: 'Delete',
-			code: 'Delete',
-			keyCode: 46,
-			which: 46
-		});
-
-		document.dispatchEvent(down);
-		document.dispatchEvent(up);
+		if (options.downOnly) {
+			document.dispatchEvent(createEvent('keydown'));
+		} else if (options.upOnly) {
+			document.dispatchEvent(createEvent('keyup'));
+		} else {
+			document.dispatchEvent(createEvent('keydown'));
+			document.dispatchEvent(createEvent('keyup'));
+		}
 	}
 
 	loadState() {
-		if (getStorage('Diaphantium.clickSuppliesState') === true) {
-			this.startSupplies();
-		}
-		if (getStorage('Diaphantium.antiAfkState') === true) {
-			this.startAntiAfk();
-		}
-		if (getStorage('Diaphantium.autoDeleteState') === true) {
-			this.startAutoDelete();
-		}
+		Object.entries(this.features).forEach(([feature, config]) => {
+			if (config.storageKey && getStorage(config.storageKey) === true) {
+				this.start(feature);
+			}
+		});
 	}
 }
