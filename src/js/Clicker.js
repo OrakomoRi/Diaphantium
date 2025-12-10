@@ -36,6 +36,7 @@ export default class Clicker {
 				enabled: false,
 				storageKey: null,
 				action: () => {
+					// console.log('[Clicker] Mines action, mode:', this.clickerMode, 'packetClicker:', !!this.packetClicker);
 					if (this.clickerMode === 'packet' && this.packetClicker) {
 						this.packetClicker.clickSupply('5');
 					} else {
@@ -83,7 +84,8 @@ export default class Clicker {
 
 	async initializePacketClicker() {
 		this.packetClicker = new PacketClicker();
-		await this.packetClicker.init();
+		const success = await this.packetClicker.init();
+		// console.log('[Clicker] PacketClicker initialized:', success);
 	}
 
 	loadClickerMode() {

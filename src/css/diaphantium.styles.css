@@ -143,6 +143,9 @@ body.diaphantium-popup-open {
 /* Subheaders */
 .popup_container.diaphantium[author="OrakomoRi"] .subheader {
 	all: unset;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	font-size: .85em;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -738,4 +741,19 @@ body.diaphantium-popup-open {
 .popup_container.diaphantium[author="OrakomoRi"] .popup_signature.hidden {
 	opacity: 0;
 	pointer-events: none;
+}
+
+/* Appearance toggle container */
+.popup_container.diaphantium[author="OrakomoRi"] .clicker_mode_toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: .75em var(--diaphantium-item-side-padding);
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .clicker_mode_toggle .label {
+	width: 100%;
+	margin: 0;
 }

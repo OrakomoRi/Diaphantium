@@ -34,7 +34,7 @@ export default class PacketClicker {
 			return false;
 		}
 
-		// console.log('[PacketClicker] Variable names:', this.variableNames);
+		console.log('[PacketClicker] Variable names:', this.variableNames);
 		this.hookSupplyObjects();
 		this.hookCooldownTracking();
 		return true;
@@ -104,7 +104,7 @@ export default class PacketClicker {
 								}
 							});
 						};
-						// console.log(`[PacketClicker] Registered supply: ${supplyType}`);
+						console.log(`[PacketClicker] Registered supply: ${supplyType}`);
 					}
 				}
 			},
@@ -128,7 +128,7 @@ export default class PacketClicker {
 					const supplyType = nameData.value;
 					// When StopCooldownMessage is sent, the supply is ready (cooldown ended)
 					self.cooldowns.delete(supplyType);
-					// console.log(`[PacketClicker] Cooldown ended for: ${supplyType}`);
+					console.log(`[PacketClicker] Cooldown ended for: ${supplyType}`);
 				}
 			},
 			configurable: true
@@ -162,29 +162,29 @@ export default class PacketClicker {
 		);
 
 		if (!supplyType) {
-			// console.warn('[PacketClicker] Unknown supply key:', key);
+			console.warn('[PacketClicker] Unknown supply key:', key);
 			return;
 		}
 
 		if (!this.supplies[supplyType]) {
-			// console.warn('[PacketClicker] Supply not registered yet:', supplyType);
+			console.warn('[PacketClicker] Supply not registered yet:', supplyType);
 			return;
 		}
 
 		// Mines don't have cooldown restrictions
 		if (supplyType === 'MINE') {
-			// console.log('[PacketClicker] Clicking MINE');
+			console.log('[PacketClicker] Clicking MINE');
 			this.supplies[supplyType]();
 			return;
 		}
 
 		// For other supplies, check cooldown
 		if (this.cooldowns.has(supplyType)) {
-			// console.log('[PacketClicker] Supply on cooldown:', supplyType);
+			console.log('[PacketClicker] Supply on cooldown:', supplyType);
 			return; // Supply is on cooldown
 		}
 
-		// console.log('[PacketClicker] Clicking supply:', supplyType);
+		console.log('[PacketClicker] Clicking supply:', supplyType);
 		this.supplies[supplyType]();
 		this.cooldowns.add(supplyType);
 	}
