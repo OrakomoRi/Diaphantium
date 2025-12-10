@@ -2,7 +2,6 @@ import { $, $$, on, debounce } from './utils.js';
 import { getStorage, setStorage, updateConfig } from './storage.js';
 import ElementMover from './ElementMover.js';
 import popupHTML from '../html/popup.html';
-import iconImage from '../../assets/images/icon.png';
 
 export default class Popup {
 	constructor() {
@@ -503,16 +502,16 @@ export default class Popup {
 		const popup = this.popup;
 		if (!popup) return;
 
-		const select = $('.select.clicker_mode', popup);
-		if (!select) return;
+		const checkbox = $('.checkbox.packet_mode', popup);
+		if (!checkbox) return;
 
 		// Load saved state (default: packet)
 		const savedMode = getStorage('Diaphantium.clickerMode') || 'packet';
-		select.value = savedMode;
+		checkbox.checked = savedMode === 'packet';
 
-		// Change mode on selection
-		on(select, 'change', () => {
-			const mode = select.value;
+		// Change mode on toggle
+		on(checkbox, 'change', () => {
+			const mode = checkbox.checked ? 'packet' : 'emulation';
 			setStorage('Diaphantium.clickerMode', mode);
 			
 			// Notify clicker instance if available

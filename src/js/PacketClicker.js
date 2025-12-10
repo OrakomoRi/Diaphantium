@@ -161,25 +161,32 @@ export default class PacketClicker {
 			type => this.SUPPLY_TYPES[type] === key
 		);
 
-		if (!supplyType) return;
+		if (!supplyType) {
+			// console.warn('[PacketClicker] Unknown supply key:', key);
+			return;
+		}
+
+		if (!this.supplies[supplyType]) {
+			// console.warn('[PacketClicker] Supply not registered yet:', supplyType);
+			return;
+		}
 
 		// Mines don't have cooldown restrictions
 		if (supplyType === 'MINE') {
-			if (this.supplies[supplyType]) {
-				this.supplies[supplyType]();
-			}
+			// console.log('[PacketClicker] Clicking MINE');
+			this.supplies[supplyType]();
 			return;
 		}
 
 		// For other supplies, check cooldown
 		if (this.cooldowns.has(supplyType)) {
+			// console.log('[PacketClicker] Supply on cooldown:', supplyType);
 			return; // Supply is on cooldown
 		}
 
-		if (this.supplies[supplyType]) {
-			this.supplies[supplyType]();
-			this.cooldowns.add(supplyType);
-		}
+		// console.log('[PacketClicker] Clicking supply:', supplyType);
+		this.supplies[supplyType]();
+		this.cooldowns.add(supplyType);
 	}
 
 	isReady(key) {
