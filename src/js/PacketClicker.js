@@ -7,7 +7,7 @@ export default class PacketClicker {
 			cooldown: null
 		};
 		this.fullObjects = [];
-		
+
 		this.SUPPLY_TYPES = {
 			FIRST_AID: '1',
 			DOUBLE_ARMOR: '2',
@@ -16,7 +16,42 @@ export default class PacketClicker {
 			MINE: '5'
 		};
 
+		// Expose to window for debugging
+		if (typeof window !== 'undefined') {
+			window.debugPacketClicker = this.getDebugInfo.bind(this);
+			window.packetClicker = this;
+		}
+
 		this.init();
+	}
+
+	// Debug function accessible from console
+	getDebugInfo() {
+		const info = {
+			variableNames: this.variableNames,
+			registeredSupplies: Object.keys(this.supplies),
+			cooldowns: Array.from(this.cooldowns),
+			fullObjectsCount: this.fullObjects.length,
+			fullObjects: this.fullObjects.map(obj => {
+				const name = this.findNameKey(obj);
+				const funcs = Object.values(obj).filter(v => typeof v === 'function');
+				return {
+					supplyType: name?.value || 'unknown',
+					functionCount: funcs.length,
+					keys: Object.keys(obj).filter(k => !k.startsWith('__'))
+				};
+			})
+		};
+
+		console.log('=== PacketClicker Debug Info ===');
+		console.log('Variable Names:', info.variableNames);
+		console.log('Registered Supplies:', info.registeredSupplies);
+		console.log('Active Cooldowns:', info.cooldowns);
+		console.log('Total Objects:', info.fullObjectsCount);
+		console.log('Objects Details:', info.fullObjects);
+		console.log('================================');
+		
+		return info;
 	}
 
 	async init() {
@@ -51,7 +86,7 @@ export default class PacketClicker {
 
 			const response = await fetch(scriptTag.src);
 			if (!response.ok) throw new Error('Failed to fetch');
-			
+
 			return await response.text();
 		} catch (error) {
 			console.error('[PacketClicker] Fetch error:', error);
@@ -208,7 +243,7 @@ export default class PacketClicker {
 
 		if (!supplyType) return false;
 		if (supplyType === 'MINE') return true; // Mines are always ready
-		
+
 		return !this.cooldowns.has(supplyType);
 	}
 }
