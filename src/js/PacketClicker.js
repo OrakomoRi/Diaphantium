@@ -40,16 +40,28 @@ export default class PacketClicker {
 					functionCount: funcs.length,
 					keys: Object.keys(obj).filter(k => !k.startsWith('__'))
 				};
-			})
+			}),
+			// Additional diagnostics
+			scriptFetched: !!this.lastScript,
+			scriptLength: this.lastScript?.length || 0,
+			supplyPatterns: this.lastScript ? this.lastScript.match(/ConfigureSupplyMessage[^)]{0,200}/g) : null,
+			cooldownPatterns: this.lastScript ? this.lastScript.match(/StopCooldownMessage[^)]{0,100}/g) : null
 		};
 
-		console.log('=== PacketClicker Debug Info ===');
-		console.log('Variable Names:', info.variableNames);
-		console.log('Registered Supplies:', info.registeredSupplies);
-		console.log('Active Cooldowns:', info.cooldowns);
-		console.log('Total Objects:', info.fullObjectsCount);
-		console.log('Objects Details:', info.fullObjects);
-		console.log('================================');
+		console.table({
+			'Supply Variable': this.variableNames.supply || 'NOT FOUND',
+			'Cooldown Variable': this.variableNames.cooldown || 'NOT FOUND',
+			'Registered Supplies': info.registeredSupplies.join(', ') || 'NONE',
+			'Objects Count': info.fullObjectsCount,
+			'Script Length': info.scriptLength
+		});
+		
+		if (info.supplyPatterns) {
+			console.log('ConfigureSupplyMessage patterns:', info.supplyPatterns.slice(0, 3));
+		}
+		if (info.cooldownPatterns) {
+			console.log('StopCooldownMessage patterns:', info.cooldownPatterns.slice(0, 3));
+		}
 		
 		return info;
 	}
@@ -57,19 +69,19 @@ export default class PacketClicker {
 	async init() {
 		const script = await this.fetchGameScript();
 		if (!script) {
-			console.error('[PacketClicker] Failed to fetch game script');
 			return false;
 		}
+
+		// Store for debugging
+		this.lastScript = script;
 
 		this.variableNames.supply = this.extractVariableName(script, 'ConfigureSupplyMessage');
 		this.variableNames.cooldown = this.extractVariableName(script, 'StopCooldownMessage');
 
 		if (!this.variableNames.supply || !this.variableNames.cooldown) {
-			console.error('[PacketClicker] Failed to extract variable names');
 			return false;
 		}
 
-		console.log('[PacketClicker] Variable names:', this.variableNames);
 		this.hookSupplyObjects();
 		this.hookCooldownTracking();
 		return true;
