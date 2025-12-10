@@ -11,8 +11,11 @@ import '../css/diaphantium.styles.css';
 function initDiaphantium() {
 	const popup = new Popup();
 	const clicker = new Clicker(popup);
-	
-	console.log('Diaphantium initialized successfully!');
+
+	// Expose clicker instance globally for mode switching
+	window.clickerInstance = clicker;
+
+	// console.log('Diaphantium initialized successfully!');
 }
 
 // Initialize application when DOM is ready

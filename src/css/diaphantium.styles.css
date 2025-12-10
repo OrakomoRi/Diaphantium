@@ -219,6 +219,33 @@ body.diaphantium-popup-open {
 	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
 }
 
+/* Select dropdown */
+.popup_container.diaphantium[author="OrakomoRi"] .select {
+	padding: .4em .6em;
+	background-color: rgba(0, 0, 0, .3);
+	color: rgb(255, 255, 255);
+	text-align: center;
+	border: .1em solid rgba(255, 255, 255, .15);
+	font-size: 1em;
+	border-radius: .35em;
+	transition: all var(--diaphantium-transition);
+	cursor: pointer;
+	display: inline-block;
+	font-family: inherit;
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
+	outline: none;
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .select:hover {
+	border-color: rgba(255, 255, 255, .3);
+	background-color: rgba(0, 0, 0, .4);
+}
+
+.popup_container.diaphantium[author="OrakomoRi"] .select:focus {
+	border-color: rgba(255, 255, 255, .5);
+	box-shadow: 0 0 0 .15em rgba(255, 255, 255, .1);
+}
+
 /* Custom toggle switch checkbox */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox {
 	all: unset;

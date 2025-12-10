@@ -86,6 +86,7 @@ export default class Popup {
 		this.setupMiscellaneous();
 		this.setupHotkeys();
 		this.setupSignature();
+		this.setupClickerMode();
 
 		// Store pointer lock (only if element is valid and in DOM)
 		this.lockedElement = document.pointerLockElement;
@@ -494,6 +495,32 @@ export default class Popup {
 			}
 
 			setStorage('Diaphantium.showSignature', isChecked);
+		});
+	}
+
+	// Setup clicker mode selection
+	setupClickerMode() {
+		const popup = this.popup;
+		if (!popup) return;
+
+		const select = $('.select.clicker_mode', popup);
+		if (!select) return;
+
+		// Load saved state (default: packet)
+		const savedMode = getStorage('Diaphantium.clickerMode') || 'packet';
+		select.value = savedMode;
+
+		// Change mode on selection
+		on(select, 'change', () => {
+			const mode = select.value;
+			setStorage('Diaphantium.clickerMode', mode);
+			
+			// Notify clicker instance if available
+			if (window.clickerInstance) {
+				window.clickerInstance.setClickerMode(mode);
+			}
+
+			// console.log('[Popup] Clicker mode changed to:', mode);
 		});
 	}
 

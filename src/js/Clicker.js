@@ -1,11 +1,14 @@
 import { getStorage, setStorage } from './storage.js';
 import { $, on } from './utils.js';
+import PacketClicker from './PacketClicker.js';
 
 export default class Clicker {
 	constructor(popup) {
 		this.popup = popup;
 		this.keys = [];
 		this.antiAfkToggle = true;
+		this.packetClicker = null;
+		this.clickerMode = 'packet'; // 'packet' or 'emulation'
 
 		// Mapping between feature names and checkbox class names
 		this.checkboxMap = {
@@ -19,15 +22,26 @@ export default class Clicker {
 				enabled: false,
 				storageKey: 'Diaphantium.clickSuppliesState',
 				action: () => {
-					this.updateKeys();
-					this.keys.forEach(key => this.simulateKeyPress(key));
+					if (this.clickerMode === 'packet' && this.packetClicker) {
+						this.updateKeys();
+						this.keys.forEach(key => this.packetClicker.clickSupply(key));
+					} else {
+						this.updateKeys();
+						this.keys.forEach(key => this.simulateKeyPress(key));
+					}
 				},
 				scheduler: (fn) => requestAnimationFrame(fn)
 			},
 			mines: {
 				enabled: false,
 				storageKey: null,
-				action: () => this.simulateKeyPress('5'),
+				action: () => {
+					if (this.clickerMode === 'packet' && this.packetClicker) {
+						this.packetClicker.clickSupply('5');
+					} else {
+						this.simulateKeyPress('5');
+					}
+				},
 				scheduler: (fn) => setTimeout(fn, getStorage('mineDelay') || 100)
 			},
 			antiAfk: {
@@ -60,9 +74,21 @@ export default class Clicker {
 	}
 
 	init() {
+		this.initializePacketClicker();
+		this.loadClickerMode();
 		this.setupHotkeys();
 		this.setupCheckboxListeners();
 		this.loadState();
+	}
+
+	async initializePacketClicker() {
+		this.packetClicker = new PacketClicker();
+		await this.packetClicker.init();
+	}
+
+	loadClickerMode() {
+		const savedMode = getStorage('Diaphantium.clickerMode');
+		this.clickerMode = savedMode || 'packet';
 	}
 
 	setupHotkeys() {
@@ -173,5 +199,16 @@ export default class Clicker {
 				this.start(feature);
 			}
 		}
+	}
+
+	setClickerMode(mode) {
+		if (mode !== 'packet' && mode !== 'emulation') {
+			console.error('[Clicker] Invalid clicker mode:', mode);
+			return;
+		}
+
+		this.clickerMode = mode;
+		setStorage('Diaphantium.clickerMode', mode);
+		// console.log('[Clicker] Mode changed to:', mode);
 	}
 }
