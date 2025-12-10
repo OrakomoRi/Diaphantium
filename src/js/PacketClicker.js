@@ -27,7 +27,18 @@ export default class PacketClicker {
 
 	// Debug function accessible from console
 	getDebugInfo() {
+		// Find which script was used
+		const patterns = [
+			s => s.src?.includes('/static/js/'),
+		];
+		let scriptTag = null;
+		for (const pattern of patterns) {
+			scriptTag = [...document.scripts].find(pattern);
+			if (scriptTag) break;
+		}
+		
 		const info = {
+			scriptUrl: scriptTag?.src || 'NOT FOUND',
 			variableNames: this.variableNames,
 			registeredSupplies: Object.keys(this.supplies),
 			cooldowns: Array.from(this.cooldowns),
@@ -49,6 +60,7 @@ export default class PacketClicker {
 		};
 
 		console.table({
+			'Script URL': info.scriptUrl,
 			'Supply Variable': this.variableNames.supply || 'NOT FOUND',
 			'Cooldown Variable': this.variableNames.cooldown || 'NOT FOUND',
 			'Registered Supplies': info.registeredSupplies.join(', ') || 'NONE',
@@ -89,24 +101,30 @@ export default class PacketClicker {
 
 	async fetchGameScript() {
 		try {
-			const scriptTag = [...document.scripts].find(s => s.src?.includes('/play/static/js/'));
+			// Try multiple patterns for different server configurations
+			const patterns = [
+				s => s.src?.includes('/static/js/'),
+			];
+			
+			let scriptTag = null;
+			for (const pattern of patterns) {
+				scriptTag = [...document.scripts].find(pattern);
+				if (scriptTag) break;
+			}
+			
 			if (!scriptTag) {
-				console.warn('[PacketClicker] Script tag not found, retrying...');
 				await new Promise(resolve => setTimeout(resolve, 100));
 				return this.fetchGameScript();
 			}
 
 			const response = await fetch(scriptTag.src);
 			if (!response.ok) throw new Error('Failed to fetch');
-
+			
 			return await response.text();
 		} catch (error) {
-			console.error('[PacketClicker] Fetch error:', error);
 			return null;
 		}
-	}
-
-	extractVariableName(script, messageType) {
+	}	extractVariableName(script, messageType) {
 		let pattern;
 		if (messageType === 'ConfigureSupplyMessage') {
 			// Pattern with toString: ConfigureSupplyMessage(type=" + this.oy7_1.toString() + ", count=" + this.py7_1 + "
