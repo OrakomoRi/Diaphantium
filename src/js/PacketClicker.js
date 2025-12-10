@@ -62,15 +62,27 @@ export default class PacketClicker {
 	extractVariableName(script, messageType) {
 		let pattern;
 		if (messageType === 'ConfigureSupplyMessage') {
-			// Pattern: ConfigureSupplyMessage(type=" + this.oy7_1.toString() + ", count=" + this.py7_1 + "
-			pattern = /ConfigureSupplyMessage\(type=.+?\.toString\(\).+?count=.+?\.(\w+)/;
+			// Pattern with toString: ConfigureSupplyMessage(type=" + this.oy7_1.toString() + ", count=" + this.py7_1 + "
+			// Pattern without toString: ConfigureSupplyMessage(type=" + this.jy4_1 + ", count=" + this.ky4_1 + "
+			pattern = /ConfigureSupplyMessage\(type=.+?this\.(\w+)(?:\.toString\(\))?\s*\+.+?count=.+?this\.(\w+)/;
+			const match = script.match(pattern);
+			if (match) {
+				console.log('[PacketClicker] Found ConfigureSupplyMessage variables:', match[1], match[2]);
+				// Return the second variable (count parameter)
+				return match[2];
+			}
 		} else if (messageType === 'StopCooldownMessage') {
-			// Pattern: StopCooldownMessage(supplyType=" + this.cyf_1.toString() + ")"
-			pattern = /StopCooldownMessage\(supplyType=.+?\.(\w+)\.toString\(\)/;
+			// Pattern with toString: StopCooldownMessage(supplyType=" + this.cyf_1.toString() + ")"
+			// Pattern without toString: StopCooldownMessage(supplyType=" + this.xyb_1 + ")"
+			pattern = /StopCooldownMessage\(supplyType=.+?this\.(\w+)(?:\.toString\(\))?/;
+			const match = script.match(pattern);
+			if (match) {
+				console.log('[PacketClicker] Found StopCooldownMessage variable:', match[1]);
+				return match[1];
+			}
 		}
 
-		const match = script.match(pattern);
-		return match ? match[1] : null;
+		return null;
 	}
 
 	hookSupplyObjects() {
