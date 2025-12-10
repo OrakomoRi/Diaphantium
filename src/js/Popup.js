@@ -94,7 +94,7 @@ export default class Popup {
 				try {
 					document.exitPointerLock();
 				} catch (e) {
-					console.debug('Failed to exit pointer lock:', e.message);
+					// Silently ignore
 				}
 			}
 		}
@@ -144,7 +144,6 @@ export default class Popup {
 				this.lockedElement.requestPointerLock();
 			} catch (e) {
 				// Silently ignore if pointer lock fails (element may have been removed)
-				console.debug('Pointer lock restoration failed:', e.message);
 			}
 		}
 

@@ -35,7 +35,7 @@ function saveConfig() {
 	try {
 		localStorage.setItem(CONFIG_KEY, JSON.stringify(configCache));
 	} catch (e) {
-		console.error('Storage error:', e);
+		// Silently ignore storage errors
 	}
 }
 

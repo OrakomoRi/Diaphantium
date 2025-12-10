@@ -205,12 +205,10 @@ export default class Clicker {
 
 	setClickerMode(mode) {
 		if (mode !== 'packet' && mode !== 'emulation') {
-			console.error('[Clicker] Invalid clicker mode:', mode);
 			return;
 		}
 
 		this.clickerMode = mode;
 		setStorage('Diaphantium.clickerMode', mode);
-		// console.log('[Clicker] Mode changed to:', mode);
 	}
 }

@@ -16,66 +16,7 @@ export default class PacketClicker {
 			MINE: '5'
 		};
 
-		// Expose to window for debugging
-		if (typeof window !== 'undefined') {
-			window.debugPacketClicker = this.getDebugInfo.bind(this);
-			window.packetClicker = this;
-		}
-
 		this.init();
-	}
-
-	// Debug function accessible from console
-	getDebugInfo() {
-		// Find which script was used
-		const patterns = [
-			s => s.src?.includes('/static/js/'),
-		];
-		let scriptTag = null;
-		for (const pattern of patterns) {
-			scriptTag = [...document.scripts].find(pattern);
-			if (scriptTag) break;
-		}
-		
-		const info = {
-			scriptUrl: scriptTag?.src || 'NOT FOUND',
-			variableNames: this.variableNames,
-			registeredSupplies: Object.keys(this.supplies),
-			cooldowns: Array.from(this.cooldowns),
-			fullObjectsCount: this.fullObjects.length,
-			fullObjects: this.fullObjects.map(obj => {
-				const name = this.findNameKey(obj);
-				const funcs = Object.values(obj).filter(v => typeof v === 'function');
-				return {
-					supplyType: name?.value || 'unknown',
-					functionCount: funcs.length,
-					keys: Object.keys(obj).filter(k => !k.startsWith('__'))
-				};
-			}),
-			// Additional diagnostics
-			scriptFetched: !!this.lastScript,
-			scriptLength: this.lastScript?.length || 0,
-			supplyPatterns: this.lastScript ? this.lastScript.match(/ConfigureSupplyMessage[^)]{0,200}/g) : null,
-			cooldownPatterns: this.lastScript ? this.lastScript.match(/StopCooldownMessage[^)]{0,100}/g) : null
-		};
-
-		console.table({
-			'Script URL': info.scriptUrl,
-			'Supply Variable': this.variableNames.supply || 'NOT FOUND',
-			'Cooldown Variable': this.variableNames.cooldown || 'NOT FOUND',
-			'Registered Supplies': info.registeredSupplies.join(', ') || 'NONE',
-			'Objects Count': info.fullObjectsCount,
-			'Script Length': info.scriptLength
-		});
-		
-		if (info.supplyPatterns) {
-			console.log('ConfigureSupplyMessage patterns:', info.supplyPatterns.slice(0, 3));
-		}
-		if (info.cooldownPatterns) {
-			console.log('StopCooldownMessage patterns:', info.cooldownPatterns.slice(0, 3));
-		}
-		
-		return info;
 	}
 
 	async init() {
@@ -83,9 +24,6 @@ export default class PacketClicker {
 		if (!script) {
 			return false;
 		}
-
-		// Store for debugging
-		this.lastScript = script;
 
 		this.variableNames.supply = this.extractVariableName(script, 'ConfigureSupplyMessage');
 		this.variableNames.cooldown = this.extractVariableName(script, 'StopCooldownMessage');
@@ -132,8 +70,6 @@ export default class PacketClicker {
 			pattern = /ConfigureSupplyMessage\(type=.+?this\.(\w+)(?:\.toString\(\))?\s*\+.+?count=.+?this\.(\w+)/;
 			const match = script.match(pattern);
 			if (match) {
-				console.log('[PacketClicker] Found ConfigureSupplyMessage variables:', match[1], match[2]);
-				// Return the second variable (count parameter)
 				return match[2];
 			}
 		} else if (messageType === 'StopCooldownMessage') {
@@ -142,7 +78,6 @@ export default class PacketClicker {
 			pattern = /StopCooldownMessage\(supplyType=.+?this\.(\w+)(?:\.toString\(\))?/;
 			const match = script.match(pattern);
 			if (match) {
-				console.log('[PacketClicker] Found StopCooldownMessage variable:', match[1]);
 				return match[1];
 			}
 		}
@@ -181,7 +116,6 @@ export default class PacketClicker {
 								}
 							});
 						};
-						console.log(`[PacketClicker] Registered supply: ${supplyType}`);
 					}
 				}
 			},
@@ -203,9 +137,7 @@ export default class PacketClicker {
 				const nameData = self.findNameKey(this);
 				if (nameData) {
 					const supplyType = nameData.value;
-					// When StopCooldownMessage is sent, the supply is ready (cooldown ended)
 					self.cooldowns.delete(supplyType);
-					console.log(`[PacketClicker] Cooldown ended for: ${supplyType}`);
 				}
 			},
 			configurable: true
@@ -238,30 +170,18 @@ export default class PacketClicker {
 			type => this.SUPPLY_TYPES[type] === key
 		);
 
-		if (!supplyType) {
-			console.warn('[PacketClicker] Unknown supply key:', key);
-			return;
-		}
-
-		if (!this.supplies[supplyType]) {
-			console.warn('[PacketClicker] Supply not registered yet:', supplyType);
-			return;
-		}
+		if (!supplyType) return;
+		if (!this.supplies[supplyType]) return;
 
 		// Mines don't have cooldown restrictions
 		if (supplyType === 'MINE') {
-			console.log('[PacketClicker] Clicking MINE');
 			this.supplies[supplyType]();
 			return;
 		}
 
 		// For other supplies, check cooldown
-		if (this.cooldowns.has(supplyType)) {
-			console.log('[PacketClicker] Supply on cooldown:', supplyType);
-			return; // Supply is on cooldown
-		}
+		if (this.cooldowns.has(supplyType)) return;
 
-		console.log('[PacketClicker] Clicking supply:', supplyType);
 		this.supplies[supplyType]();
 		this.cooldowns.add(supplyType);
 	}
