@@ -11,9 +11,8 @@ import '../css/diaphantium.styles.css';
 function initDiaphantium() {
 	const popup = new Popup();
 	const clicker = new Clicker(popup);
-	// Mobile support removed
-
-	console.log('🎮 Diaphantium initialized successfully!');
+	
+	console.log('Diaphantium initialized successfully!');
 }
 
 // Initialize application when DOM is ready

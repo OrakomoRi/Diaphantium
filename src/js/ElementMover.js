@@ -1,4 +1,4 @@
-import { on } from './utils.js';
+import { on, throttle, debounce } from './utils.js';
 import { setStorage } from './storage.js';
 
 // Makes DOM elements draggable
@@ -11,6 +11,11 @@ export default class ElementMover {
 		this.startY = 0;
 		this.offsetX = 0;
 		this.offsetY = 0;
+
+		// Throttled move for better performance
+		this.handleMoveThrottled = throttle(this.handleMove.bind(this), 16); // ~60fps
+		// Debounced save to reduce localStorage writes
+		this.debouncedSave = debounce(this.savePosition.bind(this), 500);
 
 		this.init();
 	}
@@ -33,15 +38,15 @@ export default class ElementMover {
 		this.offsetY = touch.clientY - rect.top;
 		this.isDragging = true;
 
-		on(document, 'mousemove', this.handleMove);
-		on(document, 'touchmove', this.handleMove);
+		on(document, 'mousemove', this.handleMoveThrottled);
+		on(document, 'touchmove', this.handleMoveThrottled);
 		on(document, 'mouseup', this.handleEnd);
 		on(document, 'touchend', this.handleEnd);
 
 		e.preventDefault();
 	}
 
-	handleMove = (e) => {
+	handleMove(e) {
 		if (!this.isDragging) return;
 
 		const touch = e.touches ? e.touches[0] : e;
@@ -57,24 +62,31 @@ export default class ElementMover {
 
 		this.element.style.left = `${x}px`;
 		this.element.style.top = `${y}px`;
-	};
+
+		// Debounced save during drag
+		this.debouncedSave();
+	}
 
 	handleEnd = () => {
 		if (!this.isDragging) return;
 
 		this.isDragging = false;
-		document.removeEventListener('mousemove', this.handleMove);
-		document.removeEventListener('touchmove', this.handleMove);
+		document.removeEventListener('mousemove', this.handleMoveThrottled);
+		document.removeEventListener('touchmove', this.handleMoveThrottled);
 		document.removeEventListener('mouseup', this.handleEnd);
 		document.removeEventListener('touchend', this.handleEnd);
 
-		// Save position
+		// Final save on drop
+		this.savePosition();
+	};
+
+	savePosition() {
 		const rect = this.element.getBoundingClientRect();
-		setStorage('Diaphantium.coordinates', {
+		setStorage('coordinates', {
 			top: rect.top,
 			left: rect.left
 		});
-	};
+	}
 
 	shouldIgnore(target) {
 		return (

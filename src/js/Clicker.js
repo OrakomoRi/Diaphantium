@@ -7,6 +7,13 @@ export default class Clicker {
 		this.keys = [];
 		this.antiAfkToggle = true;
 
+		// Mapping between feature names and checkbox class names
+		this.checkboxMap = {
+			supplies: 'supplies',
+			antiAfk: 'anti_afk',
+			autoDelete: 'auto_delete'
+		};
+
 		this.features = {
 			supplies: {
 				enabled: false,
@@ -21,7 +28,7 @@ export default class Clicker {
 				enabled: false,
 				storageKey: null,
 				action: () => this.simulateKeyPress('5'),
-				scheduler: (fn) => setTimeout(fn, getStorage('Diaphantium.mine_delay')?.[0] || 100)
+				scheduler: (fn) => setTimeout(fn, getStorage('mineDelay') || 100)
 			},
 			antiAfk: {
 				enabled: false,
@@ -82,16 +89,16 @@ export default class Clicker {
 	}
 
 	setupCheckboxListeners() {
-		const checkboxMap = {
-			'.checkbox.supplies': 'supplies',
-			'.checkbox.anti_afk': 'antiAfk',
-			'.checkbox.auto_delete': 'autoDelete'
-		};
-
+		// Event delegation - single listener for all checkboxes
 		on(document, 'change', (e) => {
-			Object.entries(checkboxMap).forEach(([selector, feature]) => {
-				if (e.target.matches(selector)) this.toggle(feature);
-			});
+			if (!e.target.classList.contains('checkbox')) return;
+
+			for (const [feature, className] of Object.entries(this.checkboxMap)) {
+				if (e.target.classList.contains(className)) {
+					this.toggle(feature);
+					break;
+				}
+			}
 		});
 	}
 
@@ -122,28 +129,15 @@ export default class Clicker {
 	}
 
 	updateUIState() {
-		const uiMap = {
-			supplies: { checkbox: '.checkbox.supplies', icon: '.diaphantium_mobile.icon.supplies[author="OrakomoRi"]' },
-			antiAfk: { checkbox: '.checkbox.anti_afk', icon: null },
-			autoDelete: { checkbox: '.checkbox.auto_delete', icon: null },
-			mines: { checkbox: null, icon: '.diaphantium_mobile.icon.mines[author="OrakomoRi"]' }
-		};
-
-		Object.entries(uiMap).forEach(([feature, { checkbox, icon }]) => {
-			const enabled = this.features[feature].enabled;
-			if (checkbox) {
-				const el = $(checkbox);
-				if (el) el.checked = enabled;
-			}
-			if (icon) {
-				const el = $(icon);
-				if (el) el.classList.toggle('active', enabled);
-			}
-		});
+		for (const [feature, className] of Object.entries(this.checkboxMap)) {
+			const checkbox = $(`.checkbox.${className}`);
+			if (checkbox) checkbox.checked = this.features[feature].enabled;
+		}
 	}
 
 	updateKeys() {
-		this.keys = (getStorage('Diaphantium.clickValues') || [])
+		const clickValues = getStorage('clickValues') || [];
+		this.keys = clickValues
 			.filter(item => item.value === 'on')
 			.map(item => item.key);
 	}
@@ -154,30 +148,30 @@ export default class Clicker {
 			keyCode: key.charCodeAt(0)
 		};
 
-		const createEvent = (type) => new KeyboardEvent(type, {
+		const eventConfig = {
 			bubbles: true,
 			cancelable: true,
 			key,
 			code: config.code,
 			keyCode: config.keyCode,
 			which: config.keyCode
-		});
+		};
 
 		if (options.downOnly) {
-			document.dispatchEvent(createEvent('keydown'));
+			document.dispatchEvent(new KeyboardEvent('keydown', eventConfig));
 		} else if (options.upOnly) {
-			document.dispatchEvent(createEvent('keyup'));
+			document.dispatchEvent(new KeyboardEvent('keyup', eventConfig));
 		} else {
-			document.dispatchEvent(createEvent('keydown'));
-			document.dispatchEvent(createEvent('keyup'));
+			document.dispatchEvent(new KeyboardEvent('keydown', eventConfig));
+			document.dispatchEvent(new KeyboardEvent('keyup', eventConfig));
 		}
 	}
 
 	loadState() {
-		Object.entries(this.features).forEach(([feature, config]) => {
+		for (const [feature, config] of Object.entries(this.features)) {
 			if (config.storageKey && getStorage(config.storageKey) === true) {
 				this.start(feature);
 			}
-		});
+		}
 	}
 }

@@ -1,5 +1,5 @@
-import { $, $$, on } from './utils.js';
-import { getStorage, setStorage } from './storage.js';
+import { $, $$, on, debounce } from './utils.js';
+import { getStorage, setStorage, updateConfig } from './storage.js';
 import ElementMover from './ElementMover.js';
 import popupHTML from '../html/popup.html';
 import iconImage from '../../assets/images/icon.png';
@@ -9,6 +9,8 @@ export default class Popup {
 		this.selector = '.popup_container.diaphantium[author="OrakomoRi"] .popup';
 		this.isOpen = false;
 		this.lockedElement = null;
+		this.popup = null; // Cache popup element
+		this.debouncedSave = debounce(() => this.saveAllSettings(), 500);
 
 		this.setupListeners();
 	}
@@ -56,8 +58,9 @@ export default class Popup {
 		// Add popup to page
 		document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-		const popup = $(this.selector);
-		if (!popup) return;
+		this.popup = $(this.selector);
+		if (!this.popup) return;
+		const popup = this.popup;
 
 		// Load position
 		const coords = getStorage('Diaphantium.coordinates');
@@ -113,26 +116,27 @@ export default class Popup {
 	hide() {
 		if (!this.isOpen) return;
 
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
-		// Save position
-		setStorage('Diaphantium.coordinates', {
+		// Batch save all settings at once
+		const updates = {};
+		
+		updates.coordinates = {
 			top: parseFloat(popup.style.top),
 			left: parseFloat(popup.style.left)
-		});
+		};
 
-		// Save mine delay
 		const delayInput = $('.text_input.delay', popup);
-		if (delayInput) {
-			const value = delayInput.value;
-			if (/^\d+$/.test(value)) {
-				setStorage('Diaphantium.mine_delay', [value]);
-			}
+		if (delayInput && /^\d+$/.test(delayInput.value)) {
+			updates.mineDelay = parseInt(delayInput.value, 10);
 		}
+
+		updateConfig(updates);
 
 		// Remove popup
 		$('.popup_container.diaphantium[author="OrakomoRi"]')?.remove();
+		this.popup = null; // Clear cache
 
 		// Restore pointer lock (check if element is still in DOM)
 		if (this.lockedElement?.requestPointerLock && document.contains(this.lockedElement)) {
@@ -159,7 +163,7 @@ export default class Popup {
 	}
 
 	setupTabs() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		// Tab click
@@ -181,7 +185,7 @@ export default class Popup {
 	}
 
 	initTab(tabName) {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		// Hide all tabs
@@ -205,7 +209,7 @@ export default class Popup {
 
 	// Setup supply icon clicks (toggle on/off)
 	setupSupplyIcons() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const supplies = $$('.supply', popup);
@@ -237,7 +241,7 @@ export default class Popup {
 	}
 
 	saveClickValues() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const values = [];
@@ -253,7 +257,7 @@ export default class Popup {
 
 	// Setup supply clicker checkbox
 	setupSupplyCheckbox() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const checkbox = $('.checkbox.supplies', popup);
@@ -268,15 +272,15 @@ export default class Popup {
 
 	// Setup mine delay input
 	setupMineDelay() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const delayInput = $('.text_input.delay', popup);
 		if (!delayInput) return;
 
 		// Load saved value
-		const saved = getStorage('Diaphantium.mine_delay');
-		const value = saved?.[0] || '100';
+		const saved = getStorage('mineDelay');
+		const value = saved || 100;
 		delayInput.value = value;
 
 		let previousValue = value;
@@ -305,38 +309,32 @@ export default class Popup {
 			} else {
 				// Valid - save
 				previousValue = newValue;
-				setStorage('Diaphantium.mine_delay', [newValue]);
+				setStorage('mineDelay', parseInt(newValue, 10));
 			}
 		});
 	}
 
 	// Setup miscellaneous checkboxes (Anti-AFK and Auto-delete)
 	setupMiscellaneous() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		// Anti-AFK checkbox
 		const antiAfkCheckbox = $('.checkbox.anti_afk', popup);
 		if (antiAfkCheckbox) {
-			const antiAfkState = getStorage('Diaphantium.antiAfkState');
-			if (antiAfkState === true) {
-				antiAfkCheckbox.checked = true;
-			}
+			antiAfkCheckbox.checked = getStorage('antiAfkState') === true;
 		}
 
 		// Auto-delete checkbox
 		const autoDeleteCheckbox = $('.checkbox.auto_delete', popup);
 		if (autoDeleteCheckbox) {
-			const autoDeleteState = getStorage('Diaphantium.autoDeleteState');
-			if (autoDeleteState === true) {
-				autoDeleteCheckbox.checked = true;
-			}
+			autoDeleteCheckbox.checked = getStorage('autoDeleteState') === true;
 		}
 	}
 
 	// Setup hotkey inputs
 	setupHotkeys() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const hotkeyInputs = $$('.hotkey', popup);
@@ -432,7 +430,7 @@ export default class Popup {
 	}
 
 	saveHotkeys() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const hotkeys = [];
@@ -449,7 +447,7 @@ export default class Popup {
 	}
 
 	updateHotkeyClasses() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const inputs = $$('.hotkey', popup);
@@ -467,7 +465,7 @@ export default class Popup {
 
 	// Setup signature visibility toggle
 	setupSignature() {
-		const popup = $(this.selector);
+		const popup = this.popup;
 		if (!popup) return;
 
 		const checkbox = $('.checkbox.show_signature', popup);
@@ -497,6 +495,21 @@ export default class Popup {
 
 			setStorage('Diaphantium.showSignature', isChecked);
 		});
+	}
+
+	// Batch save all settings (used by debounced save)
+	saveAllSettings() {
+		if (!this.popup) return;
+
+		const updates = {};
+
+		// Save mine delay
+		const delayInput = $('.text_input.delay', this.popup);
+		if (delayInput && /^\d+$/.test(delayInput.value)) {
+			updates.mineDelay = parseInt(delayInput.value, 10);
+		}
+
+		updateConfig(updates);
 	}
 
 	// Block page scroll when popup is open
