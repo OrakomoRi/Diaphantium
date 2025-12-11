@@ -1,12 +1,9 @@
 export default class PacketClicker {
 	constructor() {
-		this.supplies = {};
+		this.supplies = new Map();
 		this.cooldowns = new Set();
-		this.variableNames = {
-			supply: null,
-			cooldown: null
-		};
-		this.fullObjects = [];
+		this.variableNames = { supply: null, cooldown: null };
+		this.hooksInstalled = false;
 
 		this.SUPPLY_TYPES = {
 			FIRST_AID: '1',
@@ -21,103 +18,71 @@ export default class PacketClicker {
 
 	async init() {
 		const script = await this.fetchGameScript();
-		if (!script) {
-			return false;
-		}
+		if (!script) return false;
 
 		this.variableNames.supply = this.extractVariableName(script, 'ConfigureSupplyMessage');
 		this.variableNames.cooldown = this.extractVariableName(script, 'StopCooldownMessage');
 
-		if (!this.variableNames.supply || !this.variableNames.cooldown) {
-			return false;
+		if (!this.variableNames.supply || !this.variableNames.cooldown) return false;
+
+		if (!this.hooksInstalled) {
+			this.installHooks();
+			this.hooksInstalled = true;
 		}
 
-		this.hookSupplyObjects();
-		this.hookCooldownTracking();
 		return true;
 	}
 
-	async fetchGameScript() {
-		try {
-			// Try multiple patterns for different server configurations
-			const patterns = [
-				s => s.src?.includes('/static/js/'),
-			];
-			
-			let scriptTag = null;
-			for (const pattern of patterns) {
-				scriptTag = [...document.scripts].find(pattern);
-				if (scriptTag) break;
-			}
-			
-			if (!scriptTag) {
-				await new Promise(resolve => setTimeout(resolve, 100));
-				return this.fetchGameScript();
-			}
+	reset() {
+		this.supplies.clear();
+		this.cooldowns.clear();
+	}
 
+	async fetchGameScript() {
+		const findScript = () => [...document.scripts].find(s => s.src?.includes('/static/js/'));
+		
+		let scriptTag = findScript();
+		if (!scriptTag) {
+			await new Promise(resolve => setTimeout(resolve, 100));
+			scriptTag = findScript();
+			if (!scriptTag) return null;
+		}
+
+		try {
 			const response = await fetch(scriptTag.src);
-			if (!response.ok) throw new Error('Failed to fetch');
-			
-			return await response.text();
-		} catch (error) {
+			return response.ok ? await response.text() : null;
+		} catch {
 			return null;
 		}
 	}	extractVariableName(script, messageType) {
-		let pattern;
-		if (messageType === 'ConfigureSupplyMessage') {
-			// Pattern with toString: ConfigureSupplyMessage(type=" + this.oy7_1.toString() + ", count=" + this.py7_1 + "
-			// Pattern without toString: ConfigureSupplyMessage(type=" + this.jy4_1 + ", count=" + this.ky4_1 + "
-			pattern = /ConfigureSupplyMessage\(type=.+?this\.(\w+)(?:\.toString\(\))?\s*\+.+?count=.+?this\.(\w+)/;
-			const match = script.match(pattern);
-			if (match) {
-				return match[2];
-			}
-		} else if (messageType === 'StopCooldownMessage') {
-			// Pattern with toString: StopCooldownMessage(supplyType=" + this.cyf_1.toString() + ")"
-			// Pattern without toString: StopCooldownMessage(supplyType=" + this.xyb_1 + ")"
-			pattern = /StopCooldownMessage\(supplyType=.+?this\.(\w+)(?:\.toString\(\))?/;
-			const match = script.match(pattern);
-			if (match) {
-				return match[1];
-			}
-		}
+		const patterns = {
+			ConfigureSupplyMessage: /ConfigureSupplyMessage\(type=.+?this\.(\w+)(?:\.toString\(\))?\s*\+.+?count=.+?this\.(\w+)/,
+			StopCooldownMessage: /StopCooldownMessage\(supplyType=.+?this\.(\w+)(?:\.toString\(\))?/
+		};
 
-		return null;
+		const match = script.match(patterns[messageType]);
+		return match ? match[messageType === 'ConfigureSupplyMessage' ? 2 : 1] : null;
 	}
 
-	hookSupplyObjects() {
+	installHooks() {
+		this.hookSupplyRegistration();
+		this.hookCooldownTracking();
+	}
+
+	hookSupplyRegistration() {
 		const self = this;
 		const propertyName = this.variableNames.supply;
 
 		Object.defineProperty(Object.prototype, propertyName, {
-			get: function () {
-				return this[`__${propertyName}`];
-			},
-			set: function (value) {
+			get() { return this[`__${propertyName}`]; },
+			set(value) {
 				this[`__${propertyName}`] = value;
 
-				if (!self.fullObjects.includes(this)) {
-					self.fullObjects.push(this);
-				}
+				const supplyType = self.findSupplyType(this);
+				if (!supplyType || self.supplies.has(supplyType)) return;
 
-				const nameData = self.findNameKey(this);
-				if (nameData) {
-					const supplyType = nameData.value;
-
-					if (!self.supplies[supplyType]) {
-						self.supplies[supplyType] = () => {
-							self.fullObjects.forEach(obj => {
-								const n = self.findNameKey(obj);
-								if (n && n.value === supplyType) {
-									const funcs = Object.values(obj).filter(v => typeof v === 'function');
-									if (funcs.length === 1) {
-										funcs[0]();
-									}
-								}
-							});
-						};
-					}
-				}
+				const activator = self.createSupplyActivator(this, supplyType);
+				if (activator) self.supplies.set(supplyType, activator);
 			},
 			configurable: true
 		});
@@ -128,72 +93,46 @@ export default class PacketClicker {
 		const propertyName = this.variableNames.cooldown;
 
 		Object.defineProperty(Object.prototype, propertyName, {
-			get: function () {
-				return this[`__${propertyName}`];
-			},
-			set: function (value) {
+			get() { return this[`__${propertyName}`]; },
+			set(value) {
 				this[`__${propertyName}`] = value;
-
-				const nameData = self.findNameKey(this);
-				if (nameData) {
-					const supplyType = nameData.value;
-					self.cooldowns.delete(supplyType);
-				}
+				const supplyType = self.findSupplyType(this);
+				if (supplyType) self.cooldowns.delete(supplyType);
 			},
 			configurable: true
 		});
 	}
 
-	findNameKey(obj, seen = new WeakSet()) {
-		if (!obj || typeof obj !== 'object') return null;
-		if (seen.has(obj)) return null;
-		seen.add(obj);
-
-		for (const key of Object.keys(obj)) {
+	findSupplyType(obj) {
+		for (const key in obj) {
 			const value = obj[key];
-
-			if (typeof value === 'string' && value.match(/^[A-Z_]+$/)) {
-				return { key, value };
-			}
-
-			if (typeof value === 'object') {
-				const result = this.findNameKey(value, seen);
-				if (result) return result;
+			if (typeof value === 'string' && /^[A-Z_]+$/.test(value)) {
+				return value;
 			}
 		}
-
 		return null;
 	}
 
+	createSupplyActivator(obj, supplyType) {
+		const func = Object.values(obj).find(v => typeof v === 'function');
+		return func ? () => func.call(obj) : null;
+	}
+
 	clickSupply(key) {
-		const supplyType = Object.keys(this.SUPPLY_TYPES).find(
-			type => this.SUPPLY_TYPES[type] === key
-		);
-
+		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
 		if (!supplyType) return;
-		if (!this.supplies[supplyType]) return;
 
-		// Mines don't have cooldown restrictions
-		if (supplyType === 'MINE') {
-			this.supplies[supplyType]();
-			return;
+		const activator = this.supplies.get(supplyType);
+		if (!activator) return;
+
+		if (supplyType === 'MINE' || !this.cooldowns.has(supplyType)) {
+			activator();
+			if (supplyType !== 'MINE') this.cooldowns.add(supplyType);
 		}
-
-		// For other supplies, check cooldown
-		if (this.cooldowns.has(supplyType)) return;
-
-		this.supplies[supplyType]();
-		this.cooldowns.add(supplyType);
 	}
 
 	isReady(key) {
-		const supplyType = Object.keys(this.SUPPLY_TYPES).find(
-			type => this.SUPPLY_TYPES[type] === key
-		);
-
-		if (!supplyType) return false;
-		if (supplyType === 'MINE') return true; // Mines are always ready
-
-		return !this.cooldowns.has(supplyType);
+		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
+		return supplyType ? (supplyType === 'MINE' || !this.cooldowns.has(supplyType)) : false;
 	}
 }

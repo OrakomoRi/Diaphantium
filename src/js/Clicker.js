@@ -138,6 +138,12 @@ export default class Clicker {
 		const feat = this.features[feature];
 		feat.enabled = true;
 		if (feat.storageKey) setStorage(feat.storageKey, true);
+		
+		// Reset packet clicker state when starting supplies/mines in battle
+		if ((feature === 'supplies' || feature === 'mines') && this.clickerMode === 'packet' && this.packetClicker) {
+			this.packetClicker.reset();
+		}
+		
 		this.updateUIState();
 		this.runLoop(feature);
 	}
