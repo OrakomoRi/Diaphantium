@@ -1,6 +1,6 @@
 export default class PacketClicker {
 	constructor() {
-		this.supplies = new Map();
+		this.supplyObjects = new Map();
 		this.cooldowns = new Set();
 		this.variableNames = { supply: null, cooldown: null };
 		this.hooksInstalled = false;
@@ -34,7 +34,7 @@ export default class PacketClicker {
 	}
 
 	reset() {
-		this.supplies.clear();
+		this.supplyObjects.clear();
 		this.cooldowns.clear();
 	}
 
@@ -79,10 +79,9 @@ export default class PacketClicker {
 				this[`__${propertyName}`] = value;
 
 				const supplyType = self.findSupplyType(this);
-				if (!supplyType || self.supplies.has(supplyType)) return;
-
-				const activator = self.createSupplyActivator(this, supplyType);
-				if (activator) self.supplies.set(supplyType, activator);
+				if (supplyType) {
+					self.supplyObjects.set(supplyType, this);
+				}
 			},
 			configurable: true
 		});
@@ -113,20 +112,18 @@ export default class PacketClicker {
 		return null;
 	}
 
-	createSupplyActivator(obj, supplyType) {
-		const func = Object.values(obj).find(v => typeof v === 'function');
-		return func ? () => func.call(obj) : null;
-	}
-
 	clickSupply(key) {
 		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
 		if (!supplyType) return;
 
-		const activator = this.supplies.get(supplyType);
-		if (!activator) return;
+		const obj = this.supplyObjects.get(supplyType);
+		if (!obj) return;
+
+		const func = Object.values(obj).find(v => typeof v === 'function');
+		if (!func) return;
 
 		if (supplyType === 'MINE' || !this.cooldowns.has(supplyType)) {
-			activator();
+			func.call(obj);
 			if (supplyType !== 'MINE') this.cooldowns.add(supplyType);
 		}
 	}
