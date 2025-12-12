@@ -186,11 +186,19 @@ export default class PacketClicker {
 			return;
 		}
 
-		// Find current object with this supply type
+		// Find current valid object with this supply type
+		let foundDead = false;
 		for (const obj of this.fullObjects) {
 			const objType = this.findSupplyType(obj);
 			if (objType === supplyType) {
 				const funcs = Object.values(obj).filter(v => typeof v === 'function');
+				
+				// Skip dead objects (no functions)
+				if (funcs.length === 0) {
+					foundDead = true;
+					continue;
+				}
+				
 				if (funcs.length === 1) {
 					funcs[0]();
 					if (supplyType !== 'MINE') {
@@ -199,6 +207,19 @@ export default class PacketClicker {
 					this.log('click', supplyType);
 					return;
 				}
+			}
+		}
+		
+		// Clean up dead objects if found only dead ones
+		if (foundDead) {
+			const before = this.fullObjects.length;
+			this.fullObjects = this.fullObjects.filter(obj => {
+				const funcs = Object.values(obj).filter(v => typeof v === 'function');
+				return funcs.length > 0;
+			});
+			const removed = before - this.fullObjects.length;
+			if (removed > 0) {
+				this.log('cleanup', `Removed ${removed} dead objects`);
 			}
 		}
 		
