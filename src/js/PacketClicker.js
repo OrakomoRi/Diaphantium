@@ -1,6 +1,6 @@
 export default class PacketClicker {
 	constructor() {
-		this.supplyObjects = new Map();
+		this.fullObjects = [];
 		this.cooldowns = new Set();
 		this.variableNames = { supply: null, cooldown: null };
 		this.hooksInstalled = false;
@@ -47,12 +47,6 @@ export default class PacketClicker {
 		return true;
 	}
 
-	reset() {
-		this.supplyObjects.clear();
-		this.cooldowns.clear();
-		this.log('reset', 'State cleared for new battle');
-	}
-
 	log(event, data) {
 		this.debugHistory.push({
 			time: new Date().toLocaleTimeString(),
@@ -65,10 +59,13 @@ export default class PacketClicker {
 	}
 
 	showDebug() {
+		const supplyTypes = this.fullObjects.map(obj => this.findSupplyType(obj)).filter(Boolean);
+		
 		const info = {
 			initialized: this.hooksInstalled,
 			variableNames: this.variableNames,
-			registeredSupplies: Array.from(this.supplyObjects.keys()),
+			objectCount: this.fullObjects.length,
+			uniqueSupplies: [...new Set(supplyTypes)],
 			activeCooldowns: Array.from(this.cooldowns),
 			recentEvents: this.debugHistory.slice(-15)
 		};
@@ -76,7 +73,8 @@ export default class PacketClicker {
 		console.table(info.recentEvents);
 		console.log('Initialized:', info.initialized);
 		console.log('Variables:', info.variableNames);
-		console.log('Registered:', info.registeredSupplies.join(', ') || 'NONE');
+		console.log('Total objects:', info.objectCount);
+		console.log('Supplies:', info.uniqueSupplies.join(', ') || 'NONE');
 		console.log('Cooldowns:', info.activeCooldowns.join(', ') || 'NONE');
 		
 		return info;
@@ -98,7 +96,9 @@ export default class PacketClicker {
 		} catch {
 			return null;
 		}
-	}	extractVariableName(script, messageType) {
+	}
+
+	extractVariableName(script, messageType) {
 		const patterns = {
 			ConfigureSupplyMessage: /ConfigureSupplyMessage\(type=.+?this\.(\w+)(?:\.toString\(\))?\s*\+.+?count=.+?this\.(\w+)/,
 			StopCooldownMessage: /StopCooldownMessage\(supplyType=.+?this\.(\w+)(?:\.toString\(\))?/
@@ -122,20 +122,14 @@ export default class PacketClicker {
 			set(value) {
 				this[`__${propertyName}`] = value;
 
-				const supplyType = self.findSupplyType(this);
-				if (supplyType) {
-					const funcCount = Object.values(this).filter(v => typeof v === 'function').length;
-					self.supplyObjects.set(supplyType, this);
-					self.log('register', `${supplyType} (${funcCount} functions)`);
-				} else {
-					// Debug: show what's in the object
-					const sample = {};
-					for (const key in this) {
-						if (sample.length >= 3) break;
-						const val = this[key];
-						sample[key] = typeof val === 'function' ? 'fn' : typeof val === 'object' ? 'obj' : val;
+				if (!self.fullObjects.includes(this)) {
+					self.fullObjects.push(this);
+					
+					const supplyType = self.findSupplyType(this);
+					if (supplyType) {
+						const funcCount = Object.values(this).filter(v => typeof v === 'function').length;
+						self.log('register', `${supplyType} (${funcCount} functions)`);
 					}
-					self.log('register-skip', `Sample: ${JSON.stringify(sample).slice(0, 100)}`);
 				}
 			},
 			configurable: true
@@ -150,6 +144,7 @@ export default class PacketClicker {
 			get() { return this[`__${propertyName}`]; },
 			set(value) {
 				this[`__${propertyName}`] = value;
+				
 				const supplyType = self.findSupplyType(this);
 				if (supplyType) {
 					self.cooldowns.delete(supplyType);
@@ -183,47 +178,31 @@ export default class PacketClicker {
 
 	clickSupply(key) {
 		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
-		if (!supplyType) {
-			this.log('click-fail', `Unknown key: ${key}`);
+		if (!supplyType) return;
+
+		// MINE has no cooldown
+		if (supplyType !== 'MINE' && this.cooldowns.has(supplyType)) {
+			this.log('click-skip', `${supplyType} on cooldown`);
 			return;
 		}
 
-		const obj = this.supplyObjects.get(supplyType);
-		if (!obj) {
-			this.log('click-fail', `${supplyType} not registered`);
-			return;
-		}
-
-		// Debug: check all object properties
-		const allKeys = Object.keys(obj);
-		const funcs = Object.values(obj).filter(v => typeof v === 'function');
-		const nestedObjs = Object.values(obj).filter(v => v && typeof v === 'object');
-		
-		this.log('click-attempt', `${supplyType}: ${funcs.length} funcs, ${nestedObjs.length} objs, ${allKeys.length} keys`);
-
-		const func = funcs[0];
-		if (!func) {
-			// Try to find function in nested objects
-			for (const nested of nestedObjs) {
-				const nestedFuncs = Object.values(nested).filter(v => typeof v === 'function');
-				if (nestedFuncs.length > 0) {
-					this.log('click', `${supplyType} (nested function)`);
-					nestedFuncs[0].call(nested);
-					if (supplyType !== 'MINE') this.cooldowns.add(supplyType);
+		// Find current object with this supply type
+		for (const obj of this.fullObjects) {
+			const objType = this.findSupplyType(obj);
+			if (objType === supplyType) {
+				const funcs = Object.values(obj).filter(v => typeof v === 'function');
+				if (funcs.length === 1) {
+					funcs[0]();
+					if (supplyType !== 'MINE') {
+						this.cooldowns.add(supplyType);
+					}
+					this.log('click', supplyType);
 					return;
 				}
 			}
-			this.log('click-fail', `${supplyType} no function found`);
-			return;
 		}
-
-		if (supplyType === 'MINE' || !this.cooldowns.has(supplyType)) {
-			func.call(obj);
-			if (supplyType !== 'MINE') this.cooldowns.add(supplyType);
-			this.log('click', supplyType);
-		} else {
-			this.log('click-skip', `${supplyType} on cooldown`);
-		}
+		
+		this.log('click-fail', `${supplyType} not found`);
 	}
 
 	isReady(key) {
