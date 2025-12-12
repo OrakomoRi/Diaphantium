@@ -219,7 +219,9 @@ export default class PacketClicker {
 			});
 			const removed = before - this.fullObjects.length;
 			if (removed > 0) {
-				this.log('cleanup', `Removed ${removed} dead objects`);
+				// Clear cooldowns when cleaning dead objects
+				this.cooldowns.clear();
+				this.log('cleanup', `Removed ${removed} dead objects, cleared cooldowns`);
 			}
 		}
 		
