@@ -194,9 +194,26 @@ export default class PacketClicker {
 			return;
 		}
 
-		const func = Object.values(obj).find(v => typeof v === 'function');
+		// Debug: check all object properties
+		const allKeys = Object.keys(obj);
+		const funcs = Object.values(obj).filter(v => typeof v === 'function');
+		const nestedObjs = Object.values(obj).filter(v => v && typeof v === 'object');
+		
+		this.log('click-attempt', `${supplyType}: ${funcs.length} funcs, ${nestedObjs.length} objs, ${allKeys.length} keys`);
+
+		const func = funcs[0];
 		if (!func) {
-			this.log('click-fail', `${supplyType} no function`);
+			// Try to find function in nested objects
+			for (const nested of nestedObjs) {
+				const nestedFuncs = Object.values(nested).filter(v => typeof v === 'function');
+				if (nestedFuncs.length > 0) {
+					this.log('click', `${supplyType} (nested function)`);
+					nestedFuncs[0].call(nested);
+					if (supplyType !== 'MINE') this.cooldowns.add(supplyType);
+					return;
+				}
+			}
+			this.log('click-fail', `${supplyType} no function found`);
 			return;
 		}
 
