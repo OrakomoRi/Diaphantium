@@ -128,8 +128,14 @@ export default class PacketClicker {
 					self.supplyObjects.set(supplyType, this);
 					self.log('register', `${supplyType} (${funcCount} functions)`);
 				} else {
-					const keys = Object.keys(this).slice(0, 5).join(', ');
-					self.log('register-skip', `No supply type found, keys: ${keys}`);
+					// Debug: show what's in the object
+					const sample = {};
+					for (const key in this) {
+						if (sample.length >= 3) break;
+						const val = this[key];
+						sample[key] = typeof val === 'function' ? 'fn' : typeof val === 'object' ? 'obj' : val;
+					}
+					self.log('register-skip', `Sample: ${JSON.stringify(sample).slice(0, 100)}`);
 				}
 			},
 			configurable: true
@@ -154,13 +160,24 @@ export default class PacketClicker {
 		});
 	}
 
-	findSupplyType(obj) {
-		for (const key in obj) {
+	findSupplyType(obj, seen = new WeakSet()) {
+		if (!obj || typeof obj !== 'object') return null;
+		if (seen.has(obj)) return null;
+		seen.add(obj);
+
+		for (const key of Object.keys(obj)) {
 			const value = obj[key];
+
 			if (typeof value === 'string' && /^[A-Z_]+$/.test(value)) {
 				return value;
 			}
+
+			if (typeof value === 'object') {
+				const result = this.findSupplyType(value, seen);
+				if (result) return result;
+			}
 		}
+
 		return null;
 	}
 
