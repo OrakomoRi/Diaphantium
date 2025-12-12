@@ -23,16 +23,25 @@ export default class PacketClicker {
 
 	async init() {
 		const script = await this.fetchGameScript();
-		if (!script) return false;
+		if (!script) {
+			this.log('init-fail', 'Script not found');
+			return false;
+		}
 
 		this.variableNames.supply = this.extractVariableName(script, 'ConfigureSupplyMessage');
 		this.variableNames.cooldown = this.extractVariableName(script, 'StopCooldownMessage');
 
-		if (!this.variableNames.supply || !this.variableNames.cooldown) return false;
+		this.log('init', `Variables: supply=${this.variableNames.supply}, cooldown=${this.variableNames.cooldown}`);
+
+		if (!this.variableNames.supply || !this.variableNames.cooldown) {
+			this.log('init-fail', 'Variables not extracted');
+			return false;
+		}
 
 		if (!this.hooksInstalled) {
 			this.installHooks();
 			this.hooksInstalled = true;
+			this.log('hooks', 'Installed successfully');
 		}
 
 		return true;
@@ -57,16 +66,18 @@ export default class PacketClicker {
 
 	showDebug() {
 		const info = {
+			initialized: this.hooksInstalled,
 			variableNames: this.variableNames,
 			registeredSupplies: Array.from(this.supplyObjects.keys()),
 			activeCooldowns: Array.from(this.cooldowns),
-			recentEvents: this.debugHistory.slice(-10)
+			recentEvents: this.debugHistory.slice(-15)
 		};
 		
 		console.table(info.recentEvents);
+		console.log('Initialized:', info.initialized);
 		console.log('Variables:', info.variableNames);
-		console.log('Registered:', info.registeredSupplies.join(', '));
-		console.log('Cooldowns:', info.activeCooldowns.join(', '));
+		console.log('Registered:', info.registeredSupplies.join(', ') || 'NONE');
+		console.log('Cooldowns:', info.activeCooldowns.join(', ') || 'NONE');
 		
 		return info;
 	}
@@ -116,6 +127,9 @@ export default class PacketClicker {
 					const funcCount = Object.values(this).filter(v => typeof v === 'function').length;
 					self.supplyObjects.set(supplyType, this);
 					self.log('register', `${supplyType} (${funcCount} functions)`);
+				} else {
+					const keys = Object.keys(this).slice(0, 5).join(', ');
+					self.log('register-skip', `No supply type found, keys: ${keys}`);
 				}
 			},
 			configurable: true
