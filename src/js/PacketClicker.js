@@ -4,6 +4,7 @@ export default class PacketClicker {
 		this.cooldowns = new Set();
 		this.variableNames = { supply: null, cooldown: null };
 		this.hooksInstalled = false;
+		this.debugHistory = [];
 
 		this.SUPPLY_TYPES = {
 			FIRST_AID: '1',
@@ -12,6 +13,10 @@ export default class PacketClicker {
 			NITRO: '4',
 			MINE: '5'
 		};
+
+		if (typeof window !== 'undefined') {
+			window.packetClickerDebug = () => this.showDebug();
+		}
 
 		this.init();
 	}
@@ -36,6 +41,34 @@ export default class PacketClicker {
 	reset() {
 		this.supplyObjects.clear();
 		this.cooldowns.clear();
+		this.log('reset', 'State cleared for new battle');
+	}
+
+	log(event, data) {
+		this.debugHistory.push({
+			time: new Date().toLocaleTimeString(),
+			event,
+			data
+		});
+		if (this.debugHistory.length > 50) {
+			this.debugHistory.shift();
+		}
+	}
+
+	showDebug() {
+		const info = {
+			variableNames: this.variableNames,
+			registeredSupplies: Array.from(this.supplyObjects.keys()),
+			activeCooldowns: Array.from(this.cooldowns),
+			recentEvents: this.debugHistory.slice(-10)
+		};
+		
+		console.table(info.recentEvents);
+		console.log('Variables:', info.variableNames);
+		console.log('Registered:', info.registeredSupplies.join(', '));
+		console.log('Cooldowns:', info.activeCooldowns.join(', '));
+		
+		return info;
 	}
 
 	async fetchGameScript() {
@@ -80,7 +113,9 @@ export default class PacketClicker {
 
 				const supplyType = self.findSupplyType(this);
 				if (supplyType) {
+					const funcCount = Object.values(this).filter(v => typeof v === 'function').length;
 					self.supplyObjects.set(supplyType, this);
+					self.log('register', `${supplyType} (${funcCount} functions)`);
 				}
 			},
 			configurable: true
@@ -96,7 +131,10 @@ export default class PacketClicker {
 			set(value) {
 				this[`__${propertyName}`] = value;
 				const supplyType = self.findSupplyType(this);
-				if (supplyType) self.cooldowns.delete(supplyType);
+				if (supplyType) {
+					self.cooldowns.delete(supplyType);
+					self.log('cooldown-end', supplyType);
+				}
 			},
 			configurable: true
 		});
@@ -114,17 +152,29 @@ export default class PacketClicker {
 
 	clickSupply(key) {
 		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
-		if (!supplyType) return;
+		if (!supplyType) {
+			this.log('click-fail', `Unknown key: ${key}`);
+			return;
+		}
 
 		const obj = this.supplyObjects.get(supplyType);
-		if (!obj) return;
+		if (!obj) {
+			this.log('click-fail', `${supplyType} not registered`);
+			return;
+		}
 
 		const func = Object.values(obj).find(v => typeof v === 'function');
-		if (!func) return;
+		if (!func) {
+			this.log('click-fail', `${supplyType} no function`);
+			return;
+		}
 
 		if (supplyType === 'MINE' || !this.cooldowns.has(supplyType)) {
 			func.call(obj);
 			if (supplyType !== 'MINE') this.cooldowns.add(supplyType);
+			this.log('click', supplyType);
+		} else {
+			this.log('click-skip', `${supplyType} on cooldown`);
 		}
 	}
 
