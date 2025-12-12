@@ -180,17 +180,13 @@ export default class PacketClicker {
 		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
 		if (!supplyType) return;
 
-		// Check for dead objects and clean them up
-		const aliveBefore = this.fullObjects.length;
-		this.fullObjects = this.fullObjects.filter(obj => {
-			const funcs = Object.values(obj).filter(v => typeof v === 'function');
-			return funcs.length > 0;
-		});
-		
-		if (this.fullObjects.length < aliveBefore) {
-			const removed = aliveBefore - this.fullObjects.length;
+		// Clean up duplicates if object count is too high
+		if (this.fullObjects.length > 35) {
+			const before = this.fullObjects.length;
+			// Keep only last 28 objects (fresh ones)
+			this.fullObjects = this.fullObjects.slice(-28);
 			this.cooldowns.clear();
-			this.log('cleanup', `Removed ${removed} dead objects, cleared cooldowns`);
+			this.log('cleanup', `Trimmed ${before - this.fullObjects.length} old objects, cleared cooldowns`);
 		}
 
 		// MINE has no cooldown
@@ -199,12 +195,12 @@ export default class PacketClicker {
 			return;
 		}
 
-		// Find current valid object with this supply type
+		// Find current object with this supply type
 		for (const obj of this.fullObjects) {
 			const objType = this.findSupplyType(obj);
 			if (objType === supplyType) {
 				const funcs = Object.values(obj).filter(v => typeof v === 'function');
-				if (funcs.length === 1) {
+				if (funcs.length >= 1) {
 					funcs[0]();
 					if (supplyType !== 'MINE') {
 						this.cooldowns.add(supplyType);
@@ -213,6 +209,12 @@ export default class PacketClicker {
 					return;
 				}
 			}
+		}
+		
+		// Not found - might be stale cooldown, clear it
+		if (this.cooldowns.has(supplyType)) {
+			this.cooldowns.delete(supplyType);
+			this.log('cooldown-clear', `${supplyType} not found, cleared cooldown`);
 		}
 		
 		this.log('click-fail', `${supplyType} not found`);
