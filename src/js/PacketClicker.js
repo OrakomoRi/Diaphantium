@@ -180,6 +180,19 @@ export default class PacketClicker {
 		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
 		if (!supplyType) return;
 
+		// Check for dead objects and clean them up
+		const aliveBefore = this.fullObjects.length;
+		this.fullObjects = this.fullObjects.filter(obj => {
+			const funcs = Object.values(obj).filter(v => typeof v === 'function');
+			return funcs.length > 0;
+		});
+		
+		if (this.fullObjects.length < aliveBefore) {
+			const removed = aliveBefore - this.fullObjects.length;
+			this.cooldowns.clear();
+			this.log('cleanup', `Removed ${removed} dead objects, cleared cooldowns`);
+		}
+
 		// MINE has no cooldown
 		if (supplyType !== 'MINE' && this.cooldowns.has(supplyType)) {
 			this.log('click-skip', `${supplyType} on cooldown`);
@@ -187,18 +200,10 @@ export default class PacketClicker {
 		}
 
 		// Find current valid object with this supply type
-		let foundDead = false;
 		for (const obj of this.fullObjects) {
 			const objType = this.findSupplyType(obj);
 			if (objType === supplyType) {
 				const funcs = Object.values(obj).filter(v => typeof v === 'function');
-				
-				// Skip dead objects (no functions)
-				if (funcs.length === 0) {
-					foundDead = true;
-					continue;
-				}
-				
 				if (funcs.length === 1) {
 					funcs[0]();
 					if (supplyType !== 'MINE') {
@@ -207,21 +212,6 @@ export default class PacketClicker {
 					this.log('click', supplyType);
 					return;
 				}
-			}
-		}
-		
-		// Clean up dead objects if found only dead ones
-		if (foundDead) {
-			const before = this.fullObjects.length;
-			this.fullObjects = this.fullObjects.filter(obj => {
-				const funcs = Object.values(obj).filter(v => typeof v === 'function');
-				return funcs.length > 0;
-			});
-			const removed = before - this.fullObjects.length;
-			if (removed > 0) {
-				// Clear cooldowns when cleaning dead objects
-				this.cooldowns.clear();
-				this.log('cleanup', `Removed ${removed} dead objects, cleared cooldowns`);
 			}
 		}
 		
