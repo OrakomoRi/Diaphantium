@@ -53,7 +53,7 @@ export default class PacketClicker {
 			event,
 			data
 		});
-		if (this.debugHistory.length > 50) {
+		if (this.debugHistory.length > 500) {
 			this.debugHistory.shift();
 		}
 	}
@@ -67,7 +67,7 @@ export default class PacketClicker {
 			objectCount: this.fullObjects.length,
 			uniqueSupplies: [...new Set(supplyTypes)],
 			activeCooldowns: Array.from(this.cooldowns),
-			recentEvents: this.debugHistory.slice(-15)
+			recentEvents: this.debugHistory.slice(-50)
 		};
 		
 		console.table(info.recentEvents);
