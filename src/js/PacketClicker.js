@@ -145,24 +145,32 @@ export default class PacketClicker {
 			set(value) {
 				this[`__${propertyName}`] = value;
 				
+				self.log('cooldown-message', JSON.stringify(value).substring(0, 100));
+				
 				let supplyType = null;
 				
 				if (value && typeof value === 'object') {
 					for (const key in value) {
 						if (typeof value[key] === 'string' && /^[A-Z_]+$/.test(value[key])) {
 							supplyType = value[key];
+							self.log('cooldown-supply-found', `${key}: ${supplyType}`);
 							break;
 						}
 					}
 					
 					if (!supplyType) {
 						supplyType = self.findSupplyType(value);
+						if (supplyType) {
+							self.log('cooldown-supply-recursive', supplyType);
+						}
 					}
 				}
 				
 				if (supplyType) {
 					self.cooldowns.delete(supplyType);
 					self.log('cooldown-end', supplyType);
+				} else {
+					self.log('cooldown-no-type', 'Supply type not found');
 				}
 			},
 			configurable: true
