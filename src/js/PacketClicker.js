@@ -202,13 +202,23 @@ export default class PacketClicker {
 		const supplyType = Object.keys(this.SUPPLY_TYPES).find(k => this.SUPPLY_TYPES[k] === key);
 		if (!supplyType) return;
 
-		// Clean up duplicates if object count is too high
+		// Clean up dead objects (those with no functions - from previous battles)
+		const aliveBefore = this.fullObjects.length;
+		this.fullObjects = this.fullObjects.filter(obj => {
+			const funcCount = Object.values(obj).filter(v => typeof v === 'function').length;
+			return funcCount > 0;
+		});
+		
+		if (this.fullObjects.length < aliveBefore) {
+			const removed = aliveBefore - this.fullObjects.length;
+			this.log('cleanup-dead', `Removed ${removed} dead objects from previous battle`);
+		}
+
+		// Additional cleanup if still too many objects
 		if (this.fullObjects.length > 35) {
 			const before = this.fullObjects.length;
-			// Keep only last 28 objects (fresh ones)
 			this.fullObjects = this.fullObjects.slice(-28);
-			this.cooldowns.clear();
-			this.log('cleanup', `Trimmed ${before - this.fullObjects.length} old objects, cleared cooldowns`);
+			this.log('cleanup', `Trimmed ${before - this.fullObjects.length} old objects`);
 		}
 
 		// MINE has no cooldown
@@ -217,8 +227,9 @@ export default class PacketClicker {
 			return;
 		}
 
-		// Find current object with this supply type
-		for (const obj of this.fullObjects) {
+		// Find current object with this supply type (iterate from newest to oldest)
+		for (let i = this.fullObjects.length - 1; i >= 0; i--) {
+			const obj = this.fullObjects[i];
 			const objType = this.findSupplyType(obj);
 			if (objType === supplyType) {
 				const funcs = Object.values(obj).filter(v => typeof v === 'function');
