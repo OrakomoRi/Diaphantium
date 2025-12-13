@@ -148,9 +148,14 @@ export default class PacketClicker {
 				let supplyType = null;
 				
 				if (value && typeof value === 'object') {
-					if (value._i && typeof value._i === 'string') {
-						supplyType = value._i;
-					} else {
+					for (const key in value) {
+						if (typeof value[key] === 'string' && /^[A-Z_]+$/.test(value[key])) {
+							supplyType = value[key];
+							break;
+						}
+					}
+					
+					if (!supplyType) {
 						supplyType = self.findSupplyType(value);
 					}
 				}
