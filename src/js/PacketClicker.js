@@ -145,7 +145,16 @@ export default class PacketClicker {
 			set(value) {
 				this[`__${propertyName}`] = value;
 				
-				const supplyType = self.findSupplyType(this);
+				let supplyType = null;
+				
+				if (value && typeof value === 'object') {
+					if (value._i && typeof value._i === 'string') {
+						supplyType = value._i;
+					} else {
+						supplyType = self.findSupplyType(value);
+					}
+				}
+				
 				if (supplyType) {
 					self.cooldowns.delete(supplyType);
 					self.log('cooldown-end', supplyType);
