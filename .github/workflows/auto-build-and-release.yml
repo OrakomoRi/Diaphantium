@@ -83,7 +83,8 @@ jobs:
 
                   # Clean working directory before switching branches
                   rm -rf node_modules
-                  git clean -fd -e /tmp
+                  git reset --hard HEAD
+                  git clean -fd
                   echo "Cleaned working directory"
 
                   # Switch to builds branch or create it
