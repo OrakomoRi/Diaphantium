@@ -82,10 +82,8 @@ export default class Clicker {
 		this.loadState();
 	}
 
-	async initializePacketClicker() {
+	initializePacketClicker() {
 		this.packetClicker = new PacketClicker();
-		const success = await this.packetClicker.init();
-		// console.log('[Clicker] PacketClicker initialized:', success);
 	}
 
 	loadClickerMode() {

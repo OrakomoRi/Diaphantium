@@ -1,8 +1,9 @@
 # Dependencies
 /node_modules
 
-# Development builds (not committed)
-/dist
+# Build outputs
+dist/
+build/
 
 # IDE
 .vscode/
@@ -15,3 +16,13 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Local scratch / experiments
+/local/
+
+# Copilot settings
+.github/copilot
+
+# Dependency lock files
+package-lock.json
+*/package-lock.json

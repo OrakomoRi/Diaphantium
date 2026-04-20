@@ -16,7 +16,7 @@ jobs:
 
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Extract version from diaphantium.user.js
               id: extract_version
@@ -24,47 +24,47 @@ jobs:
                   version=$(grep -oP '@version\s+\K[\w.+-]+' release/diaphantium.user.js)
                   echo "VERSION=$version" >> $GITHUB_ENV
                   echo "version=$version" >> $GITHUB_OUTPUT
-                  
+
                   # Extract MAJOR.MINOR.PATCH using SemVer regex
                   stable_base=$(echo "$version" | grep -oP '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)')
                   if [ -z "$stable_base" ]; then
-                    echo "❌ Invalid SemVer format: $version"
+                    echo "Invalid SemVer format: $version"
                     exit 1
                   fi
                   echo "STABLE_BASE=$stable_base" >> $GITHUB_ENV
                   echo "stable_base=$stable_base" >> $GITHUB_OUTPUT
-                  echo "📦 Version: $version (base: $stable_base)"
+                  echo "Version: $version (base: $stable_base)"
 
             - name: Check if version is stable (SemVer)
               id: check_stable
               run: |
                   # Official SemVer regex from semver.org
                   semver_regex='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$'
-                  
+
                   if [[ "$VERSION" =~ $semver_regex ]]; then
                     echo "is_stable=true" >> $GITHUB_OUTPUT
-                    echo "✅ Version $VERSION is stable (matches SemVer)"
+                    echo "Version $VERSION is stable (matches SemVer)"
                   else
                     echo "is_stable=false" >> $GITHUB_OUTPUT
-                    echo "ℹ️ Version $VERSION is not stable (dev/alpha/beta/rc)"
+                    echo "Version $VERSION is not stable (dev/alpha/beta/rc)"
                   fi
 
             - name: Set up Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v6
               with:
-                  node-version: "20"
+                  node-version: "24"
 
             - name: Install dependencies
-              run: npm ci
+              run: npm install
 
             - name: Build artifacts
               run: |
                   # Create temporary directory for artifacts
                   mkdir -p /tmp/build-artifacts
-                  
+
                   # Build diaphantium.min.js with webpack to temporary location
                   npx webpack --mode production --output-path /tmp/build-artifacts
-                  echo "✅ Built diaphantium.min.js"
+                  echo "Built diaphantium.min.js"
 
             - name: Prepare commit info
               id: prepare_commit
@@ -74,20 +74,18 @@ jobs:
                   COMMIT_DATE=$(git log -1 --format=%ad --date=short)
                   echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
                   echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
-                  
-                  echo "✅ Prepared commit info from main branch"
+                  echo "Prepared commit info from main branch"
 
             - name: Push to builds branch
               run: |
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  
+
                   # Clean working directory before switching branches
-                  # Remove node_modules and other build artifacts to prevent them from being committed
                   rm -rf node_modules
                   git clean -fd -e /tmp
-                  echo "✅ Cleaned working directory"
-                  
+                  echo "Cleaned working directory"
+
                   # Switch to builds branch or create it
                   git fetch origin builds 2>/dev/null || true
                   if git ls-remote --heads origin builds | grep -q builds; then
@@ -96,24 +94,21 @@ jobs:
                     git checkout --orphan builds
                     git rm -rf . 2>/dev/null || true
                   fi
-                  
-                  # Create nested directory structure ONLY in builds branch
+
+                  # Create nested directory structure in builds branch
                   mkdir -p "versions/$STABLE_BASE/$VERSION"
-                  
+
                   # Copy built files from temporary location
                   cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"
-                  echo "✅ Copied built files to versions/$STABLE_BASE/$VERSION"
-                  
+                  echo "Copied built files to versions/$STABLE_BASE/$VERSION"
+
                   # Update stable.json if this is a stable version
                   if [ "${{ steps.check_stable.outputs.is_stable }}" == "true" ]; then
-                    # Create stable.json if it doesn't exist
                     if [ ! -f stable.json ]; then
                       echo '{"versions":[]}' > stable.json
                     fi
-                    
-                    # Check if this version already exists in stable.json
+
                     if ! grep -q "\"version\": \"$VERSION\"" stable.json 2>/dev/null; then
-                      # Add new stable version using jq
                       jq --arg version "$VERSION" \
                          --arg date "$COMMIT_DATE" \
                          --arg hash "$COMMIT_HASH" \
@@ -121,13 +116,12 @@ jobs:
                          '.versions += [{"version": $version, "date": $date, "hash": $hash, "link": $link}]' \
                          stable.json > stable_tmp.json
                       mv stable_tmp.json stable.json
-                      
-                      echo "✅ Added version $VERSION to stable.json"
+                      echo "Added version $VERSION to stable.json"
                     else
-                      echo "ℹ️ Version $VERSION already exists in stable.json"
+                      echo "Version $VERSION already exists in stable.json"
                     fi
                   fi
-                  
+
                   # Create vercel.json for deployment configuration
                   cat > vercel.json << 'EOF'
                   {
@@ -163,32 +157,30 @@ jobs:
                     ]
                   }
                   EOF
-                  echo "✅ Created vercel.json"
-                  
-                  # Add all changes
+                  echo "Created vercel.json"
+
                   git add -A
-                  
-                  # Create commit message
+
                   if [ "${{ steps.check_stable.outputs.is_stable }}" == "true" ]; then
                     echo -e "$VERSION\n\nbuild: release artifacts (stable)" > commit-msg.txt
                   else
                     echo -e "$VERSION\n\nbuild: release artifacts" > commit-msg.txt
                   fi
-                  
+
                   git commit -F commit-msg.txt || echo "No changes to commit"
                   git push origin builds
 
             - name: Create GitHub release (only for stable versions)
               if: steps.check_stable.outputs.is_stable == 'true'
-              uses: softprops/action-gh-release@v2
+              uses: softprops/action-gh-release@v3
               with:
                   tag_name: ${{ env.VERSION }}
                   name: ${{ env.VERSION }}
                   body: |
                       ## Diaphantium ${{ env.VERSION }}
-                      
+
                       Stable release built automatically.
-                      
+
                       **Download:**
                       - [diaphantium.user.js](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js)
                       - [diaphantium.min.js](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${{ env.STABLE_BASE }}/${{ env.VERSION }}/diaphantium.min.js)

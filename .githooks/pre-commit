@@ -1,0 +1,2 @@
+#!/bin/sh
+node scripts/update-scripts-version/inject-version.cjs
