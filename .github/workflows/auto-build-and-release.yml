@@ -113,8 +113,7 @@ jobs:
                       jq --arg version "$VERSION" \
                          --arg date "$COMMIT_DATE" \
                          --arg hash "$COMMIT_HASH" \
-                         --arg link "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@$COMMIT_HASH/release/diaphantium.user.js" \
-                         '.versions += [{"version": $version, "date": $date, "hash": $hash, "link": $link}]' \
+                         '.versions += [{"version": $version, "date": $date, "hash": $hash}]' \
                          stable.json > stable_tmp.json
                       mv stable_tmp.json stable.json
                       echo "Added version $VERSION to stable.json"

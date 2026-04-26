@@ -1,13 +1,17 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.1+build.36
+// @version			5.0.1+build.37
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
-// @match			https://*.tankionline.com/*
-
 // @icon			https://i.imgur.com/QhCfrV5.png
+
+// @match			https://*.tankionline.com/*
+// @include			https://*test*.tankionline.com/*
+
+// @downloadURL		none
+// @updateURL		none
 
 // @connect			orakomori.github.io
 // @connect			raw.githubusercontent.com
@@ -187,7 +191,10 @@
 		try {
 			const stableData = await fetchResource(STABLE_JSON_URL, 'json');
 			const latestVersionData = getLatestVersion(stableData.versions);
-			const { version: latestVersion, link: latestLink } = latestVersionData || {};
+			const { version: latestVersion, hash: latestHash } = latestVersionData || {};
+		const latestLink = latestHash
+			? `https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@${latestHash}/release/diaphantium.user.js`
+			: GITHUB_SCRIPT_URL;
 
 			if (latestVersionData && compareVersions(latestVersion, script.version) === 1) {
 				promptUpdate(latestVersion, latestLink);
