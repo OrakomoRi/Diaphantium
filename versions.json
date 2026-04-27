@@ -53,6 +53,12 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.46 feat: enhance PacketClicker functionality",
       "hash": "c23e2fdf6c7dd82cb0f88aa719c1c43ac66788cd"
+    },
+    {
+      "version": "5.0.1+build.47",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.47 feat: enhance tank state handling in PacketClicker",
+      "hash": "7311ef9e30c6803cc751017657348a4265bfc239"
     }
   ]
 }
