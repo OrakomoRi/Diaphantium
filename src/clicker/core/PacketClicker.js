@@ -18,10 +18,15 @@ export default class PacketClicker {
 				name: 'StopCooldownMessage',
 				regex: /StopCooldownMessage\(supplyType=.+?this\.(\w+)(?:\.toString\(\))?/,
 				index: 1,
-			}
+			},
+			{
+				name: 'TankState',
+				regex: /\w+\.(\w+)\.equals\(\w+\(\)\)\s*\|\|\s*\w+\.\1\.equals\(\w+\(\)\)/,
+				index: 1,
+			},
 		];
 
-		this.variables = { ConfigureSupplyMessage: null, StopCooldownMessage: null };
+		this.variables = { ConfigureSupplyMessage: null, StopCooldownMessage: null, TankState: null };
 		this.supplies = [];
 		this.cooldowns = new Map(
 			Object.keys(this.SUPPLY_TYPES).map(type => [type, false])
@@ -94,6 +99,13 @@ export default class PacketClicker {
 		);
 
 		this.hookVariableTracking(
+			this.variables.TankState,
+			(obj, val) => {
+				this.onTankStateChange(obj, val);
+			}
+		);
+
+		this.hookVariableTracking(
 			this.variables.StopCooldownMessage,
 			(obj, val) => {
 				let type = null;
@@ -116,6 +128,10 @@ export default class PacketClicker {
 				}
 			}
 		);
+	}
+
+	onTankStateChange(obj, val) {
+		console.log('[TankState] changed:', val);
 	}
 
 	hookVariableTracking(name, handler) {
