@@ -132,10 +132,18 @@ export default class PacketClicker {
 		);
 	}
 
+	getByIndex(obj, index) {
+		if (!obj || (typeof obj !== 'object' && !Array.isArray(obj))) return undefined;
+		const keys = Array.isArray(obj) ? obj : Object.keys(obj);
+		if (typeof index !== 'number' || index < 0 || index >= keys.length) return undefined;
+		return obj[keys[index]];
+	}
+
 	hookTankStateEvent(subMethod) {
 		const self = this;
-		const TANK_STATES = new Set(['ACTIVE', 'SEMI_ACTIVE', 'DEAD_PHANTOM', 'DEAD']);
 		const k = `__${subMethod}`;
+
+		console.log('[PacketClicker] Installing tank state hook on:', subMethod);
 
 		Object.defineProperty(Object.prototype, subMethod, {
 			get() { return this[k]; },
@@ -144,38 +152,33 @@ export default class PacketClicker {
 				if (fn.__pckWrapped) { this[k] = fn; return; }
 
 				const wrapped = function (eventType, priority, flag, handler) {
-					const origHandler = handler ?? (() => {});
-					const h = function () {
-						const event = arguments[0];
-						if (event && typeof event === 'object') {
+					const typeName = eventType?.simpleName
+						?? eventType?.__$metadata$?.simpleName
+						?? eventType?.$metadata$?.simpleName;
+
+					if (typeName === 'onChangedClientTankState') {
+						const origHandler = handler ?? (() => {});
+						const h = function () {
+							const event = arguments[0];
+							console.log('[PacketClicker] onChangedClientTankState:', event);
 							try {
-								const str = event.toString?.();
-								if (str?.startsWith('onChangedClientTankState')) {
-									for (const val of Object.values(event)) {
-										if (typeof val === 'string' && TANK_STATES.has(val)) {
-											self.tankState = val;
-											console.log('[PacketClicker] Tank state:', val);
-											break;
-										}
-										if (val && typeof val === 'object') {
-											const name = val.name_ ?? val.toString?.();
-											if (typeof name === 'string' && TANK_STATES.has(name)) {
-												self.tankState = name;
-												console.log('[PacketClicker] Tank state:', name);
-												break;
-											}
-										}
-									}
-								}
+								const raw = self.getByIndex(event, 0);
+								const state = (raw && typeof raw === 'object')
+									? (self.getByIndex(raw, 0) ?? raw.name_ ?? raw.toString?.())
+									: raw;
+								self.tankState = state;
+								console.log('[PacketClicker] Tank state:', state);
 							} catch {}
+							return origHandler.apply(this, arguments);
+						};
+						if (handler) {
+							h.__callableName = handler.__callableName;
+							try { Object.setPrototypeOf(h, Object.getPrototypeOf(handler)); } catch {}
 						}
-						return origHandler.apply(this, arguments);
-					};
-					if (handler) {
-						h.__callableName = handler.__callableName;
-						try { Object.setPrototypeOf(h, Object.getPrototypeOf(handler)); } catch {}
+						return fn.call(this, eventType, priority, flag, h);
 					}
-					return fn.call(this, eventType, priority, flag, h);
+
+					return fn.call(this, eventType, priority, flag, handler);
 				};
 				wrapped.__pckWrapped = true;
 				this[k] = wrapped;
