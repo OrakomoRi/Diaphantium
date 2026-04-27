@@ -1,0 +1,10 @@
+{
+  "versions": [
+    {
+      "version": "5.0.1+build.38",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.38 feat: implement core functionality and update checker",
+      "hash": "0b26b09d6c8bb694e1aae63b96711013c54441a4"
+    }
+  ]
+}
