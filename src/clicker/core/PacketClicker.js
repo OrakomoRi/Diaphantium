@@ -20,13 +20,13 @@ export default class PacketClicker {
 				index: 1,
 			},
 			{
-				name: 'TankState',
-				regex: /\w+\.(\w+)\.equals\(\w+\(\)\)\s*\|\|\s*\w+\.\1\.equals\(\w+\(\)\)/,
+				name: 'registerTankStateCallback',
+				regex: /callableName\s*=\s*["']onChangedClientTankState["'][^}]*\}\s*\(this\)\s*;\s*\w+\.(\w+)\s*\(/,
 				index: 1,
 			},
 		];
 
-		this.variables = { ConfigureSupplyMessage: null, StopCooldownMessage: null, TankState: null };
+		this.variables = { ConfigureSupplyMessage: null, StopCooldownMessage: null, registerTankStateCallback: null };
 		this.supplies = [];
 		this.cooldowns = new Map(
 			Object.keys(this.SUPPLY_TYPES).map(type => [type, false])
@@ -98,12 +98,16 @@ export default class PacketClicker {
 			}
 		);
 
-		this.hookVariableTracking(
-			this.variables.TankState,
-			(obj, val) => {
-				this.onTankStateChange(obj, val);
+		this.hookMethodCall(this.variables.registerTankStateCallback, (obj, args) => {
+			const callback = args[3];
+			if (callback?.callableName === 'onChangedClientTankState') {
+				const original = callback;
+				args[3] = (...cbArgs) => {
+					this.onTankStateChange(cbArgs[0], cbArgs);
+					return original(...cbArgs);
+				};
 			}
-		);
+		});
 
 		this.hookVariableTracking(
 			this.variables.StopCooldownMessage,
@@ -132,6 +136,28 @@ export default class PacketClicker {
 
 	onTankStateChange(obj, val) {
 		console.log('[TankState] changed:', val);
+	}
+
+	hookMethodCall(name, handler) {
+		Object.defineProperty(Object.prototype, name, {
+			get() {
+				return this[`__${name}`];
+			},
+			set(value) {
+				if (typeof value === 'function') {
+					const original = value;
+					const outerHandler = handler;
+					const self = this;
+					this[`__${name}`] = function(...args) {
+						outerHandler(self, args);
+						return original.apply(this, args);
+					};
+				} else {
+					this[`__${name}`] = value;
+				}
+			},
+			configurable: true
+		});
 	}
 
 	hookVariableTracking(name, handler) {
