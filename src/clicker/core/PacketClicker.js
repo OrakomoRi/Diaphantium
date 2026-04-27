@@ -30,7 +30,7 @@ export default class PacketClicker {
 		this.hooksInstalled = false;
 
 		this.tankState = null;
-		this.subscribeMethod = null;
+		this.tankStateVar = null;
 
 		this.init();
 	}
@@ -81,20 +81,16 @@ export default class PacketClicker {
 			const match = scriptContent.match(regex);
 			this.variables[name] = match?.[index] ?? null;
 		}
-		this.subscribeMethod = this.findSubscribeMethod(scriptContent);
-	}
 
-	findSubscribeMethod(scriptContent) {
-		const counts = {};
-		for (const m of scriptContent.matchAll(/\.(\w+)\s*\(\s*\w+\s*\(\s*\w+\s*\)\s*,\s*-?\d+\s*,\s*!(?:0|1)/g))
-			counts[m[1]] = (counts[m[1]] || 0) + 1;
-		return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+		// Find the property name set on onChangedClientTankState event instances.
+		// toString body looks like: "onChangedClientTankState("+this.j11m_1.toString()+")"
+		// or: "onChangedClientTankState(j11m_1="+this.j11m_1.toString()+")"
+		const tankMatch = scriptContent.match(/onChangedClientTankState\([^+]*\+\s*this\.(\w+)/);
+		this.tankStateVar = tankMatch?.[1] ?? null;
+		console.log('[PacketClicker] tankStateVar:', this.tankStateVar);
 	}
 
 	installHooks() {
-		if (this.subscribeMethod)
-			this.hookTankStateEvent(this.subscribeMethod);
-
 		this.hookVariableTracking(
 			this.variables.ConfigureSupplyMessage,
 			(obj) => {
@@ -130,6 +126,19 @@ export default class PacketClicker {
 				}
 			}
 		);
+
+		if (this.tankStateVar) {
+			this.hookVariableTracking(
+				this.tankStateVar,
+				(obj, val) => {
+					if (!val || typeof val !== 'object') return;
+					const state = this.getByIndex(val, 0);
+					if (typeof state !== 'string') return;
+					this.tankState = state;
+					console.log('[PacketClicker] Tank state:', state);
+				}
+			);
+		}
 	}
 
 	getByIndex(obj, index) {
@@ -137,73 +146,6 @@ export default class PacketClicker {
 		const keys = Array.isArray(obj) ? obj : Object.keys(obj);
 		if (typeof index !== 'number' || index < 0 || index >= keys.length) return undefined;
 		return obj[keys[index]];
-	}
-
-	hookTankStateEvent(subMethod) {
-		const self = this;
-		const k = `__${subMethod}`;
-
-		const makeWrapper = (origFn) => {
-			const wrapped = function (eventType, priority, flag, handler) {
-				const typeName = eventType?.simpleName
-					?? eventType?.__$metadata$?.simpleName
-					?? eventType?.$metadata$?.simpleName;
-
-				if (typeName === 'onChangedClientTankState') {
-					const origHandler = handler ?? (() => {});
-					const h = function () {
-						const event = arguments[0];
-						console.log('[PacketClicker] onChangedClientTankState:', event);
-						try {
-							const raw = self.getByIndex(event, 0);
-							const state = (raw && typeof raw === 'object')
-								? (self.getByIndex(raw, 0) ?? raw.name_ ?? raw.toString?.())
-								: raw;
-							self.tankState = state;
-							console.log('[PacketClicker] Tank state:', state);
-						} catch {}
-						return origHandler.apply(this, arguments);
-					};
-					if (handler) {
-						h.callableName = handler.callableName;
-						try { Object.setPrototypeOf(h, Object.getPrototypeOf(handler)); } catch {}
-					}
-					return origFn.call(this, eventType, priority, flag, h);
-				}
-
-				return origFn.call(this, eventType, priority, flag, handler);
-			};
-			wrapped.__pckWrapped = true;
-			return wrapped;
-		};
-
-		// Wrap already-assigned prototypes (game script is already executed by this point)
-		let wrapped = 0;
-		try {
-			for (const key of Object.keys(window)) {
-				try {
-					const cls = window[key];
-					if (typeof cls !== 'function' || !cls.prototype) continue;
-					const desc = Object.getOwnPropertyDescriptor(cls.prototype, subMethod);
-					if (!desc || typeof desc.value !== 'function' || desc.value.__pckWrapped) continue;
-					Object.defineProperty(cls.prototype, subMethod, {
-						value: makeWrapper(desc.value), configurable: true, writable: true,
-					});
-					wrapped++;
-				} catch {}
-			}
-		} catch {}
-		console.log(`[PacketClicker] "${subMethod}": wrapped ${wrapped} existing prototype(s)`);
-
-		// Hook future assignments
-		Object.defineProperty(Object.prototype, subMethod, {
-			get() { return this[k]; },
-			set(fn) {
-				if (!fn || typeof fn !== 'function') { this[k] = fn; return; }
-				this[k] = fn.__pckWrapped ? fn : makeWrapper(fn);
-			},
-			configurable: true,
-		});
 	}
 
 	hookVariableTracking(name, handler) {
