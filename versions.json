@@ -23,6 +23,12 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.41 feat: update tank state handling in PacketClicker",
       "hash": "fd2e5f326e388e0457d79f97cd05608601249d37"
+    },
+    {
+      "version": "5.0.1+build.42",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.42 fix: update regex for TankState detection",
+      "hash": "7b9d8df514ab8055a816a78cd981e28b46c16048"
     }
   ]
 }
