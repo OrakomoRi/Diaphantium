@@ -71,6 +71,12 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.49 feat: migrate from webpack to rollup and enhance update checking",
       "hash": "3cb9af573e5099e13f7b515232e5995e28405b46"
+    },
+    {
+      "version": "5.0.1+build.50",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.50 chore: update GitHub Actions and dependencies",
+      "hash": "83f9c70cc853aa3004c77b0592cf157a3bc5edbf"
     }
   ]
 }
