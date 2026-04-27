@@ -16,6 +16,5 @@ export const CONFIG = {
 
 	UPDATE_CHECK_ENABLED: true,
 	UPDATE_MODAL_TIMER: 5000,
-	GITHUB_SCRIPT_URL: (v) => `https://orakomori.github.io/Diaphantium/release/diaphantium.user.js?v=${v}`,
 	STABLE_JSON_URL: (v) => `https://diaphantium-builds.vercel.app/stable.json?v=${v}`,
 };

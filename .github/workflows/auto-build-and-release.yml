@@ -47,7 +47,7 @@ jobs:
 
       - name: Build JS
         run: |
-          npx webpack --mode production
+          npm run build
           mkdir -p /tmp/build-artifacts
           cp dist/loader.min.js /tmp/build-artifacts/loader.min.js
           cp dist/diaphantium.min.js /tmp/build-artifacts/diaphantium.min.js

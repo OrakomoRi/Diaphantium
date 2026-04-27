@@ -29,9 +29,6 @@ export default class PacketClicker {
 		this.intervals = {};
 		this.hooksInstalled = false;
 
-		this.tankState = null;
-		this.tankStateVar = null;
-
 		this.init();
 	}
 
@@ -81,13 +78,6 @@ export default class PacketClicker {
 			const match = scriptContent.match(regex);
 			this.variables[name] = match?.[index] ?? null;
 		}
-
-		// Find the property name set on onChangedClientTankState event instances.
-		// toString body looks like: "onChangedClientTankState("+this.j11m_1.toString()+")"
-		// or: "onChangedClientTankState(j11m_1="+this.j11m_1.toString()+")"
-		const tankMatch = scriptContent.match(/onChangedClientTankState\([^+]*\+\s*this\.(\w+)/);
-		this.tankStateVar = tankMatch?.[1] ?? null;
-		console.log('[PacketClicker] tankStateVar:', this.tankStateVar);
 	}
 
 	installHooks() {
@@ -126,26 +116,6 @@ export default class PacketClicker {
 				}
 			}
 		);
-
-		if (this.tankStateVar) {
-			this.hookVariableTracking(
-				this.tankStateVar,
-				(obj, val) => {
-					if (!val || typeof val !== 'object') return;
-					const state = this.getByIndex(val, 0);
-					if (typeof state !== 'string') return;
-					this.tankState = state;
-					console.log('[PacketClicker] Tank state:', state);
-				}
-			);
-		}
-	}
-
-	getByIndex(obj, index) {
-		if (!obj || (typeof obj !== 'object' && !Array.isArray(obj))) return undefined;
-		const keys = Array.isArray(obj) ? obj : Object.keys(obj);
-		if (typeof index !== 'number' || index < 0 || index >= keys.length) return undefined;
-		return obj[keys[index]];
 	}
 
 	hookVariableTracking(name, handler) {
