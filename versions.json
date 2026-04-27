@@ -17,6 +17,12 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.40 feat: update tank state handling in PacketClicker",
       "hash": "dbc98e0852a9fc7ba369eb177aa5056cdd2b54ae"
+    },
+    {
+      "version": "5.0.1+build.41",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.41 feat: update tank state handling in PacketClicker",
+      "hash": "fd2e5f326e388e0457d79f97cd05608601249d37"
     }
   ]
 }
