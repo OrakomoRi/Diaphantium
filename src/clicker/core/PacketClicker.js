@@ -29,6 +29,9 @@ export default class PacketClicker {
 		this.intervals = {};
 		this.hooksInstalled = false;
 
+		this.tankState = null;
+		this.subscribeMethod = null;
+
 		this.init();
 	}
 
@@ -78,9 +81,20 @@ export default class PacketClicker {
 			const match = scriptContent.match(regex);
 			this.variables[name] = match?.[index] ?? null;
 		}
+		this.subscribeMethod = this.findSubscribeMethod(scriptContent);
+	}
+
+	findSubscribeMethod(scriptContent) {
+		const counts = {};
+		for (const m of scriptContent.matchAll(/\.(\w+)\s*\(\s*\w+\s*\(\s*\w+\s*\)\s*,\s*-?\d+\s*,\s*!(?:0|1)/g))
+			counts[m[1]] = (counts[m[1]] || 0) + 1;
+		return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 	}
 
 	installHooks() {
+		if (this.subscribeMethod)
+			this.hookTankStateEvent(this.subscribeMethod);
+
 		this.hookVariableTracking(
 			this.variables.ConfigureSupplyMessage,
 			(obj) => {
@@ -116,6 +130,58 @@ export default class PacketClicker {
 				}
 			}
 		);
+	}
+
+	hookTankStateEvent(subMethod) {
+		const self = this;
+		const TANK_STATES = new Set(['ACTIVE', 'SEMI_ACTIVE', 'DEAD_PHANTOM', 'DEAD']);
+		const k = `__${subMethod}`;
+
+		Object.defineProperty(Object.prototype, subMethod, {
+			get() { return this[k]; },
+			set(fn) {
+				if (!fn || typeof fn !== 'function') { this[k] = fn; return; }
+				if (fn.__pckWrapped) { this[k] = fn; return; }
+
+				const wrapped = function (eventType, priority, flag, handler) {
+					const origHandler = handler ?? (() => {});
+					const h = function () {
+						const event = arguments[0];
+						if (event && typeof event === 'object') {
+							try {
+								const str = event.toString?.();
+								if (str?.startsWith('onChangedClientTankState')) {
+									for (const val of Object.values(event)) {
+										if (typeof val === 'string' && TANK_STATES.has(val)) {
+											self.tankState = val;
+											console.log('[PacketClicker] Tank state:', val);
+											break;
+										}
+										if (val && typeof val === 'object') {
+											const name = val.name_ ?? val.toString?.();
+											if (typeof name === 'string' && TANK_STATES.has(name)) {
+												self.tankState = name;
+												console.log('[PacketClicker] Tank state:', name);
+												break;
+											}
+										}
+									}
+								}
+							} catch {}
+						}
+						return origHandler.apply(this, arguments);
+					};
+					if (handler) {
+						h.__callableName = handler.__callableName;
+						try { Object.setPrototypeOf(h, Object.getPrototypeOf(handler)); } catch {}
+					}
+					return fn.call(this, eventType, priority, flag, h);
+				};
+				wrapped.__pckWrapped = true;
+				this[k] = wrapped;
+			},
+			configurable: true,
+		});
 	}
 
 	hookVariableTracking(name, handler) {
