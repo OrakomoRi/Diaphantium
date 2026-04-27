@@ -1,0 +1,93 @@
+.section {
+	padding: var(--spacing-3xl) 0;
+	position: relative;
+}
+
+.section-light { background: var(--color-background); }
+.section-dark  { background: var(--color-background-secondary); }
+
+.section-header {
+	text-align: center;
+	margin-bottom: var(--spacing-3xl);
+	position: relative;
+	z-index: 1;
+}
+
+.section-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: .5rem;
+	padding: .3rem .75rem;
+	background: rgba(79, 70, 229, 0.07);
+	border: 1px solid rgba(79, 70, 229, 0.18);
+	border-radius: var(--radius-sm);
+	color: var(--color-primary-light);
+	font-size: .75rem;
+	font-weight: 600;
+	letter-spacing: .08em;
+	text-transform: uppercase;
+	margin-bottom: var(--spacing-md);
+}
+
+.section-badge::before {
+	content: '//';
+	opacity: .5;
+	font-weight: 700;
+}
+
+.section-title {
+	font-size: var(--font-size-4xl);
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: -.02em;
+	margin-bottom: var(--spacing-sm);
+	color: var(--color-text-primary);
+}
+
+.section-subtitle {
+	font-size: var(--font-size-xl);
+	font-weight: 500;
+	margin-bottom: var(--spacing-md);
+	color: var(--color-text-secondary);
+}
+
+.section-description {
+	font-size: var(--font-size-base);
+	color: var(--color-text-secondary);
+	max-width: 40rem;
+	margin: 0 auto;
+	line-height: 1.75;
+}
+
+.section-divider {
+	height: 1px;
+	background: var(--color-border);
+}
+
+.section-divider-gradient {
+	height: 1px;
+	background: linear-gradient(to right, transparent, var(--color-primary), var(--color-secondary), transparent);
+	margin: var(--spacing-3xl) 0;
+}
+
+.content-wrapper { max-width: 56.25rem; margin: 0 auto; }
+.content-wide    { max-width: 75rem;    margin: 0 auto; }
+
+.text-center { text-align: center; }
+.text-left   { text-align: left; }
+.text-right  { text-align: right; }
+
+@media (max-width: 768px) {
+	.section            { padding: var(--spacing-2xl) 0; }
+	.section-header     { margin-bottom: var(--spacing-2xl); }
+	.section-title      { font-size: var(--font-size-3xl); }
+	.section-description { font-size: var(--font-size-sm); }
+}
+
+@media (max-width: 480px) {
+	.section          { padding: var(--spacing-xl) 0; }
+	.section-header   { margin-bottom: var(--spacing-xl); }
+	.section-title    { font-size: var(--font-size-2xl); }
+	.section-subtitle { font-size: var(--font-size-lg); }
+	.section-badge    { font-size: .65rem; }
+}

@@ -1,0 +1,68 @@
+{
+	"nav": {
+		"title": "Navigation",
+		"logo": "Diaphantium",
+		"quickstart": "Quick Start",
+		"about": "About"
+	},
+	"hero": {
+		"badge": "Version",
+		"title": "Diaphantium",
+		"description": "Powerful userscript for Tanki Online with customizable hotkeys, auto-clicking, and supply management. Built for efficiency and control.",
+		"downloadBtn": "Download Script",
+		"githubBtn": "View on GitHub",
+		"scrollDown": "Scroll to explore"
+	},
+	"quickstart": {
+		"badge": "Get Started",
+		"title": "Quick Start Guide",
+		"description": "Get up and running with Diaphantium in just three simple steps",
+		"step1": {
+			"title": "Install Tampermonkey",
+			"description": "Download and install the Tampermonkey browser extension from the official website.",
+			"action": "Get Tampermonkey"
+		},
+		"step2": {
+			"title": "Add Script",
+			"description": "Click the download button to add Diaphantium script to your Tampermonkey dashboard."
+		},
+		"step3": {
+			"title": "Configure Settings",
+			"description": "Press",
+			"descriptionContinued": "to open the popup menu and customize your hotkeys in the Settings page.",
+			"yourHotkey": "Your hotkey:"
+		}
+	},
+	"about": {
+		"badge": "What is Diaphantium?",
+		"title": "Professional Automation Tool",
+		"subtitle": "Built for Tanki Online Players",
+		"description": "Diaphantium is a free, open-source userscript that enhances your Tanki Online experience with automated actions, customizable hotkeys, and efficient supply management. Born from the idea of creating a simple popup interface for continuous key input, it has evolved into a comprehensive automation solution.",
+		"whyTitle": "Why Diaphantium?",
+		"whyDescription": "This project demonstrates advanced front-end development skills including CSS animations, JavaScript programming, cross-browser compatibility, and user experience design. It showcases the ability to reverse-engineer existing interfaces and create comprehensive visual overhauls while maintaining functionality.",
+		"historyTitle": "Evolution Through Versions"
+	},
+	"footer": {
+		"description": "Professional open-source automation tool built with modern web technologies. Enhance your Tanki Online gameplay with customizable hotkeys and advanced features.",
+		"resources": {
+			"title": "Resources",
+			"documentation": "Documentation",
+			"changelog": "Changelog",
+			"devVersion": "Dev version"
+		},
+		"troubleshooting": {
+			"title": "Troubleshooting",
+			"report": "Report Issues",
+			"discussions": "Discussions"
+		},
+		"support": {
+			"title": "Support"
+		},
+		"legal": {
+			"title": "Legal"
+		},
+		"copyright": "2023-2026 Diaphantium. All rights reserved.",
+		"developed1": "Developed with",
+		"developed2": "by"
+	}
+}

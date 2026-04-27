@@ -1,0 +1,85 @@
+{
+	"versions": [
+		{
+			"version": "1.0.0",
+			"date": {
+				"en": "May 2023",
+				"ru": "Май 2023"
+			},
+			"title": {
+				"en": "Version 1 — The Concept",
+				"ru": "Версия 1.0 — Концепт"
+			},
+			"description": {
+				"en": "The initial release introduced a basic popup window with essential auto-clicking functionality. The interface was simple but functional, laying the foundation for future improvements.",
+				"ru": "Первая версия с простым всплывающим окном и базовым автокликером. Скромно, но надёжно — именно с этого всё началось."
+			},
+			"image": "./images/changelog/1.0.0/popup.png"
+		},
+		{
+			"version": "2.0.0",
+			"date": {
+				"en": "June 2023",
+				"ru": "Июнь 2023"
+			},
+			"title": {
+				"en": "Version 2 — Dual Interface",
+				"ru": "Версия 2.0 — Два режима"
+			},
+			"description": {
+				"en": "Added two-tab system with Main and Settings tabs. Improved window dragging mechanics — users could now move the popup by any part except input fields. Enhanced visual design with better color schemes.",
+				"ru": "Добавлены вкладки «Главная» и «Настройки». Улучшено перетаскивание окна и обновлён дизайн с более приятными цветами."
+			},
+			"image": "./images/changelog/2.0.0/popup.png"
+		},
+		{
+			"version": "3.0.0",
+			"date": {
+				"en": "August 2023",
+				"ru": "Август 2023"
+			},
+			"title": {
+				"en": "Version 3 — Pro Features",
+				"ru": "Версия 3.0 — Pro-функции"
+			},
+			"description": {
+				"en": "Major overhaul with over 150 commits. Introduced navigation buttons, battle selection system, and advanced features like nickname blur and skip login. Added support for both team battles and deathmatch modes.",
+				"ru": "Глобальное обновление: добавлена навигация, выбор боёв, размытие никнейма, пропуск входа и поддержка командных и DM-боёв."
+			},
+			"image": "./images/changelog/3.0.0/popup.png"
+		},
+		{
+			"version": "4.0.0",
+			"date": {
+				"en": "March 2024",
+				"ru": "Март 2024"
+			},
+			"title": {
+				"en": "Version 4 — Modern Era",
+				"ru": "Версия 4.0 — Современная эпоха"
+			},
+			"description": {
+				"en": "Complete redesign with mobile support, dynamic hotkey management, and improved UI. Added ability to remove hotkeys, duplicate hotkey detection with visual warnings, and comprehensive changelog tracking.",
+				"ru": "Полный редизайн с поддержкой мобильных устройств и новым управлением горячими клавишами. Добавлено удаление и предупреждения о дублях, обновлён UI и трекинг изменений."
+			},
+			"image": "./images/changelog/4.0.0/popup.png"
+		},
+		{
+			"version": "5.0.0",
+			"date": {
+				"en": "October 2025",
+				"ru": "Октябрь 2025"
+			},
+			"title": {
+				"en": "Version 5 — Reborn from Ashes",
+				"ru": "Версия 5.0 — Возрождение"
+			},
+			"description": {
+				"en": "Revolutionary rewrite with modern website, automated builds, and professional GitHub workflow. Complete project restructure with Webpack bundling, internationalization support, and enhanced user experience.",
+				"ru": "Полная переработка: новая структура, автоматическая сборка, поддержка языков и обновлённый сайт. Быстрее, удобнее и красивее."
+			},
+			"image": "./images/changelog/5.0.0/popup.png"
+		}
+	]
+	
+}

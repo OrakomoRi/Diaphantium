@@ -1,0 +1,59 @@
+:root {
+	--color-primary: #4f46e5;
+	--color-primary-light: #6366f1;
+	--color-primary-dark: #3730a3;
+	--color-secondary: #7c3aed;
+	--color-accent: #8b5cf6;
+
+	--color-background: #050508;
+	--color-background-secondary: #08080e;
+	--color-background-tertiary: #0c0c14;
+
+	--color-text-primary: #e8e8f2;
+	--color-text-secondary: #60608a;
+	--color-text-muted: #38385a;
+
+	--color-border: rgba(255, 255, 255, 0.06);
+	--color-border-light: rgba(255, 255, 255, 0.03);
+	--color-border-accent: rgba(79, 70, 229, 0.2);
+
+	--spacing-xs:  .5rem;
+	--spacing-sm:  1rem;
+	--spacing-md:  1.5rem;
+	--spacing-lg:  2rem;
+	--spacing-xl:  3rem;
+	--spacing-2xl: 4rem;
+	--spacing-3xl: 6rem;
+
+	--font-size-xs:   .75rem;
+	--font-size-sm:   .875rem;
+	--font-size-base: 1rem;
+	--font-size-lg:   1.125rem;
+	--font-size-xl:   1.25rem;
+	--font-size-2xl:  1.5rem;
+	--font-size-3xl:  2rem;
+	--font-size-4xl:  2.75rem;
+	--font-size-5xl:  3.75rem;
+
+	--radius-sm: .2rem;
+	--radius-md: .35rem;
+	--radius-lg: .5rem;
+	--radius-xl: .75rem;
+
+	--shadow-sm:      0 1px 3px rgba(0, 0, 0, 0.3);
+	--shadow-md:      0 4px 16px rgba(0, 0, 0, 0.4);
+	--shadow-lg:      0 10px 32px rgba(0, 0, 0, 0.5);
+	--shadow-xl:      0 20px 48px rgba(0, 0, 0, 0.6);
+	--shadow-primary: 0 0 24px rgba(79, 70, 229, 0.12);
+
+	--transition-fast: 140ms ease;
+	--transition-base: 260ms ease;
+	--transition-slow: 420ms ease;
+
+	--z-base:     1;
+	--z-dropdown: 100;
+	--z-sticky:   200;
+	--z-fixed:    300;
+	--z-modal:    400;
+	--z-tooltip:  500;
+}

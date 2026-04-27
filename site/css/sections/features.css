@@ -1,0 +1,15 @@
+.features {
+	padding: var(--spacing-3xl) 0;
+	position: relative;
+}
+
+.features-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--spacing-lg);
+}
+
+@media (max-width: 768px) {
+	.features       { padding: var(--spacing-2xl) 0; }
+	.features-grid  { grid-template-columns: 1fr; gap: var(--spacing-md); }
+}
