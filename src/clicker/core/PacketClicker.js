@@ -21,7 +21,7 @@ export default class PacketClicker {
 			},
 			{
 				name: 'TankState',
-				regex: /\.(\w+)\.equals\(\w+\(\)\)\s*\|\|\s*\w+\.\1\.equals\(\w+\(\)\)[\s\S]{0,300}?callableName\s*=\s*["']onChangedClientTankState["']/,
+				regex: /callableName\s*=\s*["']onChangedClientTankState["'][\s\S]{0,500}?\([\w$]+=[\w$]+\)\.(\w+)\.equals\([\w$]+\(\)\)/,
 				index: 1,
 			},
 		];
@@ -40,16 +40,43 @@ export default class PacketClicker {
 	async init() {
 		if (this.hooksInstalled) return true;
 
+		const cached = this.loadVariableCache();
+		if (cached) {
+			Object.assign(this.variables, cached);
+			if (!Object.values(this.variables).some(v => v === null)) {
+				this.installHooks();
+				this.hooksInstalled = true;
+				console.log('[PacketClicker] hooks installed from cache:', this.variables);
+			}
+		}
+
 		const scriptContent = await this.fetchGameScript();
-		if (!scriptContent) return false;
+		if (!scriptContent) return this.hooksInstalled;
 
 		this.extractVariableNames(scriptContent);
+		console.log('[PacketClicker] variables after parse:', this.variables);
+		this.saveVariableCache();
 
-		if (Object.values(this.variables).some(v => v === null)) return false;
+		if (!this.hooksInstalled) {
+			if (Object.values(this.variables).some(v => v === null)) return false;
+			this.installHooks();
+			this.hooksInstalled = true;
+		}
 
-		this.installHooks();
-		this.hooksInstalled = true;
 		return true;
+	}
+
+	loadVariableCache() {
+		try {
+			const raw = localStorage.getItem('PacketClicker_vars');
+			return raw ? JSON.parse(raw) : null;
+		} catch { return null; }
+	}
+
+	saveVariableCache() {
+		try {
+			localStorage.setItem('PacketClicker_vars', JSON.stringify(this.variables));
+		} catch {}
 	}
 
 	async fetchGameScript() {
