@@ -41,6 +41,12 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.44 refactor: simplify PacketClicker logic",
       "hash": "aaa5c7ec22d53336962b8704d95cdd65f95819a4"
+    },
+    {
+      "version": "5.0.1+build.45",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.45 feat: enhance PacketClicker functionality",
+      "hash": "d21b61138dd2f1b53bddc268997dbae8ba3b0f2b"
     }
   ]
 }
