@@ -1,7 +1,7 @@
-import { $, $$, on, debounce } from './utils.js';
-import { getStorage, setStorage, updateConfig } from './storage.js';
+import { $, $$, on, debounce } from '../utils/utils.js';
+import { getStorage, setStorage, updateConfig } from '../storage/storage.js';
 import ElementMover from './ElementMover.js';
-import popupHTML from '../html/popup.html';
+import popupHTML from '../assets/html/popup.html';
 
 export default class Popup {
 	constructor() {

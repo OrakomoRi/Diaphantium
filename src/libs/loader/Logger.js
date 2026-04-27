@@ -87,3 +87,5 @@ class Logger {
 		this.logging = false;
 	}
 }
+
+export default Logger;

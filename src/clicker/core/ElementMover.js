@@ -1,5 +1,5 @@
-import { on, throttle, debounce } from './utils.js';
-import { setStorage } from './storage.js';
+import { on, throttle, debounce } from '../utils/utils.js';
+import { setStorage } from '../storage/storage.js';
 
 // Makes DOM elements draggable
 export default class ElementMover {

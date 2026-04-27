@@ -5,14 +5,14 @@ module.exports = (env, argv) => {
 	const isDevelopment = argv.mode === 'development';
 
 	return {
-		entry: './src/js/index.js',
+		entry: {
+			loader: './src/loader.js',
+			diaphantium: './src/clicker.js',
+		},
 		output: {
-			filename: 'diaphantium.min.js',
-			// Dev builds go to /dist (not committed), production to /release (committed)
-			path: isDevelopment ? path.resolve(__dirname, 'dist') : path.resolve(__dirname, 'release'),
-			clean: isDevelopment ? true : {
-				keep: /diaphantium\.user\.js$/,
-			},
+			filename: '[name].min.js',
+			path: isDevelopment ? path.resolve(__dirname, 'dist') : path.resolve(__dirname, 'dist'),
+			clean: isDevelopment,
 		},
 		module: {
 			rules: [

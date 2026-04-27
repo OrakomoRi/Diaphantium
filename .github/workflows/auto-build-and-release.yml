@@ -1,190 +1,170 @@
 name: Auto Build and Release
 
 on:
-    push:
-        branches:
-            - main
-        paths:
-            - "release/diaphantium.user.js"
+  push:
+    branches:
+      - main
+    paths:
+      - "package.json"
+  workflow_dispatch:
 
 permissions:
-    contents: write
+  contents: write
 
 jobs:
-    build-and-release:
-        runs-on: ubuntu-latest
+  build-and-release:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v6
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            - name: Extract version from diaphantium.user.js
-              id: extract_version
-              run: |
-                  version=$(grep -oP '@version\s+\K[\w.+-]+' release/diaphantium.user.js)
-                  echo "VERSION=$version" >> $GITHUB_ENV
-                  echo "version=$version" >> $GITHUB_OUTPUT
+      - name: Extract version
+        run: |
+          VERSION=$(jq -r .version package.json)
+          if [ -z "$VERSION" ] || [ "$VERSION" == "null" ]; then
+            echo "Version not found in package.json"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-                  # Extract MAJOR.MINOR.PATCH using SemVer regex
-                  stable_base=$(echo "$version" | grep -oP '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)')
-                  if [ -z "$stable_base" ]; then
-                    echo "Invalid SemVer format: $version"
-                    exit 1
-                  fi
-                  echo "STABLE_BASE=$stable_base" >> $GITHUB_ENV
-                  echo "stable_base=$stable_base" >> $GITHUB_OUTPUT
-                  echo "Version: $version (base: $stable_base)"
+          semver_regex='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$'
+          if [[ "$VERSION" =~ $semver_regex ]]; then
+            echo "IS_STABLE=true" >> $GITHUB_ENV
+          else
+            echo "IS_STABLE=false" >> $GITHUB_ENV
+          fi
 
-            - name: Check if version is stable (SemVer)
-              id: check_stable
-              run: |
-                  # Official SemVer regex from semver.org
-                  semver_regex='^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-                  if [[ "$VERSION" =~ $semver_regex ]]; then
-                    echo "is_stable=true" >> $GITHUB_OUTPUT
-                    echo "Version $VERSION is stable (matches SemVer)"
-                  else
-                    echo "is_stable=false" >> $GITHUB_OUTPUT
-                    echo "Version $VERSION is not stable (dev/alpha/beta/rc)"
-                  fi
+      - name: Install dependencies
+        run: npm install
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v6
-              with:
-                  node-version: "24"
+      - name: Build JS
+        run: |
+          npx webpack --mode production
+          mkdir -p /tmp/build-artifacts
+          cp dist/loader.min.js /tmp/build-artifacts/loader.min.js
+          cp dist/diaphantium.min.js /tmp/build-artifacts/diaphantium.min.js
 
-            - name: Install dependencies
-              run: npm install
+      - name: Publish to builds branch
+        run: |
+          COMMIT_HASH=$(git rev-parse HEAD)
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
+          STABLE_BASE=$(echo "$VERSION" | grep -oP '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)')
+          echo "STABLE_BASE=$STABLE_BASE" >> $GITHUB_ENV
+          COMMIT_DATE=$(git log -1 --format=%ad --date=short)
+          COMMIT_MESSAGE=$(git log -1 --format=%B | sed '/^[[:space:]]*-/,$d' | tr '\n' ' ' | sed 's/  */ /g' | sed 's/^ *//;s/ *$//')
 
-            - name: Build artifacts
-              run: |
-                  # Create temporary directory for artifacts
-                  mkdir -p /tmp/build-artifacts
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-                  # Build diaphantium.min.js with webpack to temporary location
-                  npx webpack --mode production --output-path /tmp/build-artifacts
-                  echo "Built diaphantium.min.js"
+          git fetch origin builds 2>/dev/null || true
+          if git ls-remote --heads origin builds | grep -q builds; then
+            git checkout builds
+            git pull --rebase origin builds
+          else
+            git checkout --orphan builds
+            git rm -rf . 2>/dev/null || true
+          fi
 
-            - name: Prepare commit info
-              id: prepare_commit
-              run: |
-                  # Get commit info from main branch (before switching)
-                  COMMIT_HASH=$(git rev-parse HEAD)
-                  COMMIT_DATE=$(git log -1 --format=%ad --date=short)
-                  echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
-                  echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
-                  echo "Prepared commit info from main branch"
+          [ ! -f versions.json ] && echo '{"versions":[]}' > versions.json
+          [ ! -f stable.json ]   && echo '{"versions":[]}' > stable.json
 
-            - name: Push to builds branch
-              run: |
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -z "$STABLE_BASE" ]; then
+            echo "STABLE_BASE is empty, VERSION=$VERSION is not a valid semver"
+            exit 1
+          fi
 
-                  # Clean working directory before switching branches
-                  rm -rf node_modules
-                  git reset --hard HEAD
-                  git clean -fd
-                  echo "Cleaned working directory"
+          mkdir -p "versions/$STABLE_BASE/$VERSION"
 
-                  # Switch to builds branch or create it
-                  git fetch origin builds 2>/dev/null || true
-                  if git ls-remote --heads origin builds | grep -q builds; then
-                    git checkout builds
-                  else
-                    git checkout --orphan builds
-                    git rm -rf . 2>/dev/null || true
-                  fi
+          # loader goes to builds root (always fresh)
+          cp /tmp/build-artifacts/loader.min.js "loader.min.js"
 
-                  # Create nested directory structure in builds branch
-                  mkdir -p "versions/$STABLE_BASE/$VERSION"
+          # clicker bundle goes to versioned folder
+          cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"
 
-                  # Copy built files from temporary location
-                  cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"
-                  echo "Copied built files to versions/$STABLE_BASE/$VERSION"
+          if ! grep -q "\"version\": \"$VERSION\"" versions.json; then
+            jq \
+              --arg version "$VERSION" \
+              --arg date    "$COMMIT_DATE" \
+              --arg comment "$COMMIT_MESSAGE" \
+              --arg hash    "$COMMIT_HASH" \
+              '.versions += [{"version":$version,"date":$date,"comment":$comment,"hash":$hash}]' \
+              versions.json > versions_tmp.json && mv versions_tmp.json versions.json
+          fi
 
-                  # Update stable.json if this is a stable version
-                  if [ "${{ steps.check_stable.outputs.is_stable }}" == "true" ]; then
-                    if [ ! -f stable.json ]; then
-                      echo '{"versions":[]}' > stable.json
-                    fi
+          if [ "$IS_STABLE" == "true" ] && ! grep -q "\"version\": \"$VERSION\"" stable.json; then
+            jq \
+              --arg version "$VERSION" \
+              --arg date    "$COMMIT_DATE" \
+              --arg hash    "$COMMIT_HASH" \
+              '.versions += [{"version":$version,"date":$date,"hash":$hash}]' \
+              stable.json > stable_tmp.json && mv stable_tmp.json stable.json
+          fi
 
-                    if ! grep -q "\"version\": \"$VERSION\"" stable.json 2>/dev/null; then
-                      jq --arg version "$VERSION" \
-                         --arg date "$COMMIT_DATE" \
-                         --arg hash "$COMMIT_HASH" \
-                         '.versions += [{"version": $version, "date": $date, "hash": $hash}]' \
-                         stable.json > stable_tmp.json
-                      mv stable_tmp.json stable.json
-                      echo "Added version $VERSION to stable.json"
-                    else
-                      echo "Version $VERSION already exists in stable.json"
-                    fi
-                  fi
+          if [ ! -f vercel.json ]; then
+            jq -n '{
+              version: 2,
+              public: true,
+              headers: [
+                {
+                  source: "loader.min.js",
+                  headers: [
+                    { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+                    { key: "Access-Control-Allow-Origin", value: "*" }
+                  ]
+                },
+                {
+                  source: "stable.json",
+                  headers: [
+                    { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+                    { key: "Access-Control-Allow-Origin", value: "*" }
+                  ]
+                },
+                {
+                  source: "versions.json",
+                  headers: [
+                    { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
+                    { key: "Access-Control-Allow-Origin", value: "*" }
+                  ]
+                },
+                {
+                  source: "versions/(.*)",
+                  headers: [
+                    { key: "Cache-Control", value: "public, max-age=300, must-revalidate" },
+                    { key: "Access-Control-Allow-Origin", value: "*" }
+                  ]
+                }
+              ]
+            }' > vercel.json
+          fi
 
-                  # Create vercel.json for deployment configuration
-                  cat > vercel.json << 'EOF'
-                  {
-                    "version": 2,
-                    "public": true,
-                    "headers": [
-                      {
-                        "source": "stable.json",
-                        "headers": [
-                          {
-                            "key": "Cache-Control",
-                            "value": "public, max-age=0, must-revalidate"
-                          },
-                          {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                          }
-                        ]
-                      },
-                      {
-                        "source": "versions/(.*)",
-                        "headers": [
-                          {
-                            "key": "Cache-Control",
-                            "value": "public, max-age=300, must-revalidate"
-                          },
-                          {
-                            "key": "Access-Control-Allow-Origin",
-                            "value": "*"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                  EOF
-                  echo "Created vercel.json"
+          git add -A
+          git commit -m "$VERSION" || echo "No changes for $VERSION"
+          git push origin builds
 
-                  git add -A
+      - name: Create GitHub release
+        if: env.IS_STABLE == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
+          body: |
+            ## Diaphantium ${{ env.VERSION }}
 
-                  if [ "${{ steps.check_stable.outputs.is_stable }}" == "true" ]; then
-                    echo -e "$VERSION\n\nbuild: release artifacts (stable)" > commit-msg.txt
-                  else
-                    echo -e "$VERSION\n\nbuild: release artifacts" > commit-msg.txt
-                  fi
+            Stable release built automatically.
 
-                  git commit -F commit-msg.txt || echo "No changes to commit"
-                  git push origin builds
-
-            - name: Create GitHub release (only for stable versions)
-              if: steps.check_stable.outputs.is_stable == 'true'
-              uses: softprops/action-gh-release@v3
-              with:
-                  tag_name: ${{ env.VERSION }}
-                  name: ${{ env.VERSION }}
-                  body: |
-                      ## Diaphantium ${{ env.VERSION }}
-
-                      Stable release built automatically.
-
-                      **Download:**
-                      - [diaphantium.user.js](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js)
-                      - [diaphantium.min.js](https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@builds/versions/${{ env.STABLE_BASE }}/${{ env.VERSION }}/diaphantium.min.js)
-                  files: |
-                      versions/${{ env.STABLE_BASE }}/${{ env.VERSION }}/diaphantium.min.js
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            **Download:**
+            - [diaphantium.user.js](https://raw.githubusercontent.com/OrakomoRi/Diaphantium/main/release/diaphantium.user.js)
+            - [loader.min.js](https://diaphantium-builds.vercel.app/loader.min.js)
+            - [diaphantium.min.js](https://diaphantium-builds.vercel.app/versions/${{ env.STABLE_BASE }}/${{ env.VERSION }}/diaphantium.min.js)
+          files: |
+            release/diaphantium.user.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

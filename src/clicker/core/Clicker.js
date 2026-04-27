@@ -1,5 +1,5 @@
-import { getStorage, setStorage } from './storage.js';
-import { $, on } from './utils.js';
+import { getStorage, setStorage } from '../storage/storage.js';
+import { $, on } from '../utils/utils.js';
 import PacketClicker from './PacketClicker.js';
 
 export default class Clicker {
