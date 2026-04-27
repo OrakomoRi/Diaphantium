@@ -21,7 +21,7 @@ export default class PacketClicker {
 			},
 			{
 				name: 'TankState',
-				regex: /\w+\.(\w+)\.equals\(\w+\(\)\)\s*\|\|\s*\w+\.\1\.equals\(\w+\(\)\)/,
+				regex: /\.(\w+)\.equals\(\w+\(\)\)\s*\|\|\s*\w+\.\1\.equals\(\w+\(\)\)[\s\S]{0,300}?callableName\s*=\s*["']onChangedClientTankState["']/,
 				index: 1,
 			},
 		];
