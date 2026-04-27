@@ -18,15 +18,10 @@ export default class PacketClicker {
 				name: 'StopCooldownMessage',
 				regex: /StopCooldownMessage\(supplyType=.+?this\.(\w+)(?:\.toString\(\))?/,
 				index: 1,
-			},
-			{
-				name: 'TankState',
-				regex: /callableName\s*=\s*["']onChangedClientTankState["'][\s\S]{0,500}?\([\w$]+=[\w$]+\)\.(\w+)\.equals\([\w$]+\(\)\)/,
-				index: 1,
-			},
+			}
 		];
 
-		this.variables = { ConfigureSupplyMessage: null, StopCooldownMessage: null, TankState: null };
+		this.variables = { ConfigureSupplyMessage: null, StopCooldownMessage: null };
 		this.supplies = [];
 		this.cooldowns = new Map(
 			Object.keys(this.SUPPLY_TYPES).map(type => [type, false])
@@ -40,43 +35,16 @@ export default class PacketClicker {
 	async init() {
 		if (this.hooksInstalled) return true;
 
-		const cached = this.loadVariableCache();
-		if (cached) {
-			Object.assign(this.variables, cached);
-			if (!Object.values(this.variables).some(v => v === null)) {
-				this.installHooks();
-				this.hooksInstalled = true;
-				console.log('[PacketClicker] hooks installed from cache:', this.variables);
-			}
-		}
-
 		const scriptContent = await this.fetchGameScript();
-		if (!scriptContent) return this.hooksInstalled;
+		if (!scriptContent) return false;
 
 		this.extractVariableNames(scriptContent);
-		console.log('[PacketClicker] variables after parse:', this.variables);
-		this.saveVariableCache();
 
-		if (!this.hooksInstalled) {
-			if (Object.values(this.variables).some(v => v === null)) return false;
-			this.installHooks();
-			this.hooksInstalled = true;
-		}
+		if (Object.values(this.variables).some(v => v === null)) return false;
 
+		this.installHooks();
+		this.hooksInstalled = true;
 		return true;
-	}
-
-	loadVariableCache() {
-		try {
-			const raw = localStorage.getItem('PacketClicker_vars');
-			return raw ? JSON.parse(raw) : null;
-		} catch { return null; }
-	}
-
-	saveVariableCache() {
-		try {
-			localStorage.setItem('PacketClicker_vars', JSON.stringify(this.variables));
-		} catch {}
 	}
 
 	async fetchGameScript() {
@@ -126,13 +94,6 @@ export default class PacketClicker {
 		);
 
 		this.hookVariableTracking(
-			this.variables.TankState,
-			(obj, val) => {
-				this.onTankStateChange(obj, val);
-			}
-		);
-
-		this.hookVariableTracking(
 			this.variables.StopCooldownMessage,
 			(obj, val) => {
 				let type = null;
@@ -155,32 +116,6 @@ export default class PacketClicker {
 				}
 			}
 		);
-	}
-
-	onTankStateChange(obj, val) {
-		console.log('[TankState] changed:', val);
-	}
-
-	hookMethodCall(name, handler) {
-		Object.defineProperty(Object.prototype, name, {
-			get() {
-				return this[`__${name}`];
-			},
-			set(value) {
-				if (typeof value === 'function') {
-					const original = value;
-					const outerHandler = handler;
-					const self = this;
-					this[`__${name}`] = function(...args) {
-						outerHandler(self, args);
-						return original.apply(this, args);
-					};
-				} else {
-					this[`__${name}`] = value;
-				}
-			},
-			configurable: true
-		});
 	}
 
 	hookVariableTracking(name, handler) {
