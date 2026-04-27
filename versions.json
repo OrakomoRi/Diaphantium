@@ -65,6 +65,12 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.48 feat: update tank state handling in PacketClicker",
       "hash": "f38b85329e2fb3ec260ae6ca1b042a92c6a260ef"
+    },
+    {
+      "version": "5.0.1+build.49",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.49 feat: migrate from webpack to rollup and enhance update checking",
+      "hash": "3cb9af573e5099e13f7b515232e5995e28405b46"
     }
   ]
 }
