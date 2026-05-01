@@ -77,6 +77,12 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.50 chore: update GitHub Actions and dependencies",
       "hash": "83f9c70cc853aa3004c77b0592cf157a3bc5edbf"
+    },
+    {
+      "version": "5.0.1+build.51",
+      "date": "2026-05-01",
+      "comment": "5.0.1+build.51 fix: update clicker mode to 'emulation'",
+      "hash": "384f734b0271e0f6d8f9c90fd65a174b63b3b78f"
     }
   ]
 }
