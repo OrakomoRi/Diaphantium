@@ -8,7 +8,7 @@ export default class Clicker {
 		this.keys = [];
 		this.antiAfkToggle = true;
 		this.packetClicker = null;
-		this.clickerMode = 'packet'; // 'packet' or 'emulation'
+		this.clickerMode = 'emulation'; // 'packet' or 'emulation'
 
 		// Mapping between feature names and checkbox class names
 		this.checkboxMap = {
