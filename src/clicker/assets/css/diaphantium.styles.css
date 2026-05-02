@@ -1,19 +1,15 @@
-/* MAIN */
-
-/* Block page scroll when popup is open */
 html.diaphantium-popup-open,
 body.diaphantium-popup-open {
 	overflow: hidden !important;
 }
 
-/* Popup container (overlay) */
 .popup_container.diaphantium[author="OrakomoRi"] {
 	position: fixed;
 	top: 0;
 	left: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	z-index: 888; /* Max z-index */
+	width: 100%;
+	height: 100%;
+	z-index: 888;
 	-webkit-box-align: center;
 	-webkit-box-pack: center;
 	display: flex;
@@ -23,7 +19,6 @@ body.diaphantium-popup-open {
 	--diaphantium-item-side-padding: .5em;
 }
 
-/* Popup window styles */
 .popup_container.diaphantium[author="OrakomoRi"] .popup {
 	all: unset;
 	position: absolute;
@@ -37,15 +32,14 @@ body.diaphantium-popup-open {
 	-webkit-backdrop-filter: blur(var(--diaphantium-blur));
 	backdrop-filter: blur(var(--diaphantium-blur));
 	border: .1em solid rgba(255, 255, 255, .3);
-	box-shadow: 0 8px 32px rgba(0, 0, 0, .4), 
+	box-shadow: 0 8px 32px rgba(0, 0, 0, .4),
 	            0 0 0 1px rgba(255, 255, 255, .1) inset,
 	            0 0 2em 0 rgba(255, 255, 255, .15);
 	color: rgb(255, 255, 255);
-	z-index: 889; /* z-index that is +1 to overlay container z-index */
+	z-index: 889;
 	user-select: none;
 }
 
-/* Content of any page */
 .popup_container.diaphantium[author="OrakomoRi"] .content {
 	all: unset;
 	display: none;
@@ -58,12 +52,10 @@ body.diaphantium-popup-open {
 	overflow: hidden;
 }
 
-/* Content of the selected page */
 .popup_container.diaphantium[author="OrakomoRi"] .content.active {
 	display: flex;
 }
 
-/* Close button on the popup */
 .popup_container.diaphantium[author="OrakomoRi"] .close {
 	all: unset;
 	position: absolute;
@@ -85,7 +77,6 @@ body.diaphantium-popup-open {
 	background: rgba(255, 255, 255, .03);
 }
 
-/* Close button hover behaviour */
 .popup_container.diaphantium[author="OrakomoRi"] .close:hover {
 	color: rgb(255, 255, 255);
 	background-color: rgba(221, 81, 81, .3);
@@ -98,7 +89,6 @@ body.diaphantium-popup-open {
 	transform: rotate(90deg) scale(0.95);
 }
 
-/* SVG inside close button */
 .popup_container.diaphantium[author="OrakomoRi"] .close svg {
 	pointer-events: none;
 	display: block;
@@ -108,7 +98,6 @@ body.diaphantium-popup-open {
 	stroke: currentColor;
 }
 
-/* Header of any content page */
 .popup_container.diaphantium[author="OrakomoRi"] .header {
 	all: unset;
 	display: flex;
@@ -125,7 +114,6 @@ body.diaphantium-popup-open {
 	margin-bottom: -.25em;
 }
 
-/* Inner of any content page */
 .popup_container.diaphantium[author="OrakomoRi"] .inner {
 	all: unset;
 	width: 100%;
@@ -140,7 +128,6 @@ body.diaphantium-popup-open {
 	min-height: 0;
 }
 
-/* Subheaders */
 .popup_container.diaphantium[author="OrakomoRi"] .subheader {
 	all: unset;
 	display: flex;
@@ -158,7 +145,6 @@ body.diaphantium-popup-open {
 	text-align: center;
 }
 
-/* Divider element */
 .popup_container.diaphantium[author="OrakomoRi"] .divider {
 	width: 100%;
 	height: 1px;
@@ -166,7 +152,6 @@ body.diaphantium-popup-open {
 	margin: 0;
 }
 
-/* Container of scrollable content */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable {
 	all: unset;
 	width: 100%;
@@ -182,12 +167,10 @@ body.diaphantium-popup-open {
 	padding-right: .5em;
 }
 
-/* Direct children of scrollable */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable > * {
 	width: 100%;
 }
 
-/* Labels (input + text) */
 .popup_container.diaphantium[author="OrakomoRi"] .inner .label {
 	all: unset;
 	display: flex;
@@ -205,7 +188,6 @@ body.diaphantium-popup-open {
 	letter-spacing: .01em;
 }
 
-/* Text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input {
 	padding: .4em .6em;
 	background-color: rgba(0, 0, 0, .3);
@@ -222,7 +204,6 @@ body.diaphantium-popup-open {
 	box-shadow: inset 0 1px 3px rgba(0, 0, 0, .2);
 }
 
-/* Select dropdown */
 .popup_container.diaphantium[author="OrakomoRi"] .select {
 	padding: .4em .6em;
 	background-color: rgba(0, 0, 0, .3);
@@ -249,7 +230,6 @@ body.diaphantium-popup-open {
 	box-shadow: 0 0 0 .15em rgba(255, 255, 255, .1);
 }
 
-/* Custom toggle switch checkbox */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .checkbox {
 	all: unset;
 	-webkit-appearance: none;
@@ -312,11 +292,6 @@ body.diaphantium-popup-open {
 	width: 1.4em;
 }
 
-
-
-/* NAVIGATION */
-
-/* Side navigation container */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation {
 	all: unset;
 	display: flex;
@@ -326,7 +301,6 @@ body.diaphantium-popup-open {
 	gap: 1em;
 }
 
-/* Side navigation buttons */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item {
 	all: unset;
 	position: relative;
@@ -365,7 +339,6 @@ body.diaphantium-popup-open {
 	stroke: currentColor;
 }
 
-/* Side navigation buttons hover & focus behaviour */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item:hover {
 	border-color: rgba(255, 255, 255, .2);
 }
@@ -376,7 +349,6 @@ body.diaphantium-popup-open {
 	opacity: .3;
 }
 
-/* Side navigation selected page button */
 .popup_container.diaphantium[author="OrakomoRi"] .navigation .item.active {
 	pointer-events: none;
 	color: rgb(255, 255, 255);
@@ -389,11 +361,6 @@ body.diaphantium-popup-open {
 	opacity: .4;
 }
 
-
-
-/* CLICKER PAGE */
-
-/* Supplies container on clicker page */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies {
 	display: flex;
 	flex-direction: column;
@@ -406,7 +373,6 @@ body.diaphantium-popup-open {
 	box-sizing: border-box;
 }
 
-/* Inner of supplies container (buttons with supplies icons) */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .subinner {
 	width: 100%;
 	display: flex;
@@ -416,7 +382,6 @@ body.diaphantium-popup-open {
 	padding: .5em 0;
 }
 
-/* Single supply button (icon) */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply {
 	width: 2.2em;
 	height: 2.2em;
@@ -442,7 +407,6 @@ body.diaphantium-popup-open {
 	transform: scale(0.98);
 }
 
-/* Behaviour for each icon (all colors was taken from the game) */
 .popup_container.diaphantium[author="OrakomoRi"] .supplies .supply[data-key="1"]:hover {
 	fill: rgb(148, 160, 89);
 }
@@ -481,7 +445,6 @@ body.diaphantium-popup-open {
 	box-shadow: 0 0 12px rgba(255, 255, 0, .3), 0 2px 8px rgba(0, 0, 0, .3);
 }
 
-/* Checkbox container for supplies clicker state */
 .popup_container.diaphantium[author="OrakomoRi"] .click_enable {
 	align-self: stretch;
 	padding: .75em var(--diaphantium-item-side-padding);
@@ -491,7 +454,6 @@ body.diaphantium-popup-open {
 	margin: 0;
 }
 
-/* Focused text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input:focus {
 	border-color: rgb(255, 255, 255);
 	background-color: rgba(0, 0, 0, .5);
@@ -499,13 +461,11 @@ body.diaphantium-popup-open {
 	box-shadow: 0 0 0 3px rgba(255, 255, 255, .1), inset 0 1px 3px rgba(0, 0, 0, .3);
 }
 
-/* Hover text inputs */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input:hover:not(:focus) {
 	border-color: rgba(255, 255, 255, .3);
 	background-color: rgba(0, 0, 0, .35);
 }
 
-/* Mine delay container */
 .popup_container.diaphantium[author="OrakomoRi"] .mine_delay {
 	padding: .75em var(--diaphantium-item-side-padding) 0 var(--diaphantium-item-side-padding);
 	align-self: stretch;
@@ -515,7 +475,6 @@ body.diaphantium-popup-open {
 	margin: 0;
 }
 
-/* Mine delay input */
 .popup_container.diaphantium[author="OrakomoRi"] .mine_delay .text_input.delay {
 	width: 5em;
 	min-width: 5em;
@@ -523,11 +482,6 @@ body.diaphantium-popup-open {
 	font-size: 1.05em;
 }
 
-
-
-/* MISCELLANEOUS PAGE */
-
-/* Miscellaneous toggles container */
 .popup_container.diaphantium[author="OrakomoRi"] .miscellaneous_toggle {
 	display: flex;
 	align-items: center;
@@ -540,11 +494,6 @@ body.diaphantium-popup-open {
 	margin: 0;
 }
 
-
-
-/* SETTINGS PAGE */
-
-/* Inner of settings container */
 .popup_container.diaphantium[author="OrakomoRi"] .content[data-tab="settings"] .subinner {
 	width: 100%;
 	display: flex;
@@ -552,7 +501,6 @@ body.diaphantium-popup-open {
 	gap: .5em;
 }
 
-/* Appearance settings container */
 .popup_container.diaphantium[author="OrakomoRi"] .content[data-tab="settings"] .appearance_settings {
 	display: flex;
 	flex-direction: column;
@@ -561,7 +509,6 @@ body.diaphantium-popup-open {
 	gap: 0;
 }
 
-/* Appearance toggle container */
 .popup_container.diaphantium[author="OrakomoRi"] .appearance_toggle {
 	display: flex;
 	align-items: center;
@@ -576,7 +523,6 @@ body.diaphantium-popup-open {
 	margin: 0;
 }
 
-/* Hotkeys container on settings page */
 .popup_container.diaphantium[author="OrakomoRi"] .content[data-tab="settings"] .hotkeys {
 	display: flex;
 	flex-direction: column;
@@ -586,7 +532,6 @@ body.diaphantium-popup-open {
 	padding: .75em 0;
 }
 
-/* Hotkey block line */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .hotkey_block {
 	display: flex;
 	align-items: center;
@@ -595,7 +540,6 @@ body.diaphantium-popup-open {
 	padding: .75em var(--diaphantium-item-side-padding);
 }
 
-/* Refresh hotkey button */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey {
 	height: 1.5em;
 	width: 1.5em;
@@ -608,7 +552,7 @@ body.diaphantium-popup-open {
 	border-radius: .3em;
 	background: rgba(255, 255, 255, .05);
 }
-/* Refresh hotkey button on hover */
+
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey:hover {
 	fill: rgb(255, 255, 255);
 	background: rgba(255, 255, 255, .1);
@@ -618,14 +562,13 @@ body.diaphantium-popup-open {
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey:active {
 	transform: rotate(180deg) scale(0.95);
 }
-/* Refresh hotkey icon */
+
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .refresh_hotkey svg {
 	width: 100%;
 	height: 100%;
 	display: block;
 }
 
-/* Hotkey input */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .text_input.hotkey {
 	cursor: pointer;
 	font-weight: bold;
@@ -633,29 +576,25 @@ body.diaphantium-popup-open {
 	user-select: none;
 }
 
-/* When focused, allow text selection and change cursor */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .text_input.hotkey:focus {
 	user-select: text;
 	cursor: text;
 }
 
-/* Hotkey text */
 .popup_container.diaphantium[author="OrakomoRi"] .hotkeys .text {
 	font-size: 1em;
 	display: inline;
 }
 
-/* Warning input */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input.warning {
 	border-color: rgb(255, 200, 50);
 	background-color: rgba(255, 200, 50, .05);
 }
-/* Focused warning text inputs */
+
 .popup_container.diaphantium[author="OrakomoRi"] .text_input.warning:focus {
 	border-color: rgb(255, 255, 255);
 }
 
-/* Wrong hotkey input */
 .popup_container.diaphantium[author="OrakomoRi"] .text_input.wrong_input {
 	user-select: none;
 	color: rgb(255, 100, 100);
@@ -668,21 +607,20 @@ body.diaphantium-popup-open {
 	10%, 90% {
 		transform: translate3d(-.1rem, 0, 0);
 	}
-  
+
 	20%, 80% {
 		transform: translate3d(.2rem, 0, 0);
 	}
-  
+
 	30%, 50%, 70% {
 		transform: translate3d(-.4rem, 0, 0);
 	}
-  
+
 	40%, 60% {
 		transform: translate3d(.4rem, 0, 0);
 	}
 }
 
-/* Smooth entrance animation */
 @keyframes popupFadeIn {
 	from {
 		opacity: 0;
@@ -698,7 +636,6 @@ body.diaphantium-popup-open {
 	animation: popupFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* Scrollbar improvements */
 .popup_container.diaphantium[author="OrakomoRi"] .popup .scrollable {
 	scrollbar-width: thin;
 	scrollbar-color: rgba(128, 128, 128, .3) transparent;
@@ -722,7 +659,6 @@ body.diaphantium-popup-open {
 	background: rgba(128, 128, 128, .5);
 }
 
-/* Popup signature (footer) */
 .popup_container.diaphantium[author="OrakomoRi"] .popup_signature {
 	position: absolute;
 	bottom: .5em;
@@ -737,13 +673,11 @@ body.diaphantium-popup-open {
 	transition: opacity var(--diaphantium-transition);
 }
 
-/* Hidden signature */
 .popup_container.diaphantium[author="OrakomoRi"] .popup_signature.hidden {
 	opacity: 0;
 	pointer-events: none;
 }
 
-/* Appearance toggle container */
 .popup_container.diaphantium[author="OrakomoRi"] .clicker_mode_toggle {
 	display: flex;
 	align-items: center;

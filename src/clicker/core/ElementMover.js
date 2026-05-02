@@ -1,7 +1,6 @@
 import { on, throttle, debounce } from '../utils/utils.js';
 import { setStorage } from '../storage/storage.js';
 
-// Makes DOM elements draggable
 export default class ElementMover {
 	constructor(element, handle = null) {
 		this.element = element;
@@ -12,9 +11,7 @@ export default class ElementMover {
 		this.offsetX = 0;
 		this.offsetY = 0;
 
-		// Throttled move for better performance
-		this.handleMoveThrottled = throttle(this.handleMove.bind(this), 16); // ~60fps
-		// Debounced save to reduce localStorage writes
+		this.handleMoveThrottled = throttle(this.handleMove.bind(this), 16);
 		this.debouncedSave = debounce(this.savePosition.bind(this), 500);
 
 		this.init();
@@ -26,7 +23,6 @@ export default class ElementMover {
 	}
 
 	handleStart(e) {
-		// Ignore if clicking on interactive elements
 		if (this.shouldIgnore(e.target)) {
 			return;
 		}
@@ -53,7 +49,6 @@ export default class ElementMover {
 		let x = touch.clientX - this.offsetX;
 		let y = touch.clientY - this.offsetY;
 
-		// Keep within viewport
 		const maxX = window.innerWidth - this.element.offsetWidth;
 		const maxY = window.innerHeight - this.element.offsetHeight;
 
@@ -63,7 +58,6 @@ export default class ElementMover {
 		this.element.style.left = `${x}px`;
 		this.element.style.top = `${y}px`;
 
-		// Debounced save during drag
 		this.debouncedSave();
 	}
 
@@ -76,7 +70,6 @@ export default class ElementMover {
 		document.removeEventListener('mouseup', this.handleEnd);
 		document.removeEventListener('touchend', this.handleEnd);
 
-		// Final save on drop
 		this.savePosition();
 	};
 

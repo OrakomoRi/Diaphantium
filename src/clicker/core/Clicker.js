@@ -8,9 +8,8 @@ export default class Clicker {
 		this.keys = [];
 		this.antiAfkToggle = true;
 		this.packetClicker = null;
-		this.clickerMode = 'emulation'; // 'packet' or 'emulation'
+		this.clickerMode = 'emulation';
 
-		// Mapping between feature names and checkbox class names
 		this.checkboxMap = {
 			supplies: 'supplies',
 			antiAfk: 'anti_afk',
@@ -83,13 +82,11 @@ export default class Clicker {
 	}
 
 	initializePacketClicker() {
-		this.packetClicker = new PacketClicker();
+		// this.packetClicker = new PacketClicker();
+		this.packetClicker = null;
 	}
 
-	loadClickerMode() {
-		const savedMode = getStorage('Diaphantium.clickerMode');
-		this.clickerMode = savedMode || 'packet';
-	}
+	loadClickerMode() {}
 
 	setupHotkeys() {
 		const hotkeyMap = {
@@ -115,7 +112,6 @@ export default class Clicker {
 	}
 
 	setupCheckboxListeners() {
-		// Event delegation - single listener for all checkboxes
 		on(document, 'change', (e) => {
 			if (!e.target.classList.contains('checkbox')) return;
 
