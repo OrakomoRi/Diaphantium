@@ -89,6 +89,12 @@
       "date": "2026-05-02",
       "comment": "1.0.0 refactor: clean up popup and clicker functionality",
       "hash": "a656fb698693e6c9ec03cd1bd9a574dff7dc4e53"
+    },
+    {
+      "version": "5.0.2",
+      "date": "2026-05-02",
+      "comment": "5.0.2",
+      "hash": "73e36c1a35d2437c59d59af78dff1941e21914a0"
     }
   ]
 }

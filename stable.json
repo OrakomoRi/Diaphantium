@@ -29,6 +29,11 @@
       "date": "2025-10-22",
       "hash": "13fc8bee17a4e2a805a5c7a93928f295aaabb6c5",
       "link": "https://cdn.jsdelivr.net/gh/OrakomoRi/Diaphantium@13fc8bee17a4e2a805a5c7a93928f295aaabb6c5/release/diaphantium.user.js"
+    },
+    {
+      "version": "5.0.2",
+      "date": "2026-05-02",
+      "hash": "73e36c1a35d2437c59d59af78dff1941e21914a0"
     }
   ]
 }
