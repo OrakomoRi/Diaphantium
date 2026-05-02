@@ -51,6 +51,7 @@ jobs:
           mkdir -p /tmp/build-artifacts
           cp dist/loader.min.js /tmp/build-artifacts/loader.min.js
           cp dist/diaphantium.min.js /tmp/build-artifacts/diaphantium.min.js
+          cp release/diaphantium.user.js /tmp/build-artifacts/diaphantium.user.js
 
       - name: Publish to builds branch
         run: |
@@ -165,6 +166,6 @@ jobs:
             - [loader.min.js](https://diaphantium-builds.vercel.app/loader.min.js)
             - [diaphantium.min.js](https://diaphantium-builds.vercel.app/versions/${{ env.STABLE_BASE }}/${{ env.VERSION }}/diaphantium.min.js)
           files: |
-            release/diaphantium.user.js
+            /tmp/build-artifacts/diaphantium.user.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
