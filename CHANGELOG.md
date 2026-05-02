@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## [5.0.2] - 2026-05-02
+
+### Added
+
+- New API endpoints:
+	- for latest stable web build: https://diaphantium-builds.vercel.app/api/stable/web
+	- for latest stable client build: https://diaphantium-builds.vercel.app/api/stable/client (currently there's no client build)
+
+### Changed
+
+- Updated project structure for better maintainability (rollup instead of webpack)
+- Updated the demo website
+
 ## [5.0.1] - 2025-10-22
 
 ### Changed
