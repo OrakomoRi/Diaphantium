@@ -35,6 +35,72 @@
       "date": "2026-04-27",
       "comment": "5.0.1+build.43 feat: enhance PacketClicker functionality",
       "hash": "985ed1cd9aca241d095624d61acd9bddb42f2172"
+    },
+    {
+      "version": "5.0.1+build.44",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.44 refactor: simplify PacketClicker logic",
+      "hash": "aaa5c7ec22d53336962b8704d95cdd65f95819a4"
+    },
+    {
+      "version": "5.0.1+build.45",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.45 feat: enhance PacketClicker functionality",
+      "hash": "d21b61138dd2f1b53bddc268997dbae8ba3b0f2b"
+    },
+    {
+      "version": "5.0.1+build.46",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.46 feat: enhance PacketClicker functionality",
+      "hash": "c23e2fdf6c7dd82cb0f88aa719c1c43ac66788cd"
+    },
+    {
+      "version": "5.0.1+build.47",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.47 feat: enhance tank state handling in PacketClicker",
+      "hash": "7311ef9e30c6803cc751017657348a4265bfc239"
+    },
+    {
+      "version": "5.0.1+build.48",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.48 feat: update tank state handling in PacketClicker",
+      "hash": "f38b85329e2fb3ec260ae6ca1b042a92c6a260ef"
+    },
+    {
+      "version": "5.0.1+build.49",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.49 feat: migrate from webpack to rollup and enhance update checking",
+      "hash": "3cb9af573e5099e13f7b515232e5995e28405b46"
+    },
+    {
+      "version": "5.0.1+build.50",
+      "date": "2026-04-27",
+      "comment": "5.0.1+build.50 chore: update GitHub Actions and dependencies",
+      "hash": "83f9c70cc853aa3004c77b0592cf157a3bc5edbf"
+    },
+    {
+      "version": "5.0.1+build.51",
+      "date": "2026-05-01",
+      "comment": "5.0.1+build.51 fix: update clicker mode to 'emulation'",
+      "hash": "384f734b0271e0f6d8f9c90fd65a174b63b3b78f"
+    },
+    {
+      "version": "5.0.1+build.52",
+      "date": "2026-05-02",
+      "comment": "1.0.0 refactor: clean up popup and clicker functionality",
+      "hash": "a656fb698693e6c9ec03cd1bd9a574dff7dc4e53"
+    },
+    {
+      "version": "5.0.2",
+      "date": "2026-05-02",
+      "comment": "5.0.2",
+      "hash": "73e36c1a35d2437c59d59af78dff1941e21914a0"
+    },
+    {
+      "version": "5.0.2+build.1",
+      "date": "2026-05-02",
+      "comment": "5.0.2+build.1 feat: update build artifacts in workflow",
+      "hash": "fae9f23f8f2a23b2b6909f07853d2585f407ff3e"
     }
   ]
 }
