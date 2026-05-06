@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.2+build.2
+// @version			5.0.2+build.3
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -99,7 +99,7 @@
 		GM_openInTab(updateUrl, { active: true });
 	});
 
-	const LOADER_URL = 'https://diaphantium-builds.vercel.app/loader.min.js';
+	const LOADER_URL = `https://diaphantium-builds.vercel.app/loader.min.js?v=${GM_info?.script?.version}&t=${Date.now()}`;
 
 	Object.defineProperty(unsafeWindow, '__DIAPHANTIUM__', {
 		value: Object.freeze({

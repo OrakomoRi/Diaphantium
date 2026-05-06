@@ -1,6 +1,6 @@
 {
 	"name": "diaphantium",
-	"version": "5.0.2+build.2",
+	"version": "5.0.2+build.3",
 	"description": "Modern userscript for Tanki Online - Reborn from ashes",
 	"main": "release/diaphantium.user.js",
 	"type": "module",
