@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.2+build.4
+// @version			5.0.2+build.5
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -114,7 +114,7 @@
 		url: LOADER_URL,
 		nocache: true,
 		onload: (response) => {
-			if (response.status === 200) {
+			if (response.status === 200 || response.status === 304) {
 				const script = document.createElement('script');
 				script.textContent = response.responseText;
 				if (document.body) {
