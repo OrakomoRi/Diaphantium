@@ -107,6 +107,12 @@
       "date": "2026-05-06",
       "comment": "5.0.2+build.3 feat: update loader URL with versioning",
       "hash": "52e68407d71c85cfef4e4f951655ef1321d53325"
+    },
+    {
+      "version": "5.0.2+build.4",
+      "date": "2026-05-06",
+      "comment": "5.0.2+build.4 fix: improve error logging for loader script",
+      "hash": "8fe7adb20108e4ea7e157df3951de2b136a167b8"
     }
   ]
 }
