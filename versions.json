@@ -101,6 +101,12 @@
       "date": "2026-05-02",
       "comment": "5.0.2+build.1 feat: update build artifacts in workflow",
       "hash": "fae9f23f8f2a23b2b6909f07853d2585f407ff3e"
+    },
+    {
+      "version": "5.0.2+build.3",
+      "date": "2026-05-06",
+      "comment": "5.0.2+build.3 feat: update loader URL with versioning",
+      "hash": "52e68407d71c85cfef4e4f951655ef1321d53325"
     }
   ]
 }
