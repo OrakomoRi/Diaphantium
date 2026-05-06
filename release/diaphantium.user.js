@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.2+build.3
+// @version			5.0.2+build.4
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -126,7 +126,7 @@
 				}
 				console.log('[Diaphantium] Loader script loaded successfully!');
 			} else {
-				console.error('[Diaphantium] Loader script not found!');
+				console.error(`[Diaphantium] Failed to load loader script! Status: ${response.status}\nLoader URL: ${LOADER_URL}`);
 			}
 		},
 		onerror: (error) => {
