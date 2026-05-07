@@ -119,6 +119,12 @@
       "date": "2026-05-06",
       "comment": "5.0.2+build.5 fix: handle additional HTTP response status",
       "hash": "477b9fe73bb34759aa5a141d066a45a0bb25e334"
+    },
+    {
+      "version": "5.0.2+build.6",
+      "date": "2026-05-07",
+      "comment": "5.0.2+build.6 fix: update scheduler to use nullish coalescing operator",
+      "hash": "f564ef242f957a1cae362753441e2ef950ce1186"
     }
   ]
 }
