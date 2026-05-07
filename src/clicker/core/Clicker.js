@@ -42,7 +42,7 @@ export default class Clicker {
 						this.simulateKeyPress('5');
 					}
 				},
-				scheduler: (fn) => setTimeout(fn, getStorage('mineDelay') || 100)
+				scheduler: (fn) => setTimeout(fn, getStorage('mineDelay') ?? 100)
 			},
 			antiAfk: {
 				enabled: false,
