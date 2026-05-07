@@ -242,7 +242,7 @@ export default class Popup {
 		if (!delayInput) return;
 
 		const saved = getStorage('mineDelay');
-		const value = saved || 100;
+		const value = saved ?? 100;
 		delayInput.value = value;
 
 		let previousValue = value;
