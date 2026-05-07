@@ -125,6 +125,12 @@
       "date": "2026-05-07",
       "comment": "5.0.2+build.6 fix: update scheduler to use nullish coalescing operator",
       "hash": "f564ef242f957a1cae362753441e2ef950ce1186"
+    },
+    {
+      "version": "5.0.2+build.7",
+      "date": "2026-05-07",
+      "comment": "5.0.2+build.7 fix: update default mine delay value handling",
+      "hash": "5e47a8f76e0ef9a62880a9e5b2f61f34fe137913"
     }
   ]
 }
