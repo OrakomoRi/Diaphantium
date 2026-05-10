@@ -131,6 +131,12 @@
       "date": "2026-05-07",
       "comment": "5.0.2+build.7 fix: update default mine delay value handling",
       "hash": "5e47a8f76e0ef9a62880a9e5b2f61f34fe137913"
+    },
+    {
+      "version": "5.0.2+build.9",
+      "date": "2026-05-10",
+      "comment": "5.0.2+build.9 feat: export compareVersions function",
+      "hash": "7721a1a1aee54ca002c19604effc386de40281e5"
     }
   ]
 }
