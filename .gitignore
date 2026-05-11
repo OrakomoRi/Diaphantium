@@ -1,0 +1,14 @@
+# Build outputs
+dist/
+build/
+
+# Node modules
+node_modules/
+
+# Dependency lock files
+package-lock.json
+*/package-lock.json
+
+# Environment files
+.env
+.env.*
