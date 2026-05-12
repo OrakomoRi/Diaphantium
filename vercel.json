@@ -3,11 +3,11 @@
   "public": true,
   "headers": [
     {
-      "source": "loader.min.js",
+      "source": "/api/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "no-store"
+          "value": "public, max-age=0, must-revalidate"
         },
         {
           "key": "Access-Control-Allow-Origin",
@@ -16,11 +16,11 @@
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "loader.min.js",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
+          "value": "no-store"
         },
         {
           "key": "Access-Control-Allow-Origin",
