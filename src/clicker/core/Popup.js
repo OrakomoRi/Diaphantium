@@ -1,11 +1,12 @@
 import { $, $$, on, debounce } from '../utils/utils.js';
 import { getStorage, setStorage, updateConfig } from '../storage/storage.js';
+import { STORAGE_KEYS, CHECKBOX_CLASSES, POPUP_SELECTOR, POPUP_INNER_SELECTOR, POPUP_OPEN_CLASS, HOTKEY_ACTIONS, DEFAULT_OPEN_HOTKEY, DEFAULT_MINE_DELAY } from '../config/config.js';
 import ElementMover from './ElementMover.js';
 import popupHTML from '../assets/html/popup.html';
 
 export default class Popup {
 	constructor() {
-		this.selector = '.popup_container.diaphantium[author="OrakomoRi"] .popup';
+		this.selector = POPUP_INNER_SELECTOR;
 		this.isOpen = false;
 		this.lockedElement = null;
 		this.popup = null;
@@ -16,9 +17,9 @@ export default class Popup {
 
 	setupListeners() {
 		on(document, 'keydown', (e) => {
-			const hotkeys = getStorage('Diaphantium.hotkeys') || [];
-			const openHotkey = hotkeys.find(h => h.action === 'Open menu');
-			const code = openHotkey?.value || 'Slash';
+			const hotkeys = getStorage(STORAGE_KEYS.hotkeys) || [];
+			const openHotkey = hotkeys.find(h => h.action === HOTKEY_ACTIONS.openMenu);
+			const code = openHotkey?.value || DEFAULT_OPEN_HOTKEY;
 
 			if (e.code === code && e.target.tagName !== 'INPUT') {
 				e.preventDefault();
@@ -29,8 +30,8 @@ export default class Popup {
 		on(document, 'click', (e) => {
 			if (!this.isOpen) return;
 
-			const popup = e.target.closest('.popup_container.diaphantium[author="OrakomoRi"] .popup');
-			const container = e.target.closest('.popup_container.diaphantium[author="OrakomoRi"]');
+			const popup = e.target.closest(POPUP_INNER_SELECTOR);
+			const container = e.target.closest(POPUP_SELECTOR);
 
 			if (popup && !e.target.closest('input')) {
 				const activeElement = document.activeElement;
@@ -53,7 +54,7 @@ export default class Popup {
 		this.popup = $(this.selector);
 		if (!this.popup) return;
 		const popup = this.popup;
-		const coords = getStorage('Diaphantium.coordinates');
+		const coords = getStorage(STORAGE_KEYS.coordinates);
 		if (coords) {
 			popup.style.top = `${coords.top}px`;
 			popup.style.left = `${coords.left}px`;
@@ -72,7 +73,6 @@ export default class Popup {
 		this.setupMiscellaneous();
 		this.setupHotkeys();
 		this.setupSignature();
-		this.setupClickerMode();
 
 		this.lockedElement = document.pointerLockElement;
 		if (this.lockedElement && document.contains(this.lockedElement)) {
@@ -104,19 +104,19 @@ export default class Popup {
 
 		const updates = {};
 		
-		updates.coordinates = {
+		updates[STORAGE_KEYS.coordinates] = {
 			top: parseFloat(popup.style.top),
 			left: parseFloat(popup.style.left)
 		};
 
 		const delayInput = $('.text_input.delay', popup);
 		if (delayInput && /^\d+$/.test(delayInput.value)) {
-			updates.mineDelay = parseInt(delayInput.value, 10);
+			updates[STORAGE_KEYS.mineDelay] = parseInt(delayInput.value, 10);
 		}
 
 		updateConfig(updates);
 
-		$('.popup_container.diaphantium[author="OrakomoRi"]')?.remove();
+		$(POPUP_SELECTOR)?.remove();
 		this.popup = null; // Clear cache
 
 		if (this.lockedElement?.requestPointerLock && document.contains(this.lockedElement)) {
@@ -184,7 +184,7 @@ export default class Popup {
 
 		const supplies = $$('.supply', popup);
 
-		const clickValues = getStorage('Diaphantium.clickValues') || [];
+		const clickValues = getStorage(STORAGE_KEYS.clickValues) || [];
 
 		supplies.forEach(supply => {
 			const key = supply.getAttribute('data-key');
@@ -218,17 +218,17 @@ export default class Popup {
 			});
 		});
 
-		setStorage('Diaphantium.clickValues', values);
+		setStorage(STORAGE_KEYS.clickValues, values);
 	}
 
 	setupSupplyCheckbox() {
 		const popup = this.popup;
 		if (!popup) return;
 
-		const checkbox = $('.checkbox.supplies', popup);
+		const checkbox = $(`.checkbox.${CHECKBOX_CLASSES.supplies}`, popup);
 		if (!checkbox) return;
 
-		const state = getStorage('Diaphantium.clickSuppliesState');
+		const state = getStorage(STORAGE_KEYS.clickSuppliesState);
 		if (state === true) {
 			checkbox.checked = true;
 		}
@@ -241,8 +241,8 @@ export default class Popup {
 		const delayInput = $('.text_input.delay', popup);
 		if (!delayInput) return;
 
-		const saved = getStorage('mineDelay');
-		const value = saved ?? 100;
+		const saved = getStorage(STORAGE_KEYS.mineDelay);
+		const value = saved ?? DEFAULT_MINE_DELAY;
 		delayInput.value = value;
 
 		let previousValue = value;
@@ -266,7 +266,7 @@ export default class Popup {
 				}, 200);
 			} else {
 				previousValue = newValue;
-				setStorage('mineDelay', parseInt(newValue, 10));
+				setStorage(STORAGE_KEYS.mineDelay, parseInt(newValue, 10));
 			}
 		});
 	}
@@ -276,15 +276,15 @@ export default class Popup {
 		if (!popup) return;
 
 		// Anti-AFK checkbox
-		const antiAfkCheckbox = $('.checkbox.anti_afk', popup);
+		const antiAfkCheckbox = $(`.checkbox.${CHECKBOX_CLASSES.antiAfk}`, popup);
 		if (antiAfkCheckbox) {
-			antiAfkCheckbox.checked = getStorage('antiAfkState') === true;
+			antiAfkCheckbox.checked = getStorage(STORAGE_KEYS.antiAfkState) === true;
 		}
 
 		// Auto-delete checkbox
-		const autoDeleteCheckbox = $('.checkbox.auto_delete', popup);
+		const autoDeleteCheckbox = $(`.checkbox.${CHECKBOX_CLASSES.autoDelete}`, popup);
 		if (autoDeleteCheckbox) {
-			autoDeleteCheckbox.checked = getStorage('autoDeleteState') === true;
+			autoDeleteCheckbox.checked = getStorage(STORAGE_KEYS.autoDeleteState) === true;
 		}
 	}
 
@@ -294,7 +294,7 @@ export default class Popup {
 
 		const hotkeyInputs = $$('.hotkey', popup);
 
-		const savedHotkeys = getStorage('Diaphantium.hotkeys') || [];
+		const savedHotkeys = getStorage(STORAGE_KEYS.hotkeys) || [];
 
 		hotkeyInputs.forEach(input => {
 			const action = input.getAttribute('data-action');
@@ -303,9 +303,9 @@ export default class Popup {
 			if (saved) {
 				input.value = saved.value;
 				input.setAttribute('data-code', saved.value);
-			} else if (action === 'Open menu') {
-				input.value = 'Slash';
-				input.setAttribute('data-code', 'Slash');
+			} else if (action === HOTKEY_ACTIONS.openMenu) {
+				input.value = DEFAULT_OPEN_HOTKEY;
+				input.setAttribute('data-code', DEFAULT_OPEN_HOTKEY);
 			}
 
 			on(input, 'click', () => input.focus());
@@ -318,9 +318,9 @@ export default class Popup {
 				const previousValue = input.value;
 
 				if (code === 'Escape') {
-					if (action === 'Open menu') {
-						input.value = 'Slash';
-						input.setAttribute('data-code', 'Slash');
+					if (action === HOTKEY_ACTIONS.openMenu) {
+						input.value = DEFAULT_OPEN_HOTKEY;
+						input.setAttribute('data-code', DEFAULT_OPEN_HOTKEY);
 					} else {
 						input.value = '';
 						input.removeAttribute('data-code');
@@ -352,9 +352,9 @@ export default class Popup {
 				const input = $(`.hotkey[data-action="${action}"]`, popup);
 
 				if (input) {
-					if (action === 'Open menu') {
-						input.value = 'Slash';
-						input.setAttribute('data-code', 'Slash');
+					if (action === HOTKEY_ACTIONS.openMenu) {
+						input.value = DEFAULT_OPEN_HOTKEY;
+						input.setAttribute('data-code', DEFAULT_OPEN_HOTKEY);
 					} else {
 						input.value = '';
 						input.removeAttribute('data-code');
@@ -387,7 +387,7 @@ export default class Popup {
 			}
 		});
 
-		setStorage('Diaphantium.hotkeys', hotkeys);
+		setStorage(STORAGE_KEYS.hotkeys, hotkeys);
 	}
 
 	updateHotkeyClasses() {
@@ -416,7 +416,7 @@ export default class Popup {
 
 		if (!checkbox || !signature) return;
 
-		const showSignature = getStorage('Diaphantium.showSignature');
+		const showSignature = getStorage(STORAGE_KEYS.showSignature);
 		if (showSignature === false) {
 			checkbox.checked = false;
 			signature.classList.add('hidden');
@@ -434,11 +434,9 @@ export default class Popup {
 				signature.classList.add('hidden');
 			}
 
-			setStorage('Diaphantium.showSignature', isChecked);
+			setStorage(STORAGE_KEYS.showSignature, isChecked);
 		});
 	}
-
-	setupClickerMode() {}
 
 	saveAllSettings() {
 		if (!this.popup) return;
@@ -447,19 +445,19 @@ export default class Popup {
 
 		const delayInput = $('.text_input.delay', this.popup);
 		if (delayInput && /^\d+$/.test(delayInput.value)) {
-			updates.mineDelay = parseInt(delayInput.value, 10);
+			updates[STORAGE_KEYS.mineDelay] = parseInt(delayInput.value, 10);
 		}
 
 		updateConfig(updates);
 	}
 
 	blockPageScroll() {
-		document.documentElement.classList.add('diaphantium-popup-open');
-		document.body.classList.add('diaphantium-popup-open');
+		document.documentElement.classList.add(POPUP_OPEN_CLASS);
+		document.body.classList.add(POPUP_OPEN_CLASS);
 	}
 
 	unblockPageScroll() {
-		document.documentElement.classList.remove('diaphantium-popup-open');
-		document.body.classList.remove('diaphantium-popup-open');
+		document.documentElement.classList.remove(POPUP_OPEN_CLASS);
+		document.body.classList.remove(POPUP_OPEN_CLASS);
 	}
 }

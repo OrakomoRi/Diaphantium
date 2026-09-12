@@ -1,4 +1,7 @@
-const CONFIG_KEY = 'Diaphantium.config';
+import { NAME, DEFAULT_MINE_DELAY } from '../config/config.js';
+
+const CONFIG_KEY = `${NAME}.config`;
+const PREFIX = `${NAME}.`;
 
 let configCache = null;
 
@@ -6,7 +9,7 @@ const defaultConfig = {
 	coordinates: { top: 100, left: 100 },
 	clickValues: [],
 	clickSuppliesState: false,
-	mineDelay: 100,
+	mineDelay: DEFAULT_MINE_DELAY,
 	antiAfkState: false,
 	autoDeleteState: false,
 	hotkeys: [],
@@ -41,7 +44,7 @@ function debouncedSave() {
 export function getStorage(key) {
 	const config = loadConfig();
 	
-	const cleanKey = key.replace('Diaphantium.', '');
+	const cleanKey = key.replace(PREFIX, '');
 	
 	const keys = cleanKey.split('.');
 	let value = config;
@@ -56,7 +59,7 @@ export function getStorage(key) {
 export function setStorage(key, value) {
 	const config = loadConfig();
 	
-	const cleanKey = key.replace('Diaphantium.', '');
+	const cleanKey = key.replace(PREFIX, '');
 	
 	const keys = cleanKey.split('.');
 	const lastKey = keys.pop();
@@ -77,7 +80,7 @@ export function updateConfig(updates) {
 	const config = loadConfig();
 	
 	Object.entries(updates).forEach(([key, value]) => {
-		const cleanKey = key.replace('Diaphantium.', '');
+		const cleanKey = key.replace(PREFIX, '');
 		const keys = cleanKey.split('.');
 		const lastKey = keys.pop();
 		

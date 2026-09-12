@@ -1,5 +1,6 @@
 import { getStorage, setStorage } from '../storage/storage.js';
 import { $, on } from '../utils/utils.js';
+import { STORAGE_KEYS, CHECKBOX_CLASSES, HOTKEY_ACTIONS, DEFAULT_MINE_DELAY } from '../config/config.js';
 
 export default class Clicker {
 	constructor(popup) {
@@ -8,15 +9,15 @@ export default class Clicker {
 		this.antiAfkToggle = true;
 
 		this.checkboxMap = {
-			supplies: 'supplies',
-			antiAfk: 'anti_afk',
-			autoDelete: 'auto_delete'
+			supplies: CHECKBOX_CLASSES.supplies,
+			antiAfk: CHECKBOX_CLASSES.antiAfk,
+			autoDelete: CHECKBOX_CLASSES.autoDelete
 		};
 
 		this.features = {
 			supplies: {
 				enabled: false,
-				storageKey: 'Diaphantium.clickSuppliesState',
+				storageKey: STORAGE_KEYS.clickSuppliesState,
 				action: () => {
 					this.updateKeys();
 					this.keys.forEach(key => this.simulateKeyPress(key));
@@ -27,11 +28,11 @@ export default class Clicker {
 				enabled: false,
 				storageKey: null,
 				action: () => this.simulateKeyPress('5'),
-				scheduler: (fn) => setTimeout(fn, getStorage('mineDelay') ?? 100)
+				scheduler: (fn) => setTimeout(fn, getStorage(STORAGE_KEYS.mineDelay) ?? DEFAULT_MINE_DELAY)
 			},
 			antiAfk: {
 				enabled: false,
-				storageKey: 'Diaphantium.antiAfkState',
+				storageKey: STORAGE_KEYS.antiAfkState,
 				action: () => {
 					this.antiAfkToggle = !this.antiAfkToggle;
 					const key = this.antiAfkToggle ? 'ArrowLeft' : 'ArrowRight';
@@ -43,7 +44,7 @@ export default class Clicker {
 			},
 			autoDelete: {
 				enabled: false,
-				storageKey: 'Diaphantium.autoDeleteState',
+				storageKey: STORAGE_KEYS.autoDeleteState,
 				action: () => this.simulateKeyPress('Delete'),
 				scheduler: (fn) => requestAnimationFrame(fn)
 			}
@@ -66,14 +67,14 @@ export default class Clicker {
 
 	setupHotkeys() {
 		const hotkeyMap = {
-			'Click supplies': 'supplies',
-			'Click mines': 'mines'
+			[HOTKEY_ACTIONS.clickSupplies]: 'supplies',
+			[HOTKEY_ACTIONS.clickMines]: 'mines'
 		};
 
 		on(document, 'keydown', (e) => {
 			if (e.target.tagName === 'INPUT') return;
 
-			const hotkeys = getStorage('Diaphantium.hotkeys') || [];
+			const hotkeys = getStorage(STORAGE_KEYS.hotkeys) || [];
 
 			Object.entries(hotkeyMap).forEach(([action, feature]) => {
 				const hotkey = hotkeys.find(h => h.action === action);
@@ -134,7 +135,7 @@ export default class Clicker {
 	}
 
 	updateKeys() {
-		const clickValues = getStorage('clickValues') || [];
+		const clickValues = getStorage(STORAGE_KEYS.clickValues) || [];
 		this.keys = clickValues
 			.filter(item => item.value === 'on')
 			.map(item => item.key);
