@@ -1,14 +1,11 @@
 import { getStorage, setStorage } from '../storage/storage.js';
 import { $, on } from '../utils/utils.js';
-import PacketClicker from './PacketClicker.js';
 
 export default class Clicker {
 	constructor(popup) {
 		this.popup = popup;
 		this.keys = [];
 		this.antiAfkToggle = true;
-		this.packetClicker = null;
-		this.clickerMode = 'emulation';
 
 		this.checkboxMap = {
 			supplies: 'supplies',
@@ -21,27 +18,15 @@ export default class Clicker {
 				enabled: false,
 				storageKey: 'Diaphantium.clickSuppliesState',
 				action: () => {
-					if (this.clickerMode === 'packet' && this.packetClicker) {
-						this.updateKeys();
-						this.keys.forEach(key => this.packetClicker.clickSupply(key));
-					} else {
-						this.updateKeys();
-						this.keys.forEach(key => this.simulateKeyPress(key));
-					}
+					this.updateKeys();
+					this.keys.forEach(key => this.simulateKeyPress(key));
 				},
 				scheduler: (fn) => requestAnimationFrame(fn)
 			},
 			mines: {
 				enabled: false,
 				storageKey: null,
-				action: () => {
-					// console.log('[Clicker] Mines action, mode:', this.clickerMode, 'packetClicker:', !!this.packetClicker);
-					if (this.clickerMode === 'packet' && this.packetClicker) {
-						this.packetClicker.clickSupply('5');
-					} else {
-						this.simulateKeyPress('5');
-					}
-				},
+				action: () => this.simulateKeyPress('5'),
 				scheduler: (fn) => setTimeout(fn, getStorage('mineDelay') ?? 100)
 			},
 			antiAfk: {
@@ -74,19 +59,10 @@ export default class Clicker {
 	}
 
 	init() {
-		this.initializePacketClicker();
-		this.loadClickerMode();
 		this.setupHotkeys();
 		this.setupCheckboxListeners();
 		this.loadState();
 	}
-
-	initializePacketClicker() {
-		// this.packetClicker = new PacketClicker();
-		this.packetClicker = null;
-	}
-
-	loadClickerMode() {}
 
 	setupHotkeys() {
 		const hotkeyMap = {
@@ -195,14 +171,5 @@ export default class Clicker {
 				this.start(feature);
 			}
 		}
-	}
-
-	setClickerMode(mode) {
-		if (mode !== 'packet' && mode !== 'emulation') {
-			return;
-		}
-
-		this.clickerMode = mode;
-		setStorage('Diaphantium.clickerMode', mode);
 	}
 }
