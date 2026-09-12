@@ -137,6 +137,12 @@
       "date": "2026-05-10",
       "comment": "5.0.2+build.9 feat: export compareVersions function",
       "hash": "7721a1a1aee54ca002c19604effc386de40281e5"
+    },
+    {
+      "version": "5.0.2+build.10",
+      "date": "2026-09-12",
+      "comment": "5.0.2+build.10 refactor: simplify Clicker class and remove PacketClicker",
+      "hash": "0a651fb4e80ce31f64e5b3d3a788daad903cf42f"
     }
   ]
 }
