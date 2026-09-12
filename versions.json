@@ -143,6 +143,12 @@
       "date": "2026-09-12",
       "comment": "5.0.2+build.10 refactor: simplify Clicker class and remove PacketClicker",
       "hash": "0a651fb4e80ce31f64e5b3d3a788daad903cf42f"
+    },
+    {
+      "version": "5.0.2+build.11",
+      "date": "2026-09-12",
+      "comment": "5.0.2+build.11 feat: enhance clicker and popup functionality",
+      "hash": "f0ff404bc92f08afe8dde43bbf53f9d308cc894a"
     }
   ]
 }
