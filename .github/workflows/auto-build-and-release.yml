@@ -41,9 +41,10 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "24"
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build JS
         run: |
@@ -84,10 +85,7 @@ jobs:
 
           mkdir -p "versions/$STABLE_BASE/$VERSION"
 
-          # loader goes to builds root (always fresh)
           cp /tmp/build-artifacts/loader.min.js "loader.min.js"
-
-          # clicker bundle goes to versioned folder
           cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"
 
           if ! grep -q "\"version\": \"$VERSION\"" versions.json; then

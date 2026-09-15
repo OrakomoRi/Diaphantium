@@ -2,7 +2,7 @@ import { $, $$, on, debounce } from '../utils/utils.js';
 import { getStorage, setStorage, updateConfig } from '../storage/storage.js';
 import { STORAGE_KEYS, CHECKBOX_CLASSES, POPUP_SELECTOR, POPUP_INNER_SELECTOR, POPUP_OPEN_CLASS, HOTKEY_ACTIONS, DEFAULT_OPEN_HOTKEY, DEFAULT_MINE_DELAY } from '../config/config.js';
 import ElementMover from './ElementMover.js';
-import popupHTML from '../assets/html/popup.html';
+import popupHTML from '../assets/html/popup.html?raw';
 
 export default class Popup {
 	constructor() {
