@@ -173,6 +173,12 @@
       "date": "2026-09-16",
       "comment": "5.0.2+build.16 feat: enhance Playwright integration in workflows",
       "hash": "19e4c8d6ddd469c00190312f01b96209b2cbc69c"
+    },
+    {
+      "version": "5.0.2+build.17",
+      "date": "2026-09-16",
+      "comment": "5.0.2+build.17 feat: update toast styles and dependencies",
+      "hash": "c32e5b1b8ac969fcc87b743927ba2a46ef3f5f10"
     }
   ]
 }
