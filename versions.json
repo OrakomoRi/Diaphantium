@@ -161,6 +161,12 @@
       "date": "2026-09-15",
       "comment": "5.0.2+build.13 feat: migrate from Rollup to Vite for build process",
       "hash": "5262799422413bb68299cdc08d4050db0c4caae0"
+    },
+    {
+      "version": "5.0.2+build.14",
+      "date": "2026-09-16",
+      "comment": "5.0.2+build.14",
+      "hash": "3ef1177c4522c6ba6ca0fb66b0ff62ec8a625cd5"
     }
   ]
 }
