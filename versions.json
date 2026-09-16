@@ -191,6 +191,12 @@
       "date": "2026-09-16",
       "comment": "5.0.2+build.19 chore: minor patch",
       "hash": "2d08e443156deb376c7a69d7c4c34fe53e2e4c58"
+    },
+    {
+      "version": "5.0.2+build.20",
+      "date": "2026-09-16",
+      "comment": "5.0.2+build.20 feat: update localization and add new images",
+      "hash": "bc5194930c9608190840fcb365e2e0fd0364a09f"
     }
   ]
 }
