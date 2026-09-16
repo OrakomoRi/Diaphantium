@@ -9,6 +9,7 @@ import { getStorage, setStorage } from '../storage/storage';
 import { openMenuCode } from '../core/hotkeys';
 import { anchorFromPlacement, attachDrag, placementFromAnchor, readAnchor, viewportSize, type Anchor, type Placement, type Size } from '../core/position';
 import { PANEL_SHELL, providePanelState, type DialogKeyHandler } from './model/panel';
+import { supplyKeyFromCode } from './model/supplyIcons';
 import { isThemeId, saveThemeId, storedThemeId, type ThemeId } from './model/theme';
 import { prefersReducedMotion } from './motion/springs';
 import { CONTENT_RISE, THEME_SWITCH_SECONDS, mixShape, surfaceTransform, switchPhases, type Shape } from './motion/themeMorph';
@@ -351,7 +352,10 @@ function onDialogClick(event: MouseEvent): void {
 
 function onDialogKeydown(event: KeyboardEvent): void {
 	if (NAVIGATION_KEYS.has(event.code)) focusFromPointer = false;
-	if (event.defaultPrevented) return;
+	if (event.defaultPrevented) {
+		event.stopPropagation();
+		return;
+	}
 	if (!NAVIGATION_KEYS.has(event.code)) releasePointerFocus();
 	if (event.composedPath()[0] instanceof HTMLInputElement) {
 		event.stopPropagation();
@@ -364,12 +368,16 @@ function onDialogKeydown(event: KeyboardEvent): void {
 		return;
 	}
 	if (props.state === 'closing' || event.ctrlKey || event.altKey || event.metaKey) return;
+	let consumed = supplyKeyFromCode(event.code) !== null;
 	for (const handler of keyHandlers) {
 		if (handler(event)) {
-			event.preventDefault();
-			event.stopPropagation();
-			return;
+			consumed = true;
+			break;
 		}
+	}
+	if (consumed) {
+		event.preventDefault();
+		event.stopPropagation();
 	}
 }
 

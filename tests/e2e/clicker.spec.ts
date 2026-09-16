@@ -119,7 +119,7 @@ test.describe('panel', () => {
 		await expect(clicker.popup).toHaveCount(0);
 	});
 
-	test('passes no keys or mouse events to the page while open', async ({ clicker, page }) => {
+	test('passes real key presses but no mouse events to the page while open', async ({ clicker, page }) => {
 		test.skip(legacyBundle, 'the panel became a dialog after the TypeScript migration');
 		await page.evaluate(() => {
 			const seen: string[] = [];
@@ -144,7 +144,8 @@ test.describe('panel', () => {
 		await page.mouse.click(box.x + 20, box.y + 20);
 		await expect(clicker.popup).toBeVisible();
 
-		expect((await seen()).slice(opened)).toEqual([]);
+		// a plain key the panel does not claim reaches the game exactly like a movement key held when the panel opens
+		expect((await seen()).slice(opened)).toEqual(['keydown', 'keyup']);
 	});
 
 	test('is not affected by the page stylesheets', async ({ clicker, page }) => {
