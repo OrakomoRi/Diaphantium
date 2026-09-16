@@ -179,6 +179,12 @@
       "date": "2026-09-16",
       "comment": "5.0.2+build.17 feat: update toast styles and dependencies",
       "hash": "c32e5b1b8ac969fcc87b743927ba2a46ef3f5f10"
+    },
+    {
+      "version": "5.0.2+build.18",
+      "date": "2026-09-16",
+      "comment": "5.0.2+build.18 fix: remove size property from update toast",
+      "hash": "c18d455434ecf7f2553a96222d886ba2888f605d"
     }
   ]
 }
