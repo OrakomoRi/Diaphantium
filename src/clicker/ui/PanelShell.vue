@@ -353,9 +353,13 @@ function onDialogKeydown(event: KeyboardEvent): void {
 	if (NAVIGATION_KEYS.has(event.code)) focusFromPointer = false;
 	if (event.defaultPrevented) return;
 	if (!NAVIGATION_KEYS.has(event.code)) releasePointerFocus();
-	if (event.composedPath()[0] instanceof HTMLInputElement) return;
+	if (event.composedPath()[0] instanceof HTMLInputElement) {
+		event.stopPropagation();
+		return;
+	}
 	if (event.code === openMenuCode()) {
 		event.preventDefault();
+		event.stopPropagation();
 		emit('toggle');
 		return;
 	}
@@ -363,9 +367,14 @@ function onDialogKeydown(event: KeyboardEvent): void {
 	for (const handler of keyHandlers) {
 		if (handler(event)) {
 			event.preventDefault();
+			event.stopPropagation();
 			return;
 		}
 	}
+}
+
+function onDialogKeyup(event: KeyboardEvent): void {
+	if (event.composedPath()[0] instanceof HTMLInputElement) event.stopPropagation();
 }
 
 const initialLayer = createLayer(selectedTheme.value);
@@ -416,10 +425,9 @@ onBeforeUnmount(() => {
 		@cancel.prevent="emit('close')"
 		@close="emit('close')"
 		@click.stop="onDialogClick"
-		@keydown.stop="onDialogKeydown"
+		@keydown="onDialogKeydown"
 		@focusout="keepFocusInside"
-		@keyup.stop
-		@keypress.stop
+		@keyup="onDialogKeyup"
 		@pointerdown.stop
 		@pointermove.stop
 		@pointerup.stop
