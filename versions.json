@@ -197,6 +197,12 @@
       "date": "2026-09-16",
       "comment": "5.0.2+build.20 feat: update localization and add new images",
       "hash": "bc5194930c9608190840fcb365e2e0fd0364a09f"
+    },
+    {
+      "version": "5.0.2+build.21",
+      "date": "2026-09-16",
+      "comment": "5.0.2+build.21 fix: improve event handling in PanelShell component",
+      "hash": "06f366498d7112ede1802a16d3647ddadaaba90c"
     }
   ]
 }
