@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: builds-branch
+  cancel-in-progress: false
+
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
@@ -46,16 +50,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
       - name: Build JS
         run: |
           npm run build
           mkdir -p /tmp/build-artifacts
           cp dist/loader.min.js /tmp/build-artifacts/loader.min.js
           cp dist/diaphantium.min.js /tmp/build-artifacts/diaphantium.min.js
+          cp dist/update-toast.min.js /tmp/build-artifacts/update-toast.min.js
           cp release/diaphantium.user.js /tmp/build-artifacts/diaphantium.user.js
+
+      - name: Test
+        run: |
+          npm test
+          npm run test:e2e
 
       - name: Publish to builds branch
         run: |
+          git clean -ffdx
           COMMIT_HASH=$(git rev-parse HEAD)
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
           STABLE_BASE=$(echo "$VERSION" | grep -oP '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)')
@@ -87,6 +101,7 @@ jobs:
 
           cp /tmp/build-artifacts/loader.min.js "loader.min.js"
           cp /tmp/build-artifacts/diaphantium.min.js "versions/$STABLE_BASE/$VERSION/"
+          cp /tmp/build-artifacts/update-toast.min.js "versions/$STABLE_BASE/$VERSION/"
 
           if ! grep -q "\"version\": \"$VERSION\"" versions.json; then
             jq \
@@ -110,31 +125,37 @@ jobs:
           if [ ! -f vercel.json ]; then
             jq -n '{
               version: 2,
-              public: true,
               headers: [
                 {
-                  source: "loader.min.js",
+                  source: "/api/(.*)",
                   headers: [
                     { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
                     { key: "Access-Control-Allow-Origin", value: "*" }
                   ]
                 },
                 {
-                  source: "stable.json",
+                  source: "/loader.min.js",
+                  headers: [
+                    { key: "Cache-Control", value: "no-store" },
+                    { key: "Access-Control-Allow-Origin", value: "*" }
+                  ]
+                },
+                {
+                  source: "/stable.json",
                   headers: [
                     { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
                     { key: "Access-Control-Allow-Origin", value: "*" }
                   ]
                 },
                 {
-                  source: "versions.json",
+                  source: "/versions.json",
                   headers: [
                     { key: "Cache-Control", value: "public, max-age=0, must-revalidate" },
                     { key: "Access-Control-Allow-Origin", value: "*" }
                   ]
                 },
                 {
-                  source: "versions/(.*)",
+                  source: "/versions/(.*)",
                   headers: [
                     { key: "Cache-Control", value: "public, max-age=300, must-revalidate" },
                     { key: "Access-Control-Allow-Origin", value: "*" }

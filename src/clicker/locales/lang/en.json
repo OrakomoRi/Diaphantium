@@ -1,0 +1,94 @@
+{
+	"tabs": {
+		"clicker": "Clicker",
+		"miscellaneous": "Misc",
+		"settings": "Settings",
+		"about": "About"
+	},
+	"clicker": {
+		"header": "Clicker",
+		"supplies": "Choose supplies to click",
+		"clickSupplies": "Click supplies",
+		"clickSuppliesHint": "Uses the chosen supplies when ready",
+		"mineDelay": "Delay for mines (ms)",
+		"mineDelayShort": "Mine delay",
+		"mineDelayHint": "Pause between placed mines",
+		"mineDelayError": "Enter a whole number from {min} to {max}",
+		"milliseconds": "ms",
+		"supplyNames": {
+			"repair": "Repair Kit",
+			"armor": "Double Armor",
+			"damage": "Double Damage",
+			"nitro": "Speed Boost"
+		},
+		"supplyShort": {
+			"repair": "Repair",
+			"armor": "Armor",
+			"damage": "Damage",
+			"nitro": "Speed"
+		}
+	},
+	"miscellaneous": {
+		"header": "Miscellaneous",
+		"antiAfk": "Anti-AFK",
+		"antiAfkHint": "Prevents the kick for inactivity",
+		"autoDelete": "Auto self-destruct",
+		"autoDeleteHint": "Destroys your tank over and over"
+	},
+	"settings": {
+		"header": "Settings",
+		"hotkeys": "Hotkeys",
+		"openMenu": "Open menu",
+		"clickSupplies": "Click supplies",
+		"clickMines": "Click mines",
+		"appearance": "Appearance",
+		"theme": "Theme",
+		"themeHint": "Look and layout of this panel",
+		"language": "Language",
+		"languageHint": "Language of this panel",
+		"showSignature": "Show signature",
+		"resetHotkey": "Reset hotkey",
+		"pressKey": "Press a key",
+		"notSet": "Not set"
+	},
+	"themes": {
+		"classic": "Classic",
+		"liquid": "Liquid glass"
+	},
+	"languages": {
+		"auto": "Auto",
+		"en": "English",
+		"ru": "Русский",
+		"uk": "Українська"
+	},
+	"about": {
+		"header": "About",
+		"tagline": "Free open-source automation tool for Tanki Online.",
+		"version": "Version",
+		"released": "Released",
+		"author": "Author",
+		"license": "License",
+		"repository": "Source code on GitHub",
+		"star": "Leave a star if you like it"
+	},
+	"tooltips": {
+		"supplies": "Click a supply or press its number while this tab is open",
+		"clickSupplies": "Also switched by the Click supplies hotkey, even with the panel closed",
+		"mineDelay": "Digits only, from {min} to {max}. Enter saves",
+		"antiAfk": "Taps the left and right arrow keys about once a second",
+		"autoDelete": "Holds the game's self-destruct key (Delete). Your tank is destroyed right after every respawn — turn it off to play",
+		"hotkey": "Click, then press a key. Escape resets",
+		"hotkeyReserved": "Game keys are not allowed: 1–5, WASD, arrows, Space, Delete",
+		"openMenu": "Opens and closes this panel",
+		"clickSuppliesHotkey": "Switches supply clicking on or off",
+		"clickMinesHotkey": "Starts or stops placing mines",
+		"reset": "Reset to default",
+		"close": "Close",
+		"showSignature": "Shows a small signature in the corner of the panel",
+		"theme": "Changes how the panel looks; every setting stays as it is",
+		"language": "Auto uses the language of the game",
+		"repository": "Opens the repository in a new tab"
+	},
+	"close": "Close",
+	"signature": "Powered by OrakomoRi"
+}

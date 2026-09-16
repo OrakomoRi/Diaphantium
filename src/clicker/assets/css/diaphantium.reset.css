@@ -1,5 +1,5 @@
-.popup_container.diaphantium[author="OrakomoRi"],
-.popup_container.diaphantium[author="OrakomoRi"] * {
+:host,
+* {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
@@ -11,7 +11,11 @@
 	font-size: 16px;
 }
 
-.popup_container.diaphantium[author="OrakomoRi"] button {
+[hidden] {
+	display: none !important;
+}
+
+button {
 	outline: none;
 	border: none;
 	background: none;
@@ -19,12 +23,12 @@
 	font: inherit;
 	line-height: normal;
 	-webkit-font-smoothing: inherit;
-    -moz-osx-font-smoothing: inherit;
+	-moz-osx-font-smoothing: inherit;
 	appearance: none;
 	border-radius: 0;
 }
 
-.popup_container.diaphantium[author="OrakomoRi"] button::-moz-focus-inner {
+button::-moz-focus-inner {
 	border: 0;
-    padding: 0;
+	padding: 0;
 }

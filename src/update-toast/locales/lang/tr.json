@@ -1,0 +1,8 @@
+{
+	"title": "Yeni sürüm mevcut!",
+	"text": "{version} sürümü mevcut. Şimdi güncellensin mi?",
+	"textWithDate": "{version} sürümü mevcut ({date}). Şimdi güncellensin mi?",
+	"skip": "Atla",
+	"later": "Sonra",
+	"update": "Güncelle"
+}

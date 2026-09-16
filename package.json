@@ -1,13 +1,19 @@
 {
 	"name": "diaphantium",
-	"version": "5.0.2+build.13",
+	"version": "5.0.2+build.14",
 	"description": "Modern userscript for Tanki Online - Reborn from ashes",
 	"main": "release/diaphantium.user.js",
 	"type": "module",
+	"private": true,
 	"scripts": {
+		"prepare": "git config core.hooksPath .githooks || exit 0",
 		"dev": "vite build --app --watch",
-		"build": "vite build --app",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"build": "npm run typecheck && vite build --app",
+		"preview": "vite preview",
+		"typecheck": "vue-tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:e2e": "playwright test"
 	},
 	"keywords": [
 		"userscript",
@@ -18,6 +24,26 @@
 	"author": "OrakomoRi",
 	"license": "MIT",
 	"devDependencies": {
-		"vite": "^8.3.0"
+		"@ark-ui/vue": "^5.39.2",
+		"@intlify/core-base": "^11.4.10",
+		"@intlify/unplugin-vue-i18n": "^11.2.5",
+		"@lucide/vue": "^1.46.0",
+		"@playwright/test": "^1.63.0",
+		"@types/node": "^24.0.0",
+		"@utensilia/compare-versions": "^1.0.0",
+		"@utensilia/logger": "^1.0.0",
+		"@vitejs/plugin-vue": "^6.0.9",
+		"happy-dom": "^20.14.5",
+		"motion": "^13.3.0",
+		"nuntaria": "^1.0.0",
+		"petite-vue-i18n": "^11.4.10",
+		"playwright": "^1.63.0",
+		"simple-icons": "^16.31.0",
+		"terser": "^5.51.2",
+		"typescript": "~5.9.3",
+		"vite": "^8.3.0",
+		"vitest": "^5.0.1",
+		"vue": "^3.5.42",
+		"vue-tsc": "^3.3.11"
 	}
 }

@@ -1,9 +1,0 @@
-:root {
-	--diaphantium-background: rgba(0, 0, 0, .4);
-	--diaphantium-blur: .5em;
-	--diaphantium-accent: var(--severitium-main-color, rgb(97, 181, 255));
-	--diaphantium-active: rgb(81, 221, 97);
-	--diaphantium-inactive: rgb(221, 81, 81);
-	--diaphantium-background-primary: rgb(50, 50, 50);
-	--diaphantium-transition: .3s ease;
-}

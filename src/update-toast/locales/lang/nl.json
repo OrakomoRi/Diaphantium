@@ -1,0 +1,8 @@
+{
+	"title": "Nieuwe versie beschikbaar!",
+	"text": "Versie {version} is beschikbaar. Nu updaten?",
+	"textWithDate": "Versie {version} is beschikbaar ({date}). Nu updaten?",
+	"skip": "Overslaan",
+	"later": "Later",
+	"update": "Updaten"
+}

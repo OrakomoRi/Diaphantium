@@ -1,0 +1,8 @@
+{
+	"title": "Neue Version verfügbar!",
+	"text": "Version {version} ist verfügbar. Jetzt aktualisieren?",
+	"textWithDate": "Version {version} ist verfügbar ({date}). Jetzt aktualisieren?",
+	"skip": "Überspringen",
+	"later": "Später",
+	"update": "Aktualisieren"
+}

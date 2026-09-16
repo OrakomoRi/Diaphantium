@@ -1,0 +1,4 @@
+html.diaphantium-popup-open,
+body.diaphantium-popup-open {
+	overflow: hidden !important;
+}

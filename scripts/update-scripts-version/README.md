@@ -1,6 +1,6 @@
 # Version Injector
 
-Reads `version` from `package.json` and injects it into both release scripts, then stages them for the current commit.
+Reads `version` from the staged `package.json` and writes it into the release userscript, then stages the userscript for the current commit.
 
 ## Usage
 
@@ -15,17 +15,16 @@ node scripts/update-scripts-version/inject-version.cjs
 
 | File | Pattern replaced |
 |------|-----------------|
-| `release/severitium.client.js` | `const CLIENT_VERSION = '...'` |
-| `release/severitium.user.js` | `// @version ...` |
+| `release/diaphantium.user.js` | `// @version ...` |
 
 ## Workflow
 
 1. Change `"version"` in `package.json`
-2. `git commit` — hook injects the version and stages both files automatically
+2. `git commit` — the hook writes the version into the userscript and stages it
 
 ## Hook setup
 
-The hook lives in `.githooks/pre-commit` and is activated via the `prepare` npm script:
+The hook lives in `.githooks/pre-commit` and is activated by the `prepare` npm script:
 
 ```bash
 npm install  # runs: git config core.hooksPath .githooks

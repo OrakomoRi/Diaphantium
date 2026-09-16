@@ -1,0 +1,8 @@
+{
+	"title": "Nová verze je k dispozici!",
+	"text": "Verze {version} je k dispozici. Aktualizovat nyní?",
+	"textWithDate": "Verze {version} je k dispozici ({date}). Aktualizovat nyní?",
+	"skip": "Přeskočit",
+	"later": "Později",
+	"update": "Aktualizovat"
+}

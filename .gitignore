@@ -1,9 +1,19 @@
 # Dependencies
-/node_modules
+node_modules/
 
 # Build outputs
 dist/
 build/
+*.tsbuildinfo
+
+# Test output (traces, reports and screenshots contain local paths)
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+coverage/
+__screenshots__/
+.vitest-attachments/
 
 # IDE
 .vscode/
@@ -19,6 +29,12 @@ npm-debug.log*
 
 # Local scratch / experiments
 /local/
+
+# Local working files
+CLAUDE.md
+CLAUDE.local.md
+notes/
+.claude/
 
 # Copilot settings
 .github/copilot
