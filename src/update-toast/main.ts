@@ -17,7 +17,6 @@ const showUpdateToast: ShowUpdateToast = ({ name, version, date, duration }) => 
 		title: `${name}: ${strings.title}`,
 		text: updateText(strings, version, date),
 		theme: 'dark',
-		size: 'small',
 		position: 'top-right',
 		duration,
 		pauseOnHover: true,
