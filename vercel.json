@@ -15,7 +15,7 @@
       ]
     },
     {
-      "source": "loader.min.js",
+      "source": "/loader.min.js",
       "headers": [
         {
           "key": "Cache-Control",
@@ -28,7 +28,7 @@
       ]
     },
     {
-      "source": "stable.json",
+      "source": "/stable.json",
       "headers": [
         {
           "key": "Cache-Control",
@@ -41,7 +41,7 @@
       ]
     },
     {
-      "source": "versions/(.*)",
+      "source": "/versions/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
