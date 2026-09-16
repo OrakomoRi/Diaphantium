@@ -203,6 +203,12 @@
       "date": "2026-09-16",
       "comment": "5.0.2+build.21 fix: improve event handling in PanelShell component",
       "hash": "06f366498d7112ede1802a16d3647ddadaaba90c"
+    },
+    {
+      "version": "5.0.2+build.22",
+      "date": "2026-09-17",
+      "comment": "5.0.2+build.22 feat: enhance panel key event handling",
+      "hash": "c3e3a821be6f01bd4e1832e6a6422a31f663e684"
     }
   ]
 }
