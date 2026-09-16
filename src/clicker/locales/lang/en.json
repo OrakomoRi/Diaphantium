@@ -9,7 +9,7 @@
 		"header": "Clicker",
 		"supplies": "Choose supplies to click",
 		"clickSupplies": "Click supplies",
-		"clickSuppliesHint": "Uses the chosen supplies when ready",
+		"clickSuppliesHint": "Uses the chosen supplies when possible",
 		"mineDelay": "Delay for mines (ms)",
 		"mineDelayShort": "Mine delay",
 		"mineDelayHint": "Pause between placed mines",
