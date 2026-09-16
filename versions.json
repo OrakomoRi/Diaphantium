@@ -167,6 +167,12 @@
       "date": "2026-09-16",
       "comment": "5.0.2+build.14",
       "hash": "3ef1177c4522c6ba6ca0fb66b0ff62ec8a625cd5"
+    },
+    {
+      "version": "5.0.2+build.16",
+      "date": "2026-09-16",
+      "comment": "5.0.2+build.16 feat: enhance Playwright integration in workflows",
+      "hash": "19e4c8d6ddd469c00190312f01b96209b2cbc69c"
     }
   ]
 }
