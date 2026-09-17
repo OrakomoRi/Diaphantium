@@ -17,6 +17,11 @@ interface Feature {
 	cancel: Cancel | null;
 }
 
+interface ActionProvider {
+	pluginId: string;
+	action: () => void;
+}
+
 const MIN_PRESS_INTERVAL = TICK_INTERVAL_MS;
 
 const NAMED_KEYS: Readonly<Record<string, number>> = {
@@ -72,6 +77,7 @@ export default class Clicker {
 	private antiAfkLeft = true;
 	private clickValues: ClickValue[] | null = null;
 	private supplyKeys: string[] = [];
+	private readonly actionProviders = new Map<FeatureName, ActionProvider>();
 
 	readonly features: Record<FeatureName, Feature> = {
 		supplies: {
@@ -119,7 +125,7 @@ export default class Clicker {
 		const feature = this.features[name];
 		if (feature.enabled) return;
 		this.setEnabled(name, true);
-		this.run(feature);
+		this.run(name, feature);
 	}
 
 	stop(name: FeatureName): void {
@@ -130,9 +136,26 @@ export default class Clicker {
 		this.setEnabled(name, false);
 	}
 
-	private run(feature: Feature): void {
-		feature.action();
-		feature.cancel = feature.schedule(() => this.run(feature));
+	provideAction(pluginId: string, name: FeatureName, action: () => void): boolean {
+		const existing = this.actionProviders.get(name);
+		if (existing && existing.pluginId !== pluginId) return false;
+		this.actionProviders.set(name, { pluginId, action });
+		return true;
+	}
+
+	clearAction(pluginId: string, name: FeatureName): void {
+		const existing = this.actionProviders.get(name);
+		if (existing?.pluginId === pluginId) this.actionProviders.delete(name);
+	}
+
+	private run(name: FeatureName, feature: Feature): void {
+		const provider = this.actionProviders.get(name);
+		try {
+			(provider ?? feature).action();
+		} catch (e) {
+			logger.log(`The action for "${name}" threw and was skipped this tick - ${e}`, 'warn');
+		}
+		feature.cancel = feature.schedule(() => this.run(name, feature));
 	}
 
 	private setEnabled(name: FeatureName, enabled: boolean): void {

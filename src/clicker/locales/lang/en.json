@@ -51,7 +51,8 @@
 		"showSignature": "Show signature",
 		"resetHotkey": "Reset hotkey",
 		"pressKey": "Press a key",
-		"notSet": "Not set"
+		"notSet": "Not set",
+		"plugins": "Plugins"
 	},
 	"themes": {
 		"classic": "Classic",

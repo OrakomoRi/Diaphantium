@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.2+build.25
+// @version			5.0.2+build.26
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -101,9 +101,16 @@
 
 	const LOADER_URL = `https://diaphantium-builds.vercel.app/loader.min.js?v=${GM_info?.script?.version}&t=${Date.now()}`;
 
+	const pluginsReadyQueue = [];
+
 	Object.defineProperty(unsafeWindow, '__DIAPHANTIUM__', {
 		value: Object.freeze({
-			version: GM_info?.script?.version || null
+			version: GM_info?.script?.version || null,
+			plugins: {
+				register: () => null,
+				onReady: (callback) => pluginsReadyQueue.push(callback),
+				__readyQueue: pluginsReadyQueue
+			}
 		}),
 		writable: false,
 		configurable: false

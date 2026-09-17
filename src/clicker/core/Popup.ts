@@ -1,6 +1,6 @@
 import { createApp, h, reactive } from 'vue';
 import { AUTHOR, NAME, POPUP_OPEN_CLASS } from '../config/config';
-import { clickerLocale, createClickerI18n } from '../locales';
+import { clickerLocale, type createClickerI18n } from '../locales';
 import { FEATURE_TOGGLE, type FeatureToggle } from '../ui/featureToggle';
 import { deepActiveElement } from '../ui/dom';
 import { vTooltip } from '../ui/tooltip/tooltip';
@@ -11,9 +11,10 @@ export default class Popup {
 
 	private lockedElement: Element | null = null;
 	private readonly view = reactive({ open: false });
-	private readonly i18n = createClickerI18n();
+	private readonly i18n: ReturnType<typeof createClickerI18n>;
 
-	constructor(styles: string, toggleFeature: FeatureToggle) {
+	constructor(styles: string, toggleFeature: FeatureToggle, i18n: ReturnType<typeof createClickerI18n>) {
+		this.i18n = i18n;
 		this.host = document.createElement('div');
 		this.host.className = NAME.toLowerCase();
 		this.host.setAttribute('author', AUTHOR);

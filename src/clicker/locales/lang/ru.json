@@ -51,7 +51,8 @@
 		"showSignature": "Показывать подпись",
 		"resetHotkey": "Сбросить клавишу",
 		"pressKey": "Нажмите клавишу",
-		"notSet": "Не задана"
+		"notSet": "Не задана",
+		"plugins": "Плагины"
 	},
 	"themes": {
 		"classic": "Классика",

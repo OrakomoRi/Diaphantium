@@ -51,7 +51,8 @@
 		"showSignature": "Показувати підпис",
 		"resetHotkey": "Скинути клавішу",
 		"pressKey": "Натисніть клавішу",
-		"notSet": "Не задано"
+		"notSet": "Не задано",
+		"plugins": "Плагіни"
 	},
 	"themes": {
 		"classic": "Класика",

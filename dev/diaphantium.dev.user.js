@@ -123,10 +123,17 @@
 
 	const LOADER_URL = `${source}loader.min.js?t=${Date.now()}`;
 
+	const pluginsReadyQueue = [];
+
 	Object.defineProperty(unsafeWindow, '__DIAPHANTIUM__', {
 		value: Object.freeze({
 			version: GM_info?.script?.version || null,
-			source
+			source,
+			plugins: {
+				register: () => null,
+				onReady: (callback) => pluginsReadyQueue.push(callback),
+				__readyQueue: pluginsReadyQueue
+			}
 		}),
 		writable: false,
 		configurable: false

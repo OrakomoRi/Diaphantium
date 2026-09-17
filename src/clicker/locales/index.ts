@@ -3,6 +3,7 @@ import { fallbackWithLocaleChain, resolveValue } from '@intlify/core-base';
 import messages from '@intlify/unplugin-vue-i18n/messages';
 import { gameLanguage } from '@/shared/utils/detectLanguage';
 import { getStorage } from '../storage/storage';
+import { runtimeLocales } from '../plugins/registry';
 import type en from './lang/en.json';
 
 type ClickerMessages = typeof en;
@@ -25,14 +26,18 @@ export function isLanguageChoice(value: unknown): value is LanguageChoice {
 	return typeof value === 'string' && (LANGUAGE_CHOICES as readonly string[]).includes(value);
 }
 
-export function storedLanguageChoice(): LanguageChoice {
-	const saved = getStorage('language');
-	return isLanguageChoice(saved) ? saved : 'auto';
+function isKnownChoice(value: unknown): value is string {
+	return isLanguageChoice(value) || (typeof value === 'string' && runtimeLocales.has(value));
 }
 
-export function clickerLocale(choice: LanguageChoice = storedLanguageChoice()): string {
+export function storedLanguageChoice(): string {
+	const saved = getStorage('language');
+	return isKnownChoice(saved) ? saved : 'auto';
+}
+
+export function clickerLocale(choice: string = storedLanguageChoice()): string {
 	const language = choice === 'auto' ? gameLanguage() : choice;
-	return Object.hasOwn(available, language) ? language : 'en';
+	return Object.hasOwn(available, language) || runtimeLocales.has(language) ? language : 'en';
 }
 
 export function createClickerI18n() {
