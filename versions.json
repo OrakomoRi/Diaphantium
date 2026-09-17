@@ -227,6 +227,12 @@
       "date": "2026-09-18",
       "comment": "5.0.2+build.26 feat: add plugin system and settings management",
       "hash": "32b36c42244b901ee7ad1f3b94b37def28221dd7"
+    },
+    {
+      "version": "5.0.2+build.28",
+      "date": "2026-09-18",
+      "comment": "5.0.2+build.28 feat: enhance plugin API with language change notifications",
+      "hash": "180d5e24f991ddd0d62d8410af1e813f58f293d7"
     }
   ]
 }
