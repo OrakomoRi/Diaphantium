@@ -209,6 +209,12 @@
       "date": "2026-09-17",
       "comment": "5.0.2+build.22 feat: enhance panel key event handling",
       "hash": "c3e3a821be6f01bd4e1832e6a6422a31f663e684"
+    },
+    {
+      "version": "5.0.2+build.23",
+      "date": "2026-09-17",
+      "comment": "5.0.2+build.23 feat: enhance dialog key handling",
+      "hash": "b76135f5cbb85b2a5fd18faa15e35c3d9875a8db"
     }
   ]
 }
