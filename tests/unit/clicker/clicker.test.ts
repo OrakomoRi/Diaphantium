@@ -14,29 +14,8 @@ function recordKeydowns(): string[] {
 }
 
 describe('Clicker', () => {
-	let frameTime = 0;
-	let frames: Array<(time: number) => void> = [];
-
-	function advanceFrames(count: number, interval: number): void {
-		for (let index = 0; index < count; index++) {
-			frameTime += interval;
-			const due = frames;
-			frames = [];
-			due.forEach(callback => callback(frameTime));
-		}
-	}
-
 	beforeEach(() => {
-		vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
-		frameTime = 0;
-		frames = [];
-		vi.stubGlobal('requestAnimationFrame', (callback: (time: number) => void) => {
-			frames.push(callback);
-			return frames.length;
-		});
-		vi.stubGlobal('cancelAnimationFrame', () => {
-			frames = [];
-		});
+		vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'performance'] });
 		localStorage.clear();
 	});
 
@@ -74,21 +53,26 @@ describe('Clicker', () => {
 		clicker.stop('mines');
 	});
 
-	it('presses the chosen supplies at most about 90 times a second, whatever the refresh rate', async () => {
+	it('presses the chosen supplies at most about 90 times a second', async () => {
 		const clicker = await createClicker({ clickValues: [{ key: '2', value: 'on' }, { key: '3', value: 'off' }] });
 		const keys = recordKeydowns();
 
 		clicker.start('supplies');
 		expect(keys).toEqual(['Digit2']);
 
-		advanceFrames(240, 1000 / 240);
+		vi.advanceTimersByTime(1000);
 		expect(keys.length).toBeGreaterThanOrEqual(60);
 		expect(keys.length).toBeLessThanOrEqual(91);
 
 		keys.length = 0;
-		advanceFrames(60, 1000 / 60);
-		expect(keys).toHaveLength(60);
+		vi.advanceTimersByTime(1000);
+		expect(keys.length).toBeGreaterThanOrEqual(60);
+		expect(keys.length).toBeLessThanOrEqual(91);
+
 		clicker.stop('supplies');
+		keys.length = 0;
+		vi.advanceTimersByTime(1000);
+		expect(keys).toHaveLength(0);
 	});
 
 	it('follows a changed supply choice', async () => {
@@ -99,7 +83,7 @@ describe('Clicker', () => {
 		clicker.start('supplies');
 		setStorage('clickValues', [{ key: '1', value: 'off' }, { key: '4', value: 'on' }]);
 		keys.length = 0;
-		advanceFrames(1, 1000 / 60);
+		vi.advanceTimersByTime(11);
 		expect(keys).toEqual(['Digit4']);
 		clicker.stop('supplies');
 	});

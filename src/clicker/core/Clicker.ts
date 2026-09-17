@@ -2,6 +2,7 @@ import { getStorage, setStorage, type ClickValue, type ConfigKey } from '../stor
 import { DEFAULT_MINE_DELAY } from '../config/config';
 import { featureStates, isSwitchableFeature } from './state';
 import { logger } from './logger';
+import { afterDelay as scheduleAfterDelay, onTick, TICK_INTERVAL_MS } from './clock';
 
 export type FeatureName = 'supplies' | 'mines' | 'antiAfk' | 'autoDelete';
 
@@ -16,7 +17,7 @@ interface Feature {
 	cancel: Cancel | null;
 }
 
-const MIN_FRAME_PRESS_INTERVAL = 11;
+const MIN_PRESS_INTERVAL = TICK_INTERVAL_MS;
 
 const NAMED_KEYS: Readonly<Record<string, number>> = {
 	ArrowLeft: 37,
@@ -46,26 +47,20 @@ function pressKey(key: string): void {
 }
 
 function afterDelay(delay: () => number): Schedule {
-	return next => {
-		const timer = setTimeout(next, delay());
-		return () => clearTimeout(timer);
-	};
+	return next => scheduleAfterDelay(delay(), next);
 }
 
-function everyFrame(): Schedule {
+function atLeastApart(ms: number): Schedule {
 	let lastRun = -Infinity;
 	return next => {
-		let request = 0;
-		const tick = (time: number) => {
-			if (time - lastRun < MIN_FRAME_PRESS_INTERVAL) {
-				request = requestAnimationFrame(tick);
-				return;
-			}
-			lastRun = time;
+		const off = onTick(() => {
+			const now = performance.now();
+			if (now - lastRun < ms) return;
+			lastRun = now;
+			off();
 			next();
-		};
-		request = requestAnimationFrame(tick);
-		return () => cancelAnimationFrame(request);
+		});
+		return off;
 	};
 }
 
@@ -83,7 +78,7 @@ export default class Clicker {
 			enabled: false,
 			storageKey: 'clickSuppliesState',
 			action: () => this.selectedSupplyKeys().forEach(pressKey),
-			schedule: everyFrame(),
+			schedule: atLeastApart(MIN_PRESS_INTERVAL),
 			cancel: null,
 		},
 		mines: {
@@ -104,7 +99,7 @@ export default class Clicker {
 			enabled: false,
 			storageKey: 'autoDeleteState',
 			action: () => pressKey('Delete'),
-			schedule: everyFrame(),
+			schedule: atLeastApart(MIN_PRESS_INTERVAL),
 			cancel: null,
 		},
 	};
