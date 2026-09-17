@@ -215,6 +215,12 @@
       "date": "2026-09-17",
       "comment": "5.0.2+build.23 feat: enhance dialog key handling",
       "hash": "b76135f5cbb85b2a5fd18faa15e35c3d9875a8db"
+    },
+    {
+      "version": "5.0.2+build.24",
+      "date": "2026-09-17",
+      "comment": "5.0.2+build.24 feat: add click mines feature",
+      "hash": "d86bbb137ea0baf0b1a2a3706586ed49b98287db"
     }
   ]
 }
