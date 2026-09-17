@@ -221,6 +221,12 @@
       "date": "2026-09-17",
       "comment": "5.0.2+build.24 feat: add click mines feature",
       "hash": "d86bbb137ea0baf0b1a2a3706586ed49b98287db"
+    },
+    {
+      "version": "5.0.2+build.26",
+      "date": "2026-09-18",
+      "comment": "5.0.2+build.26 feat: add plugin system and settings management",
+      "hash": "32b36c42244b901ee7ad1f3b94b37def28221dd7"
     }
   ]
 }
