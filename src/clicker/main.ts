@@ -2,19 +2,30 @@ import pageCSS from './assets/css/diaphantium.page.css?inline';
 import resetCSS from './assets/css/diaphantium.reset.css?inline';
 import shellCSS from './assets/css/diaphantium.shell.css?inline';
 
+import { watch } from 'vue';
 import Popup from './core/Popup';
 import Clicker from './core/Clicker';
 import { installHotkeys } from './core/hotkeys';
 import { logger } from './core/logger';
-import { createClickerI18n } from './locales';
+import { clickerLocale, createClickerI18n } from './locales';
 import { createPluginApi } from './plugins/api';
+import { notifyLanguageChange } from './plugins/registry';
 
 const style = document.createElement('style');
 style.textContent = pageCSS;
 document.head.append(style);
 
 function exposePlugins(clicker: Clicker, i18n: ReturnType<typeof createClickerI18n>): void {
-	const api = createPluginApi({ clicker, i18n: i18n.global });
+	const api = createPluginApi({
+		clicker,
+		i18n: {
+			locale: i18n.global.locale,
+			mergeLocaleMessage: (locale, messages) => i18n.global.mergeLocaleMessage(locale, messages as never),
+			setLocaleMessage: (locale, messages) => i18n.global.setLocaleMessage(locale, messages as never),
+			resolveLocale: clickerLocale,
+		},
+	});
+	watch(i18n.global.locale, locale => notifyLanguageChange(locale));
 	const ready = { ...api, onReady: (callback: () => void) => callback() };
 
 	let queue: Array<() => void> = [];

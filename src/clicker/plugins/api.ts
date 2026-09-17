@@ -3,14 +3,16 @@ import type Clicker from '../core/Clicker';
 import { logger } from '../core/logger';
 import { featureStates } from '../core/state';
 import { pluginConfigApi, resolvePluginConfig } from './config';
-import { addLanguageOption, addSettingsRow, pluginStorage } from './registry';
+import { addLanguageOption, addSettingsRow, onLanguageChange, pluginStorage } from './registry';
 import type { DiaphantiumPluginApi, PluginHandle, PluginManifest, PluginSettingsToggle } from './types';
 
 const API_VERSION = 1;
 
 export interface I18nHandle {
+	locale: { value: string };
 	mergeLocaleMessage(locale: string, messages: object): void;
 	setLocaleMessage(locale: string, messages: object): void;
+	resolveLocale(choice: string): string;
 }
 
 interface Deps {
@@ -44,6 +46,7 @@ export function createPluginApi({ clicker, i18n }: Deps): DiaphantiumPluginApi {
 			}
 
 			const { id } = manifest;
+			const baseConfig = pluginConfigApi(id);
 
 			const handle: PluginHandle = {
 				features: {
@@ -68,7 +71,10 @@ export function createPluginApi({ clicker, i18n }: Deps): DiaphantiumPluginApi {
 						return resolvePluginConfig('theme');
 					},
 					language() {
-						return resolvePluginConfig('language');
+						return i18n.locale.value;
+					},
+					onLanguageChange(fn) {
+						return onLanguageChange(locale => safeCall(id, 'features.onLanguageChange', () => fn(locale)));
 					},
 				},
 				addSettingsToggle(row: PluginSettingsToggle) {
@@ -95,7 +101,14 @@ export function createPluginApi({ clicker, i18n }: Deps): DiaphantiumPluginApi {
 					},
 				},
 				storage: pluginStorage(id),
-				config: pluginConfigApi(id),
+				config: {
+					get: baseConfig.get,
+					set(key, value) {
+						const applied = baseConfig.set(key, value);
+						if (applied && key === 'language') i18n.locale.value = i18n.resolveLocale(value as string);
+						return applied;
+					},
+				},
 			};
 
 			return handle;

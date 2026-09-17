@@ -8,7 +8,12 @@ async function setup(config: Record<string, unknown> = {}) {
 	const { createPluginApi } = await import('@/clicker/plugins/api');
 	const registry = await import('@/clicker/plugins/registry');
 	const clicker = new Clicker();
-	const i18n = { mergeLocaleMessage: vi.fn(), setLocaleMessage: vi.fn() };
+	const i18n = {
+		locale: { value: 'en' },
+		mergeLocaleMessage: vi.fn(),
+		setLocaleMessage: vi.fn(),
+		resolveLocale: (choice: string) => choice,
+	};
 	const plugins = createPluginApi({ clicker, i18n });
 	return { clicker, plugins, registry, i18n };
 }
@@ -57,6 +62,35 @@ describe('plugin API', () => {
 			expect(seen).toEqual([true]);
 			expect(handle.features.isEnabled('supplies')).toBe(true);
 			clicker.stop('supplies');
+		});
+
+		it('notifies onLanguageChange listeners when the running locale changes, and isolates a throwing one', async () => {
+			const { plugins, registry } = await setup();
+			const handle = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+
+			const seen: string[] = [];
+			const dispose = handle.features.onLanguageChange(locale => seen.push(locale));
+			registry.notifyLanguageChange('ru');
+			expect(seen).toEqual(['ru']);
+
+			dispose();
+			registry.notifyLanguageChange('uk');
+			expect(seen).toEqual(['ru']);
+		});
+
+		it('does not let a throwing onLanguageChange listener break another plugin\'s', async () => {
+			const { plugins, registry } = await setup();
+			const broken = plugins.register({ id: 'broken', apiVersion: 1 })!;
+			const fine = plugins.register({ id: 'fine', apiVersion: 1 })!;
+
+			broken.features.onLanguageChange(() => {
+				throw new Error('boom');
+			});
+			const seen: string[] = [];
+			fine.features.onLanguageChange(locale => seen.push(locale));
+
+			expect(() => registry.notifyLanguageChange('ru')).not.toThrow();
+			expect(seen).toEqual(['ru']);
 		});
 
 		it('lets exactly one plugin provide an action per feature, and refuses a conflicting second one', async () => {
@@ -229,8 +263,17 @@ describe('plugin API', () => {
 			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
 
 			expect(plugin.config.get('language')).toBe('auto');
-			expect(plugin.features.language()).toBe('auto');
 			expect(JSON.parse(localStorage.getItem('Diaphantium.config') ?? '{}').language).toBe('eo');
+		});
+
+		it('config.set for language applies the resolved locale immediately, not only on the next reload', async () => {
+			const { plugins, i18n } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			i18n.locale.value = 'en';
+
+			expect(plugin.config.set('language', 'ru')).toBe(true);
+			expect(i18n.locale.value).toBe('ru');
+			expect(plugin.features.language()).toBe('ru');
 		});
 	});
 

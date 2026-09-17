@@ -4,6 +4,8 @@ interface PluginHandle {
 	addSettingsToggle(row: { id: string; label: string; hint?: string; getChecked: () => boolean; onChange: (checked: boolean) => void }): () => void;
 	features: {
 		provideAction(name: string, action: () => void): () => void;
+		language(): string;
+		onLanguageChange(fn: (locale: string) => void): () => void;
 	};
 }
 
@@ -51,10 +53,60 @@ test.describe('plugin API', () => {
 
 		await clicker.control('e2e-plugin-row').click();
 		await expect.poll(() => page.evaluate(() => (window as unknown as PluginBridge).__pluginChecked?.())).toBe(true);
+		await expect(clicker.control('e2e-plugin-row')).toBeChecked();
+
+		// A second click must flip it back - this is the case a stale, non-reactive `checked` prop
+		// masks: the first click can look right even when the control is stuck reporting its initial
+		// value forever, because "false -> true" is what a stuck prop would also report once.
+		await clicker.control('e2e-plugin-row').click();
+		await expect.poll(() => page.evaluate(() => (window as unknown as PluginBridge).__pluginChecked?.())).toBe(false);
+		await expect(clicker.control('e2e-plugin-row')).not.toBeChecked();
 
 		await clicker.themeOption('liquid').click();
 		await expect.poll(() => clicker.themeLayers()).toEqual(['liquid']);
 		await expect(clicker.popup.locator('.option__label', { hasText: 'E2E plugin row' })).toBeVisible();
+
+		await clicker.control('e2e-plugin-row').click();
+		await expect.poll(() => page.evaluate(() => (window as unknown as PluginBridge).__pluginChecked?.())).toBe(true);
+		await expect(clicker.control('e2e-plugin-row')).toHaveAttribute('aria-checked', 'true');
+		await clicker.control('e2e-plugin-row').click();
+		await expect.poll(() => page.evaluate(() => (window as unknown as PluginBridge).__pluginChecked?.())).toBe(false);
+		await expect(clicker.control('e2e-plugin-row')).toHaveAttribute('aria-checked', 'false');
+	});
+
+	test('a settings row re-translates live when the language changes, with the window open, no reload', async ({ clicker, page }) => {
+		await page.evaluate(() => {
+			const win = window as unknown as PluginBridge;
+			const handle = win.__DIAPHANTIUM__?.plugins.register({ id: 'e2e-i18n', apiVersion: 1 });
+			if (!handle) throw new Error('registration failed');
+
+			const LABELS: Record<string, string> = { en: 'Packet mode', ru: 'Пакетный режим', uk: 'Пакетний режим' };
+			const labelFor = (locale: string) => LABELS[locale] ?? LABELS.en!;
+
+			const registerRow = () =>
+				handle.addSettingsToggle({
+					id: 'row',
+					label: labelFor(handle.features.language()),
+					getChecked: () => false,
+					onChange: () => {},
+				});
+
+			registerRow();
+			handle.features.onLanguageChange(() => registerRow());
+		});
+
+		await page.keyboard.press('Slash');
+		await clicker.themeTab('settings').click();
+		await expect(clicker.popup.locator('.option__label', { hasText: 'Packet mode' })).toBeVisible();
+
+		await clicker.languageSelect.click();
+		await clicker.languageOption('ru').click();
+		await expect(clicker.popup.locator('.option__label', { hasText: 'Пакетный режим' })).toBeVisible();
+		await expect(clicker.popup.locator('.option__label', { hasText: 'Packet mode' })).toHaveCount(0);
+
+		await clicker.languageSelect.click();
+		await clicker.languageOption('en').click();
+		await expect(clicker.popup.locator('.option__label', { hasText: 'Packet mode' })).toBeVisible();
 	});
 
 	test('a feature action provider replaces the default press, and the default resumes once disposed', async ({ clicker, page }) => {

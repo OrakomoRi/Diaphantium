@@ -19,6 +19,17 @@ export const settingsRows = reactive<SettingsRow[]>([]);
 export const languages = reactive<LanguageOption[]>([]);
 export const runtimeLocales = new Set<string>();
 
+const languageChangeListeners = new Set<(locale: string) => void>();
+
+export function onLanguageChange(fn: (locale: string) => void): () => void {
+	languageChangeListeners.add(fn);
+	return () => languageChangeListeners.delete(fn);
+}
+
+export function notifyLanguageChange(locale: string): void {
+	for (const fn of languageChangeListeners) fn(locale);
+}
+
 function rowIndex(pluginId: string, id: string): number {
 	return settingsRows.findIndex(row => row.pluginId === pluginId && row.id === id);
 }

@@ -12,6 +12,7 @@ export interface PluginFeaturesApi {
 	provideAction(name: FeatureName, action: () => void): () => void;
 	theme(): string;
 	language(): string;
+	onLanguageChange(fn: (locale: string) => void): () => void;
 }
 
 export interface PluginSettingsToggle {
