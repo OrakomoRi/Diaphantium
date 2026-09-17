@@ -361,13 +361,24 @@ function onDialogKeydown(event: KeyboardEvent): void {
 		event.stopPropagation();
 		return;
 	}
-	if (event.code === openMenuCode()) {
+
+	const claim = (): void => {
 		event.preventDefault();
 		event.stopPropagation();
+	};
+
+	if (event.code === openMenuCode()) {
+		claim();
 		emit('toggle');
 		return;
 	}
+	if (event.code === 'Escape') {
+		claim();
+		emit('close');
+		return;
+	}
 	if (props.state === 'closing' || event.ctrlKey || event.altKey || event.metaKey) return;
+
 	let consumed = supplyKeyFromCode(event.code) !== null;
 	for (const handler of keyHandlers) {
 		if (handler(event)) {
@@ -375,10 +386,7 @@ function onDialogKeydown(event: KeyboardEvent): void {
 			break;
 		}
 	}
-	if (consumed) {
-		event.preventDefault();
-		event.stopPropagation();
-	}
+	if (consumed) claim();
 }
 
 function onDialogKeyup(event: KeyboardEvent): void {
