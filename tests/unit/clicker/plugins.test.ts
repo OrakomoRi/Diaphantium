@@ -176,6 +176,64 @@ describe('plugin API', () => {
 		});
 	});
 
+	describe('config', () => {
+		it('reads a writable key, falling back to the built-in default when nothing is stored', async () => {
+			const { plugins } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			expect(plugin.config.get('theme')).toBe('classic');
+			expect(plugin.config.get('mineDelay')).toBe(100);
+			expect(plugin.config.get('clickValues')).toEqual([]);
+		});
+
+		it('writes and reads back a valid value', async () => {
+			const { plugins } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			expect(plugin.config.set('mineDelay', 500)).toBe(true);
+			expect(plugin.config.get('mineDelay')).toBe(500);
+			expect(plugin.config.set('theme', 'liquid')).toBe(true);
+			expect(plugin.config.get('theme')).toBe('liquid');
+		});
+
+		it('refuses a key the plugin API does not expose', async () => {
+			const { plugins } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			// @ts-expect-error deliberately not a plugin-writable key
+			expect(plugin.config.set('clickSuppliesState', true)).toBe(false);
+			// @ts-expect-error deliberately not a plugin-writable key
+			expect(plugin.config.get('clickSuppliesState')).toBeUndefined();
+		});
+
+		it('refuses an out-of-range or malformed value without touching storage', async () => {
+			const { plugins } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			expect(plugin.config.set('mineDelay', -5)).toBe(false);
+			expect(plugin.config.set('mineDelay', 999999)).toBe(false);
+			expect(plugin.config.get('mineDelay')).toBe(100);
+			expect(plugin.config.set('theme', 'not-a-theme')).toBe(false);
+			expect(plugin.config.set('clickValues', [{ key: '1', value: 'on' }])).toBe(true);
+			expect(plugin.config.set('clickValues', [{ key: 'not-a-key', value: 'on' }])).toBe(false);
+		});
+
+		it('lets a language-adding plugin select its own language, and the built-in language() reflects it', async () => {
+			const { plugins } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			plugin.i18n.addLanguage({ id: 'eo', label: 'EO', name: 'Esperanto' }, { hello: 'saluton' });
+
+			expect(plugin.config.set('language', 'eo')).toBe(true);
+			expect(plugin.config.get('language')).toBe('eo');
+			expect(plugin.features.language()).toBe('eo');
+		});
+
+		it('falls back to the default once the plugin that owned a selected value is gone, without corrupting storage', async () => {
+			const { plugins } = await setup({ language: 'eo' });
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+
+			expect(plugin.config.get('language')).toBe('auto');
+			expect(plugin.features.language()).toBe('auto');
+			expect(JSON.parse(localStorage.getItem('Diaphantium.config') ?? '{}').language).toBe('eo');
+		});
+	});
+
 	describe('storage', () => {
 		it('isolates a plugin\'s storage from the core config and from other plugins', async () => {
 			const { plugins } = await setup();

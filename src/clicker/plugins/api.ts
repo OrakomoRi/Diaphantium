@@ -2,7 +2,7 @@ import { watch } from 'vue';
 import type Clicker from '../core/Clicker';
 import { logger } from '../core/logger';
 import { featureStates } from '../core/state';
-import { getStorage } from '../storage/storage';
+import { pluginConfigApi, resolvePluginConfig } from './config';
 import { addLanguageOption, addSettingsRow, pluginStorage } from './registry';
 import type { DiaphantiumPluginApi, PluginHandle, PluginManifest, PluginSettingsToggle } from './types';
 
@@ -65,10 +65,10 @@ export function createPluginApi({ clicker, i18n }: Deps): DiaphantiumPluginApi {
 						return () => clicker.clearAction(id, name);
 					},
 					theme() {
-						return getStorage('theme') ?? 'classic';
+						return resolvePluginConfig('theme');
 					},
 					language() {
-						return getStorage('language') ?? 'auto';
+						return resolvePluginConfig('language');
 					},
 				},
 				addSettingsToggle(row: PluginSettingsToggle) {
@@ -95,6 +95,7 @@ export function createPluginApi({ clicker, i18n }: Deps): DiaphantiumPluginApi {
 					},
 				},
 				storage: pluginStorage(id),
+				config: pluginConfigApi(id),
 			};
 
 			return handle;

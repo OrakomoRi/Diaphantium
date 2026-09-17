@@ -1,4 +1,5 @@
 import type { FeatureName } from '../core/Clicker';
+import type { PluginConfigApi } from './config';
 
 export interface PluginManifest {
 	id: string;
@@ -42,6 +43,7 @@ export interface PluginHandle {
 	addSettingsToggle(row: PluginSettingsToggle): () => void;
 	i18n: PluginI18nApi;
 	storage: PluginStorageApi;
+	config: PluginConfigApi;
 }
 
 export interface DiaphantiumPluginApi {
