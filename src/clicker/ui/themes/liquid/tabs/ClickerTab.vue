@@ -43,6 +43,9 @@ useDialogKey(event => {
 				@toggle="supplies.toggle(icon.key)"
 			/>
 		</div>
+		<SettingRow :title="$t('clicker.clickMines')" :description="$t('clicker.clickMinesHint')" :tooltip="$t('tooltips.clickMines')">
+			<LiquidToggle option="mines" :label="$t('clicker.clickMines')" :checked="featureStates.mines" @change="toggleFeature('mines')" />
+		</SettingRow>
 		<SettingRow
 			:title="$t('clicker.mineDelayShort')"
 			:description="$t('clicker.mineDelayHint')"

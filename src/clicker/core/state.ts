@@ -2,6 +2,7 @@ import { reactive } from 'vue';
 
 export const featureStates = reactive({
 	supplies: false,
+	mines: false,
 	antiAfk: false,
 	autoDelete: false,
 });

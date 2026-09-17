@@ -21,6 +21,7 @@ export interface ClickerConfig {
 	coordinates: Coordinates;
 	clickValues: ClickValue[];
 	clickSuppliesState: boolean;
+	clickMinesState: boolean;
 	mineDelay: number;
 	antiAfkState: boolean;
 	autoDeleteState: boolean;
@@ -39,6 +40,7 @@ const defaultConfig: ClickerConfig = {
 	coordinates: { top: 100, left: 100 },
 	clickValues: [],
 	clickSuppliesState: false,
+	clickMinesState: false,
 	mineDelay: DEFAULT_MINE_DELAY,
 	antiAfkState: false,
 	autoDeleteState: false,

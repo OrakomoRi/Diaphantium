@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MousePointerClick, Timer } from '@lucide/vue';
+import { Bomb, MousePointerClick, Timer } from '@lucide/vue';
 import { useI18n } from 'petite-vue-i18n';
 import { MAX_MINE_DELAY, MIN_MINE_DELAY } from '../../../../config/config';
 import { featureStates } from '../../../../core/state';
@@ -57,6 +57,12 @@ useDialogKey(event => {
 			<div class="card">
 				<OptionRow :icon="Timer" field :label="$t('clicker.mineDelay')" :hint="$t('clicker.mineDelayHint')">
 					<DelayField v-tooltip="$t('tooltips.mineDelay', { min: MIN_MINE_DELAY, max: MAX_MINE_DELAY })" />
+				</OptionRow>
+
+				<div class="divider"></div>
+
+				<OptionRow :icon="Bomb" :label="$t('clicker.clickMines')" :hint="$t('clicker.clickMinesHint')" :tooltip="$t('tooltips.clickMines')">
+					<ToggleSwitch option="mines" :checked="featureStates.mines" @change="toggleFeature('mines')" />
 				</OptionRow>
 			</div>
 		</div>

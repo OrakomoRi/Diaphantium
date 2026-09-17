@@ -10,6 +10,8 @@
 		"supplies": "Choose supplies to click",
 		"clickSupplies": "Click supplies",
 		"clickSuppliesHint": "Uses the chosen supplies when possible",
+		"clickMines": "Click mines",
+		"clickMinesHint": "Places mines on repeat",
 		"mineDelay": "Delay for mines (ms)",
 		"mineDelayShort": "Mine delay",
 		"mineDelayHint": "Pause between placed mines",
@@ -74,6 +76,7 @@
 	"tooltips": {
 		"supplies": "Click a supply or press its number while this tab is open",
 		"clickSupplies": "Also switched by the Click supplies hotkey, even with the panel closed",
+		"clickMines": "Also switched by the Click mines hotkey, even with the panel closed",
 		"mineDelay": "Digits only, from {min} to {max}. Enter saves",
 		"antiAfk": "Taps the left and right arrow keys about once a second",
 		"autoDelete": "Holds the game's self-destruct key (Delete). Your tank is destroyed right after every respawn — turn it off to play",

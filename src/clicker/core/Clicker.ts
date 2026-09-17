@@ -88,7 +88,7 @@ export default class Clicker {
 		},
 		mines: {
 			enabled: false,
-			storageKey: null,
+			storageKey: 'clickMinesState',
 			action: () => pressKey('5'),
 			schedule: afterDelay(() => getStorage('mineDelay') ?? DEFAULT_MINE_DELAY),
 			cancel: null,

@@ -88,6 +88,7 @@ describe('clicker storage', () => {
 			coordinates: { top: 100, left: 100 },
 			clickValues: [],
 			clickSuppliesState: false,
+			clickMinesState: false,
 			mineDelay: 150,
 			antiAfkState: true,
 			autoDeleteState: false,
