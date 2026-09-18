@@ -239,6 +239,12 @@
       "date": "2026-09-19",
       "comment": "5.0.2+build.29 feat: add plugin management interface",
       "hash": "a0c26184239ebf965ae7909d5530da66824e2030"
+    },
+    {
+      "version": "5.0.2+build.30",
+      "date": "2026-09-19",
+      "comment": "5.0.2+build.30 fix: handle non-200 HTTP responses in fetch event",
+      "hash": "4f7e64fac78850990e9058b81e5090783375c80c"
     }
   ]
 }
