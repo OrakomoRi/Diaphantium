@@ -164,6 +164,12 @@ jobs:
           git commit -m "$VERSION" || echo "No changes for $VERSION"
           git push origin builds
 
+      - name: Clean up old Vercel deployments
+        run: npx vercel remove diaphantium-builds --safe --yes --token "$VERCEL_TOKEN" --scope "$VERCEL_SCOPE"
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_SCOPE: ${{ secrets.VERCEL_SCOPE }}
+
       - name: Create GitHub release
         if: env.IS_STABLE == 'true'
         uses: softprops/action-gh-release@v3
