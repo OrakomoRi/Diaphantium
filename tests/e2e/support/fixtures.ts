@@ -257,6 +257,11 @@ export class ClickerPage extends GamePage {
 	readonly languageSelect = this.activeTheme.locator('[data-language-select]');
 	readonly languageList = this.activeTheme.locator('[role="listbox"]');
 	readonly languageOptions = this.activeTheme.locator('[role="option"][data-language-option]');
+	readonly pluginSelect = this.activeTheme.locator('[data-plugin-select]');
+
+	pluginOption(id: string) {
+		return this.activeTheme.locator(`[role="option"][data-plugin-option="${id}"]`);
+	}
 
 	layoutMorphNodes(): Promise<number> {
 		return this.activeTheme.evaluate(host => [...(host.shadowRoot?.querySelectorAll<HTMLElement>('*') ?? [])].filter(element => element.style.transformOrigin !== '').length);

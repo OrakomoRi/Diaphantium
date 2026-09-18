@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'petite-vue-i18n';
-import { Info, Settings, Sparkles, X, Zap } from '@lucide/vue';
-import { TAB_NAMES, usePanelShell, usePanelState, type TabName } from '../../model/panel';
+import { Blocks, Info, Settings, Sparkles, X, Zap } from '@lucide/vue';
+import { useThemeContext, useVisiblePanelTabs, usePanelShell, usePanelState, type TabName } from '../../model/panel';
 import { clamp } from '../../motion/springs';
 import { useRenderOn } from '../../motion/values';
 import Signature from '../../components/Signature.vue';
@@ -13,22 +13,27 @@ import ClickerTab from './tabs/ClickerTab.vue';
 import MiscellaneousTab from './tabs/MiscellaneousTab.vue';
 import SettingsTab from './tabs/SettingsTab.vue';
 import AboutTab from './tabs/AboutTab.vue';
+import PluginsTab from './tabs/PluginsTab.vue';
 
 const RADIUS = 26;
 const ORIGIN_Y = 0.35;
-const ICONS = { clicker: Zap, miscellaneous: Sparkles, settings: Settings, about: Info } as const;
+const ICONS = { clicker: Zap, miscellaneous: Sparkles, settings: Settings, about: Info, plugins: Blocks } as const;
 
 const { t } = useI18n();
 const shell = usePanelShell();
 const { activeTab } = usePanelState();
+const { layout } = useThemeContext();
+const visibleNames = useVisiblePanelTabs();
 
-const tabOptions = computed(() => TAB_NAMES.map(name => ({
+const tabOptions = computed(() => visibleNames.value.map(name => ({
 	id: name,
 	label: t(`tabs.${name}`),
 	icon: ICONS[name],
 	iconOnly: true,
 	data: { 'data-tab': name, 'aria-label': t(`${name}.header`) },
 })));
+
+watch(visibleNames, () => void layout.run(() => {}));
 
 const shadow = ref<HTMLElement | null>(null);
 const glass = ref<HTMLElement | null>(null);
@@ -97,6 +102,7 @@ function setTab(name: string): void {
 					<template #miscellaneous><MiscellaneousTab /></template>
 					<template #settings><SettingsTab /></template>
 					<template #about><AboutTab /></template>
+					<template #plugins><PluginsTab /></template>
 				</TabViewport>
 				<Signature />
 			</div>

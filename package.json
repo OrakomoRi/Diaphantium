@@ -1,6 +1,6 @@
 {
 	"name": "diaphantium",
-	"version": "5.0.2+build.28",
+	"version": "5.0.2+build.29",
 	"description": "Modern userscript for Tanki Online - Reborn from ashes",
 	"main": "release/diaphantium.user.js",
 	"type": "module",
@@ -32,7 +32,9 @@
 		"@types/node": "^24.0.0",
 		"@utensilia/compare-versions": "^1.0.0",
 		"@utensilia/logger": "^1.0.0",
+		"@types/dompurify": "^3.0.5",
 		"@vitejs/plugin-vue": "^6.0.9",
+		"dompurify": "^3.2.7",
 		"happy-dom": "^20.14.5",
 		"motion": "^13.3.0",
 		"nuntaria": "^1.0.1",

@@ -3,7 +3,8 @@
 		"clicker": "Clicker",
 		"miscellaneous": "Misc",
 		"settings": "Settings",
-		"about": "About"
+		"about": "About",
+		"plugins": "Plugins"
 	},
 	"clicker": {
 		"header": "Clicker",
@@ -51,8 +52,12 @@
 		"showSignature": "Show signature",
 		"resetHotkey": "Reset hotkey",
 		"pressKey": "Press a key",
-		"notSet": "Not set",
-		"plugins": "Plugins"
+		"notSet": "Not set"
+	},
+	"plugins": {
+		"header": "Plugins",
+		"picker": "Select plugin",
+		"pickerHint": "Choose which installed plugin's settings to show"
 	},
 	"themes": {
 		"classic": "Classic",
@@ -91,7 +96,8 @@
 		"showSignature": "Shows a small signature in the corner of the panel",
 		"theme": "Changes how the panel looks; every setting stays as it is",
 		"language": "Auto uses the language of the game",
-		"repository": "Opens the repository in a new tab"
+		"repository": "Opens the repository in a new tab",
+		"pluginSelect": "Switches between installed plugins' own settings"
 	},
 	"close": "Close",
 	"signature": "Powered by OrakomoRi"

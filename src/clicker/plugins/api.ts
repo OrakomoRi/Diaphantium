@@ -3,8 +3,9 @@ import type Clicker from '../core/Clicker';
 import { logger } from '../core/logger';
 import { featureStates } from '../core/state';
 import { pluginConfigApi, resolvePluginConfig } from './config';
-import { addLanguageOption, addSettingsRow, onLanguageChange, pluginStorage } from './registry';
-import type { DiaphantiumPluginApi, PluginHandle, PluginManifest, PluginSettingsToggle } from './types';
+import { resolvePluginIcon } from './icon';
+import { addLanguageOption, addSettingsRow, addSettingsSection, onLanguageChange, pluginStorage, setPluginLabel } from './registry';
+import type { DiaphantiumPluginApi, PluginHandle, PluginManifest, PluginSettingsSection, PluginSettingsToggle } from './types';
 
 const API_VERSION = 1;
 
@@ -31,6 +32,22 @@ function safeCall<T>(pluginId: string, action: string, fn: () => T): T | undefin
 
 function isValidManifest(manifest: PluginManifest): boolean {
 	return typeof manifest?.id === 'string' && manifest.id.trim() !== '' && manifest.apiVersion === API_VERSION;
+}
+
+function isValidRow(row: PluginSettingsToggle): boolean {
+	return typeof row?.id === 'string' && typeof row.label === 'string' && typeof row.getChecked === 'function' && typeof row.onChange === 'function';
+}
+
+function resolveRow(pluginId: string, row: PluginSettingsToggle) {
+	return {
+		id: row.id,
+		pluginId,
+		label: row.label,
+		hint: row.hint,
+		icon: resolvePluginIcon(row.icon, pluginId),
+		getChecked: () => safeCall(pluginId, `addSettingsToggle(${row.id}).getChecked`, row.getChecked) ?? false,
+		onChange: (checked: boolean) => safeCall(pluginId, `addSettingsToggle(${row.id}).onChange`, () => row.onChange(checked)),
+	};
 }
 
 export function createPluginApi({ clicker, i18n }: Deps): DiaphantiumPluginApi {
@@ -78,18 +95,31 @@ export function createPluginApi({ clicker, i18n }: Deps): DiaphantiumPluginApi {
 					},
 				},
 				addSettingsToggle(row: PluginSettingsToggle) {
-					if (typeof row?.id !== 'string' || typeof row.label !== 'string' || typeof row.getChecked !== 'function' || typeof row.onChange !== 'function') {
+					if (!isValidRow(row)) {
 						logger.log(`Plugin "${id}" refused an invalid settings row`, 'warn');
 						return () => {};
 					}
-					return addSettingsRow({
-						id: row.id,
+					return addSettingsRow(resolveRow(id, row));
+				},
+				addSettingsSection(section: PluginSettingsSection) {
+					if (typeof section?.id !== 'string' || typeof section.title !== 'string' || !Array.isArray(section.rows) || !section.rows.every(isValidRow)) {
+						logger.log(`Plugin "${id}" refused an invalid settings section`, 'warn');
+						return () => {};
+					}
+					return addSettingsSection({
+						id: section.id,
 						pluginId: id,
-						label: row.label,
-						hint: row.hint,
-						getChecked: () => safeCall(id, `addSettingsToggle(${row.id}).getChecked`, row.getChecked) ?? false,
-						onChange: checked => safeCall(id, `addSettingsToggle(${row.id}).onChange`, () => row.onChange(checked)),
+						title: section.title,
+						icon: resolvePluginIcon(section.icon, id),
+						rows: section.rows.map(row => resolveRow(id, row)),
 					});
+				},
+				setLabel(label: string) {
+					if (typeof label !== 'string' || label.trim() === '') {
+						logger.log(`Plugin "${id}" refused setLabel - empty label`, 'warn');
+						return;
+					}
+					safeCall(id, 'setLabel', () => setPluginLabel(id, label));
 				},
 				i18n: {
 					addTranslations(locale, messages) {

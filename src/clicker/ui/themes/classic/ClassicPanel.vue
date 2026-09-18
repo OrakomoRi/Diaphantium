@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { usePanelShell, usePanelState } from '../../model/panel';
+import { hasPlugins } from '../../../plugins/registry';
 import { clamp } from '../../motion/springs';
 import { useRenderOn } from '../../motion/values';
 import CloseButton from './components/CloseButton.vue';
@@ -11,6 +12,7 @@ import ClickerTab from './tabs/ClickerTab.vue';
 import MiscellaneousTab from './tabs/MiscellaneousTab.vue';
 import SettingsTab from './tabs/SettingsTab.vue';
 import AboutTab from './tabs/AboutTab.vue';
+import PluginsTab from './tabs/PluginsTab.vue';
 
 const shell = usePanelShell();
 const { activeTab } = usePanelState();
@@ -45,6 +47,7 @@ useRenderOn(shell.presence, renderPresence);
 				<MiscellaneousTab />
 				<SettingsTab />
 				<AboutTab />
+				<PluginsTab v-if="hasPlugins" />
 			</TabStack>
 			<Signature />
 		</div>

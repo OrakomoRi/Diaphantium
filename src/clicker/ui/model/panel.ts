@@ -2,13 +2,18 @@ import { computed, inject, onBeforeUnmount, onMounted, provide, ref, watch, type
 import type { MotionValue } from 'motion';
 import { useI18n } from 'petite-vue-i18n';
 import { getStorage, setStorage } from '../../storage/storage';
+import { hasPlugins } from '../../plugins/registry';
 import { createSignatureState, type SignatureState } from './signature';
 import type { LayoutMorph } from '../motion/layoutMorph';
 import type { Theme } from '../themes/types';
 import type { ThemeId } from './theme';
 
-export const TAB_NAMES = ['clicker', 'miscellaneous', 'settings', 'about'] as const;
+export const TAB_NAMES = ['clicker', 'miscellaneous', 'settings', 'plugins', 'about'] as const;
 export type TabName = typeof TAB_NAMES[number];
+
+export function useVisiblePanelTabs(): Readonly<Ref<readonly TabName[]>> {
+	return computed(() => (hasPlugins.value ? TAB_NAMES : TAB_NAMES.filter(name => name !== 'plugins')));
+}
 
 export type DialogKeyHandler = (event: KeyboardEvent) => boolean;
 
@@ -78,6 +83,9 @@ export function providePanelState(): PanelState {
 		},
 	};
 	watch(text, () => signature.refresh());
+	watch(hasPlugins, has => {
+		if (!has && state.activeTab.value === 'plugins') state.activeTab.value = 'clicker';
+	});
 	onBeforeUnmount(() => signature.destroy());
 	provide(PANEL_STATE, state);
 	return state;

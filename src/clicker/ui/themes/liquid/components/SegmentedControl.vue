@@ -12,10 +12,19 @@ export interface SegmentOption {
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { clamp, toValue } from '../../../motion/springs';
+import { animate } from 'motion';
+import { clamp, spring, toValue } from '../../../motion/springs';
 import { useMotionValues } from '../../../motion/values';
 import { SPRINGS } from '../springs';
 import SegmentButton from './SegmentButton.vue';
+
+function onSegmentEnter(el: Element, done: () => void): void {
+	animate(el, { opacity: [0, 1], scale: [0.6, 1] }, spring(SPRINGS.fade)).then(done);
+}
+
+function onSegmentLeave(el: Element, done: () => void): void {
+	animate(el, { opacity: [1, 0], scale: [1, 0.6] }, spring(SPRINGS.fade)).then(done);
+}
 
 const props = defineProps<{ options: readonly SegmentOption[]; modelValue: string; compact?: boolean; role?: 'tablist' | 'radiogroup' }>();
 
@@ -90,14 +99,16 @@ onBeforeUnmount(() => observer?.disconnect());
 <template>
 	<div ref="root" class="segmented" :class="{ 'segmented--compact': compact }" :role="role ?? 'tablist'">
 		<span ref="droplet" class="segmented__droplet" aria-hidden="true"></span>
-		<SegmentButton
-			v-for="(option, index) in options"
-			:key="option.id"
-			:ref="instance => setButton(index, instance)"
-			:option="option"
-			:role="role === 'radiogroup' ? 'radio' : 'tab'"
-			:active="option.id === modelValue"
-			@select="element => emit('update:modelValue', option.id, element)"
-		/>
+		<TransitionGroup :css="false" @enter="onSegmentEnter" @leave="onSegmentLeave">
+			<SegmentButton
+				v-for="(option, index) in options"
+				:key="option.id"
+				:ref="instance => setButton(index, instance)"
+				:option="option"
+				:role="role === 'radiogroup' ? 'radio' : 'tab'"
+				:active="option.id === modelValue"
+				@select="element => emit('update:modelValue', option.id, element)"
+			/>
+		</TransitionGroup>
 	</div>
 </template>

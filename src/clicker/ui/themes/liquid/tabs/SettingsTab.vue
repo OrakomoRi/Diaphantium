@@ -8,7 +8,6 @@ import SettingRow from '../components/SettingRow.vue';
 import SegmentedControl from '../components/SegmentedControl.vue';
 import HotkeyField from '../components/HotkeyField.vue';
 import LiquidToggle from '../components/LiquidToggle.vue';
-import PluginRows from '../components/PluginRows.vue';
 import LanguageSelect from '../../../components/LanguageSelect.vue';
 
 const { t } = useI18n();
@@ -47,6 +46,5 @@ const themeOptions = computed(() => THEME_IDS.map(id => ({ id, label: t(`themes.
 		<SettingRow :title="$t('settings.showSignature')" :tooltip="$t('tooltips.showSignature')">
 			<LiquidToggle option="show-signature" :label="$t('settings.showSignature')" :checked="showSignature" @change="setShowSignature" />
 		</SettingRow>
-		<PluginRows />
 	</div>
 </template>

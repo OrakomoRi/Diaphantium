@@ -7,7 +7,6 @@ import TabPane from '../components/TabPane.vue';
 import OptionRow from '../components/OptionRow.vue';
 import ToggleSwitch from '../components/ToggleSwitch.vue';
 import HotkeyRow from '../components/HotkeyRow.vue';
-import PluginRows from '../components/PluginRows.vue';
 import LanguageSelect from '../../../components/LanguageSelect.vue';
 
 const { hotkeys, assign, reset, isDuplicate } = useHotkeySettings();
@@ -81,8 +80,6 @@ const shell = usePanelShell();
 					</OptionRow>
 				</div>
 			</div>
-
-			<PluginRows />
 		</div>
 	</TabPane>
 </template>

@@ -1,12 +1,28 @@
-import { reactive } from 'vue';
+import { computed, reactive, type Component } from 'vue';
 
 export interface SettingsRow {
 	id: string;
 	pluginId: string;
 	label: string;
 	hint?: string;
+	icon: Component | null;
 	getChecked: () => boolean;
 	onChange: (checked: boolean) => void;
+}
+
+export interface SettingsSection {
+	id: string;
+	pluginId: string;
+	title: string;
+	icon: Component | null;
+	rows: SettingsRow[];
+}
+
+export interface PluginEntry {
+	id: string;
+	label: string;
+	looseRows: SettingsRow[];
+	sections: SettingsSection[];
 }
 
 export interface LanguageOption {
@@ -15,7 +31,8 @@ export interface LanguageOption {
 	name: string;
 }
 
-export const settingsRows = reactive<SettingsRow[]>([]);
+export const plugins = reactive<PluginEntry[]>([]);
+export const hasPlugins = computed(() => plugins.length > 0);
 export const languages = reactive<LanguageOption[]>([]);
 export const runtimeLocales = new Set<string>();
 
@@ -30,17 +47,47 @@ export function notifyLanguageChange(locale: string): void {
 	for (const fn of languageChangeListeners) fn(locale);
 }
 
-function rowIndex(pluginId: string, id: string): number {
-	return settingsRows.findIndex(row => row.pluginId === pluginId && row.id === id);
+function entryOf(pluginId: string): PluginEntry {
+	let entry = plugins.find(p => p.id === pluginId);
+	if (!entry) {
+		entry = { id: pluginId, label: pluginId, looseRows: [], sections: [] };
+		plugins.push(entry);
+	}
+	return entry;
+}
+
+function pruneIfEmpty(pluginId: string): void {
+	const index = plugins.findIndex(p => p.id === pluginId);
+	if (index === -1) return;
+	const entry = plugins[index]!;
+	if (entry.looseRows.length === 0 && entry.sections.length === 0) plugins.splice(index, 1);
+}
+
+export function setPluginLabel(pluginId: string, label: string): void {
+	entryOf(pluginId).label = label;
 }
 
 export function addSettingsRow(row: SettingsRow): () => void {
-	const existing = rowIndex(row.pluginId, row.id);
-	if (existing === -1) settingsRows.push(row);
-	else settingsRows.splice(existing, 1, row);
+	const entry = entryOf(row.pluginId);
+	const existing = entry.looseRows.findIndex(r => r.id === row.id);
+	if (existing === -1) entry.looseRows.push(row);
+	else entry.looseRows.splice(existing, 1, row);
 	return () => {
-		const at = rowIndex(row.pluginId, row.id);
-		if (at !== -1) settingsRows.splice(at, 1);
+		const at = entry.looseRows.findIndex(r => r.id === row.id);
+		if (at !== -1) entry.looseRows.splice(at, 1);
+		pruneIfEmpty(row.pluginId);
+	};
+}
+
+export function addSettingsSection(section: SettingsSection): () => void {
+	const entry = entryOf(section.pluginId);
+	const existing = entry.sections.findIndex(s => s.id === section.id);
+	if (existing === -1) entry.sections.push(section);
+	else entry.sections.splice(existing, 1, section);
+	return () => {
+		const at = entry.sections.findIndex(s => s.id === section.id);
+		if (at !== -1) entry.sections.splice(at, 1);
+		pruneIfEmpty(section.pluginId);
 	};
 }
 

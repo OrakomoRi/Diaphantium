@@ -160,11 +160,11 @@ describe('plugin API', () => {
 			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
 			const dispose = plugin.addSettingsToggle({ id: 'row', label: 'Row', getChecked: () => true, onChange: () => {} });
 
-			expect(registry.settingsRows).toHaveLength(1);
-			expect(registry.settingsRows[0]).toMatchObject({ id: 'row', pluginId: 'test-plugin', label: 'Row' });
+			expect(registry.plugins).toHaveLength(1);
+			expect(registry.plugins[0]!.looseRows[0]).toMatchObject({ id: 'row', pluginId: 'test-plugin', label: 'Row' });
 
 			dispose();
-			expect(registry.settingsRows).toHaveLength(0);
+			expect(registry.plugins).toHaveLength(0);
 		});
 
 		it('refuses a row missing a label or callbacks', async () => {
@@ -172,11 +172,11 @@ describe('plugin API', () => {
 			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
 			// @ts-expect-error deliberately invalid row
 			plugin.addSettingsToggle({ id: 'row', getChecked: () => true, onChange: () => {} });
-			expect(registry.settingsRows).toHaveLength(0);
+			expect(registry.plugins).toHaveLength(0);
 		});
 
 		it('does not let a throwing getChecked break the row', async () => {
-			const { plugins } = await setup();
+			const { plugins, registry } = await setup();
 			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
 			plugin.addSettingsToggle({
 				id: 'row',
@@ -186,8 +186,71 @@ describe('plugin API', () => {
 				},
 				onChange: () => {},
 			});
-			const { settingsRows } = await import('@/clicker/plugins/registry');
-			expect(settingsRows[0]!.getChecked()).toBe(false);
+			expect(registry.plugins[0]!.looseRows[0]!.getChecked()).toBe(false);
+		});
+	});
+
+	describe('addSettingsSection', () => {
+		it('adds and removes a section, keeping loose rows from the same plugin separate', async () => {
+			const { plugins, registry } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			plugin.addSettingsToggle({ id: 'loose', label: 'Loose', getChecked: () => true, onChange: () => {} });
+			const dispose = plugin.addSettingsSection({
+				id: 'section',
+				title: 'Section',
+				rows: [{ id: 'row', label: 'Row', getChecked: () => true, onChange: () => {} }],
+			});
+
+			const entry = registry.plugins.find(p => p.id === 'test-plugin')!;
+			expect(entry.looseRows).toHaveLength(1);
+			expect(entry.sections).toHaveLength(1);
+			expect(entry.sections[0]).toMatchObject({ id: 'section', title: 'Section' });
+			expect(entry.sections[0]!.rows[0]).toMatchObject({ id: 'row', pluginId: 'test-plugin' });
+
+			dispose();
+			expect(registry.plugins.find(p => p.id === 'test-plugin')!.sections).toHaveLength(0);
+		});
+
+		it('refuses a section with an invalid row', async () => {
+			const { plugins, registry } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			// @ts-expect-error deliberately invalid row inside the section
+			plugin.addSettingsSection({ id: 'section', title: 'Section', rows: [{ id: 'row' }] });
+			expect(registry.plugins).toHaveLength(0);
+		});
+
+		it('resolves a known lucide icon and refuses an unknown one', async () => {
+			const { plugins, registry } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			plugin.addSettingsSection({ id: 'a', title: 'A', icon: { type: 'lucide', name: 'Timer' }, rows: [] });
+			// @ts-expect-error deliberately unknown lucide name
+			plugin.addSettingsSection({ id: 'b', title: 'B', icon: { type: 'lucide', name: 'NotAnIcon' }, rows: [] });
+
+			const entry = registry.plugins.find(p => p.id === 'test-plugin')!;
+			expect(entry.sections.find(s => s.id === 'a')!.icon).not.toBeNull();
+			expect(entry.sections.find(s => s.id === 'b')!.icon).toBeNull();
+		});
+
+		it('sanitizes a custom svg icon and refuses one carrying a script', async () => {
+			const { plugins, registry } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			plugin.addSettingsSection({ id: 'clean', title: 'Clean', icon: { type: 'svg', markup: '<circle cx="12" cy="12" r="10" />' }, rows: [] });
+			plugin.addSettingsSection({ id: 'dirty', title: 'Dirty', icon: { type: 'svg', markup: '<script>alert(1)</script>' }, rows: [] });
+
+			const entry = registry.plugins.find(p => p.id === 'test-plugin')!;
+			expect(entry.sections.find(s => s.id === 'clean')!.icon).not.toBeNull();
+			expect(entry.sections.find(s => s.id === 'dirty')!.icon).toBeNull();
+		});
+	});
+
+	describe('setLabel', () => {
+		it('sets the plugin label read by the Plugins tab picker', async () => {
+			const { plugins, registry } = await setup();
+			const plugin = plugins.register({ id: 'test-plugin', apiVersion: 1 })!;
+			plugin.addSettingsToggle({ id: 'row', label: 'Row', getChecked: () => true, onChange: () => {} });
+			plugin.setLabel('My Plugin');
+
+			expect(registry.plugins.find(p => p.id === 'test-plugin')!.label).toBe('My Plugin');
 		});
 	});
 

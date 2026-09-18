@@ -46,7 +46,7 @@ test.describe('plugin API', () => {
 		expect(registered).toBe(true);
 
 		await page.keyboard.press('Slash');
-		await clicker.themeTab('settings').click();
+		await clicker.themeTab('plugins').click();
 
 		await expect(clicker.popup.locator('.option__label', { hasText: 'E2E plugin row' })).toBeVisible();
 		await expect(clicker.popup.locator('.option__hint, .setting__desc', { hasText: 'Added by a test plugin' })).toBeVisible();
@@ -62,8 +62,10 @@ test.describe('plugin API', () => {
 		await expect.poll(() => page.evaluate(() => (window as unknown as PluginBridge).__pluginChecked?.())).toBe(false);
 		await expect(clicker.control('e2e-plugin-row')).not.toBeChecked();
 
+		await clicker.themeTab('settings').click();
 		await clicker.themeOption('liquid').click();
 		await expect.poll(() => clicker.themeLayers()).toEqual(['liquid']);
+		await clicker.themeTab('plugins').click();
 		await expect(clicker.popup.locator('.option__label', { hasText: 'E2E plugin row' })).toBeVisible();
 
 		await clicker.control('e2e-plugin-row').click();
@@ -96,16 +98,22 @@ test.describe('plugin API', () => {
 		});
 
 		await page.keyboard.press('Slash');
-		await clicker.themeTab('settings').click();
+		await clicker.themeTab('plugins').click();
 		await expect(clicker.popup.locator('.option__label', { hasText: 'Packet mode' })).toBeVisible();
 
+		await clicker.themeTab('settings').click();
 		await clicker.languageSelect.click();
 		await clicker.languageOption('ru').click();
+
+		await clicker.themeTab('plugins').click();
 		await expect(clicker.popup.locator('.option__label', { hasText: 'Пакетный режим' })).toBeVisible();
 		await expect(clicker.popup.locator('.option__label', { hasText: 'Packet mode' })).toHaveCount(0);
 
+		await clicker.themeTab('settings').click();
 		await clicker.languageSelect.click();
 		await clicker.languageOption('en').click();
+
+		await clicker.themeTab('plugins').click();
 		await expect(clicker.popup.locator('.option__label', { hasText: 'Packet mode' })).toBeVisible();
 	});
 

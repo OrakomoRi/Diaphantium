@@ -15,7 +15,7 @@ const liquid: Theme = {
 	},
 	layout: {
 		size: '.setting',
-		position: '.setting > :not(.repository__plate), .setting__main > *, .tiles, .about__facts dd',
+		position: '.setting > :not(.repository__plate), .setting__main > *, .tiles, .about__facts dd, .segment',
 		text: '.setting__text, .about__hero, .about__facts dt, .tile__label, .well__text, .well__suffix, .select__current, .segment__content > span',
 		spring: SPRINGS.soft,
 	},

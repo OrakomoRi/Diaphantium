@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { cancelFrame, frame, motionValue, type MotionValue } from 'motion';
-import { TAB_NAMES, type TabName } from '../../../model/panel';
+import { TAB_NAMES, useVisiblePanelTabs, type TabName } from '../../../model/panel';
 import { useStackCap } from '../../../model/stackCap';
 import { clamp, smoothstep, toValue } from '../../../motion/springs';
 import { useMotionValues } from '../../../motion/values';
@@ -27,13 +27,29 @@ let sized = false;
 let target = -1;
 
 const cap = useStackCap(root);
+const visibleNames = useVisiblePanelTabs();
 
 const values = useMotionValues({ height: 0 }, () => {
 	if (root.value && sized) root.value.style.height = `${values.height.get()}px`;
 });
 
+function unregister(name: TabName): void {
+	const pane = panes.get(name);
+	if (!pane) return;
+	observer?.unobserve(pane.element);
+	pane.stops.forEach(stop => stop());
+	cancelFrame(pane.render);
+	pane.x.destroy();
+	pane.shown.destroy();
+	panes.delete(name);
+}
+
 function register(name: TabName, element: unknown): void {
-	if (!(element instanceof HTMLElement) || panes.has(name)) return;
+	if (!(element instanceof HTMLElement)) {
+		unregister(name);
+		return;
+	}
+	if (panes.has(name)) return;
 	const active = name === props.active;
 	const pane: Pane = { element, x: motionValue(0), shown: motionValue(active ? 1 : 0), height: 0, render: () => {}, stops: [] };
 	pane.render = () => {
@@ -48,6 +64,7 @@ function register(name: TabName, element: unknown): void {
 	element.inert = !active;
 	panes.set(name, pane);
 	pane.render();
+	observer?.observe(element);
 }
 
 function fit(pane: Pane): void {
@@ -115,7 +132,7 @@ onBeforeUnmount(() => {
 <template>
 	<div ref="root" class="viewport">
 		<section
-			v-for="name in TAB_NAMES"
+			v-for="name in visibleNames"
 			:key="name"
 			:ref="element => register(name, element)"
 			class="tab-panel"

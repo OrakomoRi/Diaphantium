@@ -3,6 +3,7 @@ import { EDGE_MARGIN } from '../../core/position';
 import { usePanelShell } from './panel';
 
 const MIN_CAP = 96;
+const MAX_CAP = 640;
 
 export interface StackCap {
 	panel: () => HTMLElement | null;
@@ -22,7 +23,7 @@ export function useStackCap(stack: Ref<HTMLElement | null>): StackCap {
 		const box = panel();
 		if (!element || !box) return;
 		const chrome = box.offsetHeight - parseFloat(getComputedStyle(element).height);
-		const cap = Math.max(MIN_CAP, Math.floor(shell.viewportHeight.value - EDGE_MARGIN * 2 - chrome));
+		const cap = Math.max(MIN_CAP, Math.min(MAX_CAP, Math.floor(shell.viewportHeight.value - EDGE_MARGIN * 2 - chrome)));
 		if (cap === last) return;
 		last = cap;
 		element.style.setProperty('--stack-cap', `${cap}px`);

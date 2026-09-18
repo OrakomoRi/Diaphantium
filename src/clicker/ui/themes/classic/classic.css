@@ -295,7 +295,9 @@
 
 .section__title {
 	all: unset;
-	display: block;
+	display: flex;
+	align-items: center;
+	gap: .5em;
 	align-self: flex-start;
 	padding: 1.1em 0 .2em;
 	font-size: .7em;
@@ -303,6 +305,16 @@
 	text-transform: uppercase;
 	letter-spacing: .08em;
 	color: rgba(255, 255, 255, .5);
+}
+
+.section__icon {
+	display: flex;
+}
+
+.section__icon svg {
+	display: block;
+	width: 1.3em;
+	height: 1.3em;
 }
 
 .section__list {
@@ -334,7 +346,8 @@
 	cursor: default;
 }
 
-.option--stacked .choice {
+.option--stacked .choice,
+.option--stacked .select {
 	flex: 0 0 calc(100% - 2.7em);
 	margin-left: 2.7em;
 }
@@ -992,6 +1005,13 @@
 
 .select__sizer::before {
 	content: attr(data-text);
+}
+
+.select--plugin .select__sizer,
+.select--plugin .select__current {
+	max-width: 14em;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .select__indicator {
