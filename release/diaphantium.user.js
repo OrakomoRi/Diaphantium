@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			5.0.2+build.29
+// @version			5.0.2+build.30
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 
@@ -38,6 +38,13 @@
 			url: url,
 			responseType: format === 'base64' ? 'blob' : 'text',
 			onload: (response) => {
+				if (response.status !== 200 && response.status !== 304) {
+					window.dispatchEvent(new CustomEvent('diaphantium:fetch:response', {
+						detail: { id, error: `HTTP ${response.status}: ${url}` }
+					}));
+					return;
+				}
+
 				let data;
 
 				try {
