@@ -17,6 +17,7 @@ export interface TooltipPlacementInput {
 	gap: number;
 	margin: number;
 	arrowInset: number;
+	scale?: number;
 }
 
 export interface TooltipPlacement {
@@ -36,7 +37,10 @@ function sideOrder(side: TooltipSide): TooltipSide[] {
 	return isVertical(side) ? [side, OPPOSITE[side], 'right', 'left'] : [side, OPPOSITE[side], 'top', 'bottom'];
 }
 
-export function placeTooltip({ trigger, size, viewport, side, gap, margin, arrowInset }: TooltipPlacementInput): TooltipPlacement {
+export function placeTooltip({ trigger, size: layoutSize, viewport, side, gap: layoutGap, margin, arrowInset: layoutArrowInset, scale = 1 }: TooltipPlacementInput): TooltipPlacement {
+	const size = { width: layoutSize.width * scale, height: layoutSize.height * scale };
+	const gap = layoutGap * scale;
+	const arrowInset = layoutArrowInset * scale;
 	const space: Record<TooltipSide, number> = {
 		top: trigger.top - margin,
 		bottom: viewport.height - margin - trigger.bottom,
@@ -70,5 +74,5 @@ export function placeTooltip({ trigger, size, viewport, side, gap, margin, arrow
 		? clamp(trigger.left + trigger.width / 2 - left, arrowInset, size.width - arrowInset)
 		: clamp(trigger.top + trigger.height / 2 - top, arrowInset, size.height - arrowInset);
 
-	return { left, top, side: chosen, arrow };
+	return { left, top, side: chosen, arrow: arrow / scale };
 }

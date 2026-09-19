@@ -7,11 +7,12 @@ import { computed, markRaw, nextTick, onBeforeUnmount, onMounted, provide, ref, 
 import { animate, cancelFrame, frame, motionValue, type AnimationPlaybackControlsWithThen, type MotionValue } from 'motion';
 import { getStorage, setStorage } from '../storage/storage';
 import { openMenuCode } from '../core/hotkeys';
-import { anchorFromPlacement, attachDrag, placementFromAnchor, readAnchor, viewportSize, type Anchor, type Placement, type Size } from '../core/position';
+import { EDGE_MARGIN, anchorFromPlacement, attachDrag, fitScale, panelTransform, placementFromAnchor, readAnchor, scaleSize, viewportSize, type Anchor, type Placement, type Size } from '../core/position';
 import { PANEL_SHELL, providePanelState, type DialogKeyHandler } from './model/panel';
+import { isInterfaceScale, scaleFactor, storedInterfaceScale, type InterfaceScale } from './model/scale';
 import { supplyKeyFromCode } from './model/supplyIcons';
 import { isThemeId, saveThemeId, storedThemeId, type ThemeId } from './model/theme';
-import { prefersReducedMotion } from './motion/springs';
+import { prefersReducedMotion, toValue } from './motion/springs';
 import { CONTENT_RISE, THEME_SWITCH_SECONDS, mixShape, surfaceTransform, switchPhases, type Shape } from './motion/themeMorph';
 import { hideTooltip } from './tooltip/tooltip';
 import { deepActiveElement } from './dom';
@@ -56,7 +57,11 @@ const selected = ref<ThemeId>(storedThemeId());
 const layers = shallowRef<Layer[]>([]);
 const interactiveKey = ref<number | null>(null);
 const selectedTheme = computed(() => themeById(selected.value));
-const viewportHeight = ref(viewportSize().height);
+const interfaceScale = ref<InterfaceScale>(storedInterfaceScale());
+const scaleTarget = computed(() => scaleFactor(interfaceScale.value));
+const scale = motionValue(scaleTarget.value);
+const windowHeight = ref(viewportSize().height);
+const availableHeight = computed(() => (windowHeight.value - EDGE_MARGIN * 2) / scaleTarget.value);
 
 const keyHandlers = new Set<DialogKeyHandler>();
 let nextKey = 0;
@@ -68,9 +73,12 @@ provide(PANEL_SHELL, {
 	closing,
 	dragging,
 	theme: selected,
-	viewportHeight,
+	scale,
+	interfaceScale,
+	availableHeight,
 	close: () => emit('close'),
 	selectTheme,
+	selectInterfaceScale,
 	releasePointerFocus,
 	onKey(handler) {
 		keyHandlers.add(handler);
@@ -85,26 +93,68 @@ let resizeFrame = 0;
 let detach: (() => void) | null = null;
 let focusFromPointer = false;
 let themeSwitch: ThemeSwitch | null = null;
+let scaleAnimation: AnimationPlaybackControlsWithThen | null = null;
+let layoutSize: Size = { width: 0, height: 0 };
+let scaleGoal = scaleTarget.value;
+let measured = false;
 
-function size(): Size {
+const stopListeningToScale = scale.on('change', () => frame.render(renderScale));
+
+function measureLayout(): Size {
 	const element = positioner.value;
 	return { width: element?.offsetWidth ?? 0, height: element?.offsetHeight ?? 0 };
 }
 
+function size(): Size {
+	return scaleSize(measureLayout(), scale.get());
+}
+
+function writeTransform(): void {
+	if (positioner.value) positioner.value.style.transform = panelTransform(placement, scale.get());
+}
+
 function applyPlacement(next: Placement): void {
 	placement = next;
-	if (positioner.value) {
-		positioner.value.style.transform = `translate3d(${Math.round(next.left)}px, ${Math.round(next.top)}px, 0)`;
-	}
+	writeTransform();
 }
 
 function relayout(): void {
-	viewportHeight.value = viewportSize().height;
+	windowHeight.value = viewportSize().height;
 	if (dragStart) return;
-	const current = size();
+	const current = measureLayout();
 	if (current.width === 0) return;
-	applyPlacement(placementFromAnchor(anchor, current));
+	layoutSize = current;
+	steerScale();
+	applyPlacement(placementFromAnchor(anchor, scaleSize(current, scale.get())));
 	if (themeSwitch) frame.render(renderSwitch);
+}
+
+function renderScale(): void {
+	if (!dragStart && layoutSize.width > 0) placement = placementFromAnchor(anchor, scaleSize(layoutSize, scale.get()));
+	writeTransform();
+	if (themeSwitch) renderSwitch();
+}
+
+function steerScale(): void {
+	const goal = fitScale(layoutSize, viewportSize(), scaleTarget.value);
+	if (!measured) {
+		measured = true;
+		scaleGoal = goal;
+		scale.jump(goal);
+		return;
+	}
+	if (Math.abs(goal - scaleGoal) < 0.002) return;
+	scaleGoal = goal;
+	scaleAnimation?.stop();
+	scaleAnimation = toValue(scale, goal, selectedTheme.value.layout.spring);
+}
+
+function selectInterfaceScale(percent: InterfaceScale): void {
+	if (!isInterfaceScale(percent) || percent === interfaceScale.value || closing.value) return;
+	hideTooltip();
+	interfaceScale.value = percent;
+	setStorage('interfaceScale', percent);
+	steerScale();
 }
 
 function onWindowResize(): void {
@@ -185,10 +235,11 @@ function renderSwitch(): void {
 	const incomingHost = current?.to.layer.host;
 	if (!current || !incomingHost || current.from.width === 0 || current.to.width === 0) return;
 	const { from, to } = current;
+	const factor = scale.get();
 	const phases = switchPhases(current.progress.get());
-	const target = placementFromAnchor(anchor, { width: to.width, height: to.height });
+	const target = placementFromAnchor(anchor, scaleSize(to, factor));
 	const fromShape: Shape = { x: 0, y: 0, width: from.width, height: from.height, radius: from.radius };
-	const toShape: Shape = { x: target.left - placement.left, y: target.top - placement.top, width: to.width, height: to.height, radius: to.radius };
+	const toShape: Shape = { x: (target.left - placement.left) / factor, y: (target.top - placement.top) / factor, width: to.width, height: to.height, radius: to.radius };
 	const shape = mixShape(fromShape, toShape, phases.morph);
 
 	incomingHost.style.transform = `translate3d(${toShape.x}px, ${toShape.y}px, 0)`;
@@ -427,6 +478,11 @@ onBeforeUnmount(() => {
 		current.progress.destroy();
 	}
 	cancelFrame(renderSwitch);
+	scaleAnimation?.stop();
+	scaleAnimation = null;
+	stopListeningToScale();
+	cancelFrame(renderScale);
+	scale.destroy();
 });
 </script>
 
@@ -460,7 +516,13 @@ onBeforeUnmount(() => {
 		@touchend.stop
 		@touchcancel.stop
 	>
-		<div ref="positioner" class="popup__positioner" :data-dragging="dragging || undefined" @pointerdown.capture="onPanelPress">
+		<div
+			ref="positioner"
+			class="popup__positioner"
+			:style="{ '--diaphantium-scale': scaleTarget }"
+			:data-dragging="dragging || undefined"
+			@pointerdown.capture="onPanelPress"
+		>
 			<ThemeLayer
 				v-for="(layer, index) in layers"
 				:key="layer.key"

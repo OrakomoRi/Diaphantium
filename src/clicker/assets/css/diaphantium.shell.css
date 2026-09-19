@@ -31,7 +31,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	will-change: transform;
+	transform-origin: 0 0;
 }
 
 .popup[data-state="closing"] .popup__positioner {

@@ -96,6 +96,7 @@ describe('clicker storage', () => {
 			showSignature: true,
 			theme: 'classic',
 			language: 'auto',
+			interfaceScale: 100,
 		});
 	});
 

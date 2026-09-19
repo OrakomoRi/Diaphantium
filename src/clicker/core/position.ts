@@ -21,6 +21,23 @@ export interface Size {
 	height: number;
 }
 
+export function scaleSize(size: Size, factor: number): Size {
+	return { width: size.width * factor, height: size.height * factor };
+}
+
+const MIN_FIT_SCALE = 0.25;
+const FIT_TOLERANCE = 0.995;
+
+export function fitScale(size: Size, viewport: Size, wanted: number): number {
+	if (size.width <= 0 || size.height <= 0) return wanted;
+	const room = Math.min((viewport.width - EDGE_MARGIN * 2) / size.width, (viewport.height - EDGE_MARGIN * 2) / size.height);
+	return room >= wanted * FIT_TOLERANCE ? wanted : Math.max(MIN_FIT_SCALE, room);
+}
+
+export function panelTransform(placement: Placement, factor: number): string {
+	return `translate3d(${Math.round(placement.left)}px, ${Math.round(placement.top)}px, 0) scale(${factor})`;
+}
+
 export function viewportSize(): Size {
 	const root = document.documentElement;
 	return {

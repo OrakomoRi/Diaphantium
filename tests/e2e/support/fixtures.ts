@@ -255,9 +255,16 @@ export class ClickerPage extends GamePage {
 
 	readonly themeOptions = this.activeTheme.locator('[data-theme-option]');
 	readonly languageSelect = this.activeTheme.locator('[data-language-select]');
-	readonly languageList = this.activeTheme.locator('[role="listbox"]');
+	readonly languageList = this.activeTheme.locator('[role="listbox"]').filter({ has: this.page.locator('[data-language-option]') });
 	readonly languageOptions = this.activeTheme.locator('[role="option"][data-language-option]');
 	readonly pluginSelect = this.activeTheme.locator('[data-plugin-select]');
+	readonly scaleSelect = this.activeTheme.locator('[data-scale-select]');
+	readonly scaleList = this.activeTheme.locator('[role="listbox"]').filter({ has: this.page.locator('[data-scale-option]') });
+	readonly scaleOptions = this.activeTheme.locator('[role="option"][data-scale-option]');
+
+	scaleOption(percent: number) {
+		return this.activeTheme.locator(`[role="option"][data-scale-option="${percent}"]`);
+	}
 
 	pluginOption(id: string) {
 		return this.activeTheme.locator(`[role="option"][data-plugin-option="${id}"]`);

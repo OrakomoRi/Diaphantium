@@ -24,6 +24,41 @@ describe('placeTooltip', () => {
 	});
 });
 
+describe('placeTooltip on a scaled panel', () => {
+	const trigger = box(300, 200, 40, 20);
+
+	it('is the same at scale 1 as without one', () => {
+		expect(placeTooltip({ ...base, trigger, side: 'top', scale: 1 })).toEqual(placeTooltip({ ...base, trigger, side: 'top' }));
+	});
+
+	it('draws the scaled size, gap and arrow inset in the window and reports the arrow in its own units', () => {
+		const placement = placeTooltip({ ...base, trigger, side: 'top', scale: 2 });
+
+		expect(placement).toEqual({ left: 220, top: 124, side: 'top', arrow: 50 });
+		expect(placement.top + 30 * 2 + 8 * 2).toBe(trigger.top);
+	});
+
+	it('flips when the scaled tooltip no longer fits above the trigger', () => {
+		const near = box(300, 60, 40, 20);
+
+		expect(placeTooltip({ ...base, trigger: near, side: 'top', scale: 1 }).side).toBe('top');
+		expect(placeTooltip({ ...base, trigger: near, side: 'top', scale: 2 }).side).toBe('bottom');
+	});
+
+	it('keeps a scaled tooltip inside the viewport margin', () => {
+		const placement = placeTooltip({ ...base, trigger: box(700, 200, 60, 20), side: 'top', scale: 1.5 });
+
+		expect(placement.left).toBe(800 - 8 - base.size.width * 1.5);
+	});
+
+	it('reports the arrow in the tooltip\'s own units', () => {
+		const placement = placeTooltip({ ...base, trigger: box(700, 200, 60, 20), side: 'top', scale: 2 });
+
+		expect(placement).toEqual({ left: 592, top: 124, side: 'top', arrow: 69 });
+		expect(592 + placement.arrow * 2).toBe(730);
+	});
+});
+
 describe('resolveTooltip', () => {
 	it('drops empty content and fills the defaults', () => {
 		expect(resolveTooltip('  ')).toBeNull();

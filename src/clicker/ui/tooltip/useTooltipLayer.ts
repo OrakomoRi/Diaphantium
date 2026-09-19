@@ -3,7 +3,8 @@ import { cancelFrame, frame } from 'motion';
 import { placeTooltip, type TooltipSide } from './placement';
 import { activeTooltip, hideTooltip, type ActiveTooltip, type ResolvedTooltip } from './tooltip';
 import { clamp, prefersReducedMotion, toValue, type SpringPreset } from '../motion/springs';
-import { useMotionValues } from '../motion/values';
+import { useMotionValues, useRenderOn } from '../motion/values';
+import { usePanelShell } from '../model/panel';
 
 export interface TooltipLayerOptions {
 	gap: number;
@@ -22,12 +23,14 @@ export interface TooltipLayer {
 }
 
 export function useTooltipLayer(options: TooltipLayerOptions): TooltipLayer {
+	const { scale } = usePanelShell();
 	const root = ref<HTMLElement | null>(null);
 	const shown = shallowRef<ResolvedTooltip | null>(null);
 	const side = ref<TooltipSide>('top');
 	const arrow = ref(0);
 
 	const values = useMotionValues({ x: 0, y: 0, opacity: 0 }, render);
+	useRenderOn(scale, render);
 
 	let tracking = false;
 	let lastKey = '';
@@ -38,11 +41,12 @@ export function useTooltipLayer(options: TooltipLayerOptions): TooltipLayer {
 		const element = root.value;
 		if (!element) return;
 		const opacity = clamp(values.opacity.get(), 0, 1);
-		const offset = (1 - opacity) * options.shift;
+		const factor = scale.get();
+		const offset = (1 - opacity) * options.shift * factor;
 		const dx = side.value === 'left' ? offset : side.value === 'right' ? -offset : 0;
 		const dy = side.value === 'top' ? offset : side.value === 'bottom' ? -offset : 0;
 		element.style.opacity = String(opacity);
-		element.style.transform = `translate3d(${values.x.get() + dx}px, ${values.y.get() + dy}px, 0)`;
+		element.style.transform = `translate3d(${values.x.get() + dx}px, ${values.y.get() + dy}px, 0) scale(${factor})`;
 		element.style.visibility = opacity <= 0.01 && !activeTooltip.value ? 'hidden' : 'visible';
 	}
 
@@ -86,11 +90,12 @@ export function useTooltipLayer(options: TooltipLayerOptions): TooltipLayer {
 		const width = element.offsetWidth;
 		const height = element.offsetHeight;
 		const viewport = { width: document.documentElement.clientWidth || window.innerWidth, height: window.innerHeight };
-		const key = `${Math.round(box.left)},${Math.round(box.top)},${Math.round(box.width)},${Math.round(box.height)},${width},${height},${viewport.width},${viewport.height},${current.options.side}`;
+		const factor = scale.get();
+		const key = `${Math.round(box.left)},${Math.round(box.top)},${Math.round(box.width)},${Math.round(box.height)},${width},${height},${factor},${viewport.width},${viewport.height},${current.options.side}`;
 		if (key === lastKey) return true;
 		lastKey = key;
 
-		const placement = placeTooltip({ trigger: box, size: { width, height }, viewport, side: current.options.side, gap: options.gap, margin: options.margin, arrowInset: options.arrowInset });
+		const placement = placeTooltip({ trigger: box, size: { width, height }, viewport, side: current.options.side, gap: options.gap, margin: options.margin, arrowInset: options.arrowInset, scale: factor });
 		const left = Math.round(placement.left);
 		const top = Math.round(placement.top);
 		const write = () => {

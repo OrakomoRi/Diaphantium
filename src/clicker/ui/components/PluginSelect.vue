@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { frame } from 'motion';
-import { Select, createListCollection, type SelectHighlightChangeDetails, type SelectOpenChangeDetails, type SelectValueChangeDetails } from '@ark-ui/vue';
+import { Select, createListCollection, type SelectValueChangeDetails } from '@ark-ui/vue';
 import { Check, ChevronDown } from '@lucide/vue';
 import { useThemeContext } from '../model/panel';
 import type { PluginOption } from '../model/pluginsTab';
-import { clamp, toValue } from '../motion/springs';
-import { useMotionValues } from '../motion/values';
+import { SELECT_POSITIONING } from './selectPositioning';
+import { useSelectHighlight } from './selectHighlight';
 
 const props = defineProps<{ options: PluginOption[]; modelValue: string | null }>();
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>();
 
-const { theme, root: themeRoot } = useThemeContext();
+const { root: themeRoot } = useThemeContext();
 
 const collection = computed(() => createListCollection<PluginOption>({
 	items: props.options,
@@ -38,47 +38,11 @@ onMounted(() => {
 onBeforeUnmount(() => observer?.disconnect());
 watch(current, () => frame.read(checkTruncated));
 
-const highlight = ref<HTMLElement | null>(null);
-let highlightHeight = 0;
-let placed = false;
-
-const values = useMotionValues({ y: 0, shown: 0 }, () => {
-	const element = highlight.value;
-	if (!element) return;
-	element.style.height = `${highlightHeight}px`;
-	element.style.transform = `translate3d(0, ${values.y.get()}px, 0)`;
-	element.style.opacity = String(clamp(values.shown.get(), 0, 1));
-});
+const { highlight, onOpenChange, onHighlightChange } = useSelectHighlight(() => props.modelValue, 'data-plugin-option');
 
 function onValueChange(details: SelectValueChangeDetails<PluginOption>): void {
 	const next = details.value[0];
 	if (next) emit('update:modelValue', next);
-}
-
-function onOpenChange(details: SelectOpenChangeDetails): void {
-	if (details.open) return;
-	placed = false;
-	values.shown.jump(0);
-}
-
-function onHighlightChange(details: SelectHighlightChangeDetails<PluginOption>): void {
-	frame.read(() => {
-		const list = highlight.value?.parentElement;
-		const selectable = details.highlightedValue !== null && details.highlightedValue !== props.modelValue;
-		const item = selectable ? list?.querySelector<HTMLElement>(`[data-plugin-option="${details.highlightedValue}"]`) : null;
-		if (!item || item.offsetHeight === 0) {
-			toValue(values.shown, 0, theme.highlight);
-			return;
-		}
-		highlightHeight = item.offsetHeight;
-		if (placed && values.shown.get() > 0) {
-			toValue(values.y, item.offsetTop, theme.highlight);
-		} else {
-			values.y.jump(item.offsetTop);
-			placed = true;
-		}
-		toValue(values.shown, 1, theme.highlight);
-	});
 }
 </script>
 
@@ -87,7 +51,7 @@ function onHighlightChange(details: SelectHighlightChangeDetails<PluginOption>):
 		class="select select--plugin"
 		:collection="collection"
 		:model-value="modelValue ? [modelValue] : []"
-		:positioning="{ placement: 'bottom-end', gutter: 6, flip: true, sameWidth: true }"
+		:positioning="SELECT_POSITIONING"
 		loop-focus
 		@value-change="onValueChange"
 		@open-change="onOpenChange"

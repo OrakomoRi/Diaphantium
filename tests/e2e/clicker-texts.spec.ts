@@ -7,7 +7,7 @@ test.describe('panel texts', () => {
 
 		await expect(clicker.tabTitle('clicker')).toHaveText('Clicker');
 		await expect(clicker.sectionTitles('clicker')).toHaveText(legacyBundle ? 'Chose supplies to click' : 'Choose supplies to click');
-		await expect(clicker.optionLabels('clicker')).toHaveText(['Click supplies', 'Delay for mines (ms)']);
+		await expect(clicker.optionLabels('clicker')).toHaveText(['Click supplies', 'Delay for mines (ms)', 'Click mines']);
 
 		await clicker.tab('miscellaneous').click();
 		await expect(clicker.tabTitle('miscellaneous')).toHaveText('Miscellaneous');
@@ -27,7 +27,7 @@ test.describe('panel texts', () => {
 		await page.keyboard.press('Slash');
 
 		await expect(clicker.tabTitle('clicker')).toHaveText('Clicker');
-		await expect(clicker.optionLabels('clicker')).toHaveText(['Click supplies', 'Delay for mines (ms)']);
+		await expect(clicker.optionLabels('clicker')).toHaveText(['Click supplies', 'Delay for mines (ms)', 'Click mines']);
 	});
 });
 
@@ -113,7 +113,7 @@ test.describe('panel language', () => {
 			await clicker.themeTab('settings').click();
 			await clicker.languageSelect.click();
 			await expect.poll(() => clicker.languageList.evaluate(element => element.getAnimations().length)).toBe(0);
-			const highlight = clicker.activeTheme.locator('.select__highlight');
+			const highlight = clicker.languageList.locator('.select__highlight');
 			const shown = () => highlight.evaluate(element => Number(getComputedStyle(element).opacity));
 
 			await clicker.languageOption('uk').hover();

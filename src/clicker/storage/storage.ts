@@ -29,6 +29,7 @@ export interface ClickerConfig {
 	showSignature: boolean;
 	theme: string;
 	language: string;
+	interfaceScale: number;
 }
 
 export type ConfigKey = keyof ClickerConfig;
@@ -48,6 +49,7 @@ const defaultConfig: ClickerConfig = {
 	showSignature: true,
 	theme: 'classic',
 	language: 'auto',
+	interfaceScale: 100,
 };
 
 let config: ClickerConfig | null = null;

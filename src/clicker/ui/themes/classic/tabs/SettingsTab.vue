@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Languages, Palette, PenLine } from '@lucide/vue';
+import { Languages, Palette, PenLine, Scaling } from '@lucide/vue';
 import { useHotkeySettings } from '../../../model/hotkeys';
 import { usePanelShell, usePanelState } from '../../../model/panel';
 import { THEME_IDS } from '../../../model/theme';
@@ -8,6 +8,7 @@ import OptionRow from '../components/OptionRow.vue';
 import ToggleSwitch from '../components/ToggleSwitch.vue';
 import HotkeyRow from '../components/HotkeyRow.vue';
 import LanguageSelect from '../../../components/LanguageSelect.vue';
+import ScaleSelect from '../../../components/ScaleSelect.vue';
 
 const { hotkeys, assign, reset, isDuplicate } = useHotkeySettings();
 const { showSignature, setShowSignature } = usePanelState();
@@ -71,6 +72,17 @@ const shell = usePanelShell();
 							<span class="option__hint">{{ $t('settings.languageHint') }}</span>
 						</span>
 						<LanguageSelect />
+					</div>
+
+					<div class="divider"></div>
+
+					<div class="option option--select" v-tooltip="$t('tooltips.interfaceScale')">
+						<span class="option__icon" aria-hidden="true"><Scaling /></span>
+						<span class="option__text">
+							<span class="option__label">{{ $t('settings.interfaceScale') }}</span>
+							<span class="option__hint">{{ $t('settings.interfaceScaleHint') }}</span>
+						</span>
+						<ScaleSelect />
 					</div>
 
 					<div class="divider"></div>

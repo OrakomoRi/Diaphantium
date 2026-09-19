@@ -6,6 +6,7 @@ import { hasPlugins } from '../../plugins/registry';
 import { createSignatureState, type SignatureState } from './signature';
 import type { LayoutMorph } from '../motion/layoutMorph';
 import type { Theme } from '../themes/types';
+import type { InterfaceScale } from './scale';
 import type { ThemeId } from './theme';
 
 export const TAB_NAMES = ['clicker', 'miscellaneous', 'settings', 'plugins', 'about'] as const;
@@ -22,9 +23,12 @@ export interface PanelShell {
 	closing: Ref<boolean>;
 	dragging: Ref<boolean>;
 	theme: Readonly<Ref<ThemeId>>;
-	viewportHeight: Readonly<Ref<number>>;
+	scale: MotionValue<number>;
+	interfaceScale: Readonly<Ref<InterfaceScale>>;
+	availableHeight: Readonly<Ref<number>>;
 	close: () => void;
 	selectTheme: (id: string) => void;
+	selectInterfaceScale: (percent: InterfaceScale) => void;
 	releasePointerFocus: () => void;
 	onKey: (handler: DialogKeyHandler) => () => void;
 }

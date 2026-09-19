@@ -24,7 +24,8 @@ const props = withDefaults(defineProps<{ theme: Theme; part: ThemePart; active?:
 
 const host = ref<HTMLElement | null>(null);
 const target = shallowRef<HTMLElement | null>(null);
-const layout = createLayoutMorph(() => target.value, () => props.theme.layout);
+const shell = inject(PANEL_SHELL, null);
+const layout = createLayoutMorph(() => target.value, () => props.theme.layout, () => shell?.scale.get() ?? 1);
 
 provide(THEME_CONTEXT, { theme: props.theme, root: target, layout });
 
@@ -34,7 +35,6 @@ function rootNode(): ShadowRoot | Document {
 	return host.value?.shadowRoot ?? document;
 }
 
-const shell = inject(PANEL_SHELL, null);
 if (shell) {
 	provide<PanelShell>(PANEL_SHELL, {
 		...shell,

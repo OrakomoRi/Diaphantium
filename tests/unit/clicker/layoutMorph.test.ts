@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { projectBox, sameBox, visualBox, type Box, type Projection } from '@/clicker/ui/motion/layoutMorph';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { createLayoutMorph, projectBox, sameBox, unscaleBox, visualBox, type Box, type Projection } from '@/clicker/ui/motion/layoutMorph';
 
 function apply(projection: Projection, layout: Box, box: Box): Box {
 	return {
@@ -63,6 +63,80 @@ describe('projectBox', () => {
 	it('does not divide by an empty box', () => {
 		const empty = { x: 0, y: 0, width: 0, height: 0 };
 		expect(projectBox(empty, empty)).toEqual({ x: 0, y: 0, scaleX: 1, scaleY: 1 });
+	});
+});
+
+describe('a panel scaled by the interface size', () => {
+	const scaled = (box: Box, factor: number): Box => ({ x: box.x * factor, y: box.y * factor, width: box.width * factor, height: box.height * factor });
+
+	it('gives back the box the element has in its own units', () => {
+		const box = { x: 30, y: 60, width: 200, height: 80 };
+		for (const factor of [0.8, 1, 1.25, 1.5, 2]) {
+			const own = unscaleBox(scaled(box, factor), factor);
+			expect(own.x).toBeCloseTo(box.x, 9);
+			expect(own.y).toBeCloseTo(box.y, 9);
+			expect(own.width).toBeCloseTo(box.width, 9);
+			expect(own.height).toBeCloseTo(box.height, 9);
+		}
+	});
+
+	it('would move an element by the scale too far if the boxes were not brought back to its own units', () => {
+		const before = { x: 116, y: 230, width: 180, height: 40 };
+		const after = { x: 116, y: 290, width: 180, height: 40 };
+
+		expect(projectBox(scaled(before, 2), scaled(after, 2)).y).toBe(-120);
+		expect(projectBox(unscaleBox(scaled(before, 2), 2), unscaleBox(scaled(after, 2), 2)).y).toBe(-60);
+	});
+
+	describe('morph', () => {
+		let scope: HTMLElement;
+		let row: HTMLElement;
+		let top: number;
+		let left: number;
+
+		beforeEach(() => {
+			scope = document.createElement('div');
+			row = document.createElement('div');
+			row.className = 'row';
+			scope.append(row);
+			document.body.append(scope);
+			row.getBoundingClientRect = () => new DOMRect(left, top, 360, 80);
+		});
+
+		afterEach(() => {
+			scope.remove();
+		});
+
+		function createMorph(factor: number) {
+			return createLayoutMorph(() => scope, () => ({ size: '.card', position: '.row', text: '.title', spring: { visualDuration: 0.3, bounce: 0 } }), () => factor);
+		}
+
+		it.each([0.8, 1, 1.25, 1.5, 2])('starts an element where it was drawn, in its own units, at scale %s', async factor => {
+			top = 230 * factor;
+			left = 116 * factor;
+			const morph = createMorph(factor);
+
+			await morph.run(() => {
+				top = 290 * factor;
+			});
+
+			expect(row.style.transform).toBe('translate3d(0px, -60px, 0) scale(1, 1)');
+			morph.destroy();
+			expect(row.style.transform).toBe('');
+		});
+
+		it('draws it 120 px too far at scale 2 when the scale is left out', async () => {
+			top = 460;
+			left = 232;
+			const morph = createLayoutMorph(() => scope, () => ({ size: '.card', position: '.row', text: '.title', spring: { visualDuration: 0.3, bounce: 0 } }));
+
+			await morph.run(() => {
+				top = 580;
+			});
+
+			expect(row.style.transform).toBe('translate3d(0px, -120px, 0) scale(1, 1)');
+			morph.destroy();
+		});
 	});
 });
 

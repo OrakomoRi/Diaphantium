@@ -76,12 +76,16 @@ export function projectBox(visual: Box, layout: Box, parent?: { visual: Box; lay
 	};
 }
 
-function measure(element: HTMLElement): Box {
-	const rect = element.getBoundingClientRect();
-	return { x: rect.left, y: rect.top, width: rect.width, height: rect.height };
+export function unscaleBox(box: Box, factor: number): Box {
+	return { x: box.x / factor, y: box.y / factor, width: box.width / factor, height: box.height / factor };
 }
 
-export function createLayoutMorph(scope: () => ParentNode | null, options: () => LayoutMorphOptions): LayoutMorph {
+function measure(element: HTMLElement, factor: number): Box {
+	const rect = element.getBoundingClientRect();
+	return unscaleBox({ x: rect.left, y: rect.top, width: rect.width, height: rect.height }, factor);
+}
+
+export function createLayoutMorph(scope: () => ParentNode | null, options: () => LayoutMorphOptions, scale: () => number = () => 1): LayoutMorph {
 	const progress = motionValue(0);
 	let nodes: LayoutNode[] = [];
 	let running: AnimationPlaybackControlsWithThen | null = null;
@@ -144,7 +148,8 @@ export function createLayoutMorph(scope: () => ParentNode | null, options: () =>
 			return;
 		}
 
-		const before = new Map(collect(root, selectors).map(element => [element, { box: measure(element), text: element.textContent }]));
+		const factor = scale();
+		const before = new Map(collect(root, selectors).map(element => [element, { box: measure(element, factor), text: element.textContent }]));
 		stop();
 		update();
 		await nextTick();
@@ -153,7 +158,7 @@ export function createLayoutMorph(scope: () => ParentNode | null, options: () =>
 		const next = collect(root, selectors).map(element => {
 			const previous = before.get(element);
 			const mode = modeOf(element, selectors);
-			const to = measure(element);
+			const to = measure(element, factor);
 			const from = previous?.box ?? to;
 			const node: LayoutNode = {
 				element,

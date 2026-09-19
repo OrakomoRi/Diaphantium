@@ -17,7 +17,7 @@
 	align-items: start;
 	column-gap: 1em;
 	width: 28em;
-	max-width: calc(100vw - 16px);
+	max-width: calc((100vw - 16px) / var(--diaphantium-scale, 1));
 	padding: 1em;
 	border-radius: .7em;
 	background: var(--diaphantium-background);
@@ -117,7 +117,6 @@
 	background: linear-gradient(135deg, rgba(97, 181, 255, .12), rgba(255, 255, 255, .08));
 	box-shadow: 0 0 12px rgba(255, 255, 255, .2);
 	pointer-events: none;
-	will-change: transform;
 }
 
 .popup__tab {
@@ -598,7 +597,6 @@
 	background: rgba(255, 255, 255, .5);
 	box-shadow: 0 2px 6px rgba(0, 0, 0, .4);
 	pointer-events: none;
-	will-change: transform;
 }
 
 .toggle__thumb-lit {
@@ -713,7 +711,7 @@
 	border: 2px solid var(--supply);
 	opacity: 0;
 	pointer-events: none;
-	will-change: transform, opacity;
+	will-change: opacity;
 }
 
 .hotkey {
@@ -783,6 +781,7 @@
 	top: 0;
 	left: 0;
 	z-index: 1;
+	transform-origin: 0 0;
 	box-sizing: border-box;
 	display: flex;
 	align-items: flex-start;
@@ -801,7 +800,7 @@
 	pointer-events: none;
 	opacity: 0;
 	visibility: hidden;
-	will-change: transform, opacity;
+	will-change: opacity;
 }
 
 .tooltip[data-tone="danger"] {
@@ -1044,6 +1043,9 @@
 	color: rgb(255, 255, 255);
 	font-family: inherit;
 	outline: none;
+	max-height: var(--available-height, none);
+	overflow-y: auto;
+	overscroll-behavior: contain;
 	transform-origin: var(--transform-origin);
 }
 

@@ -49,6 +49,8 @@
 		"themeHint": "Look and layout of this panel",
 		"language": "Language",
 		"languageHint": "Language of this panel",
+		"interfaceScale": "Interface size",
+		"interfaceScaleHint": "Scale of this panel",
 		"showSignature": "Show signature",
 		"resetHotkey": "Reset hotkey",
 		"pressKey": "Press a key",
@@ -96,6 +98,7 @@
 		"showSignature": "Shows a small signature in the corner of the panel",
 		"theme": "Changes how the panel looks; every setting stays as it is",
 		"language": "Auto uses the language of the game",
+		"interfaceScale": "Scales the whole panel, plugins' settings included",
 		"repository": "Opens the repository in a new tab",
 		"pluginSelect": "Switches between installed plugins' own settings"
 	},

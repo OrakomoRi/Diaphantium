@@ -9,6 +9,7 @@ import SegmentedControl from '../components/SegmentedControl.vue';
 import HotkeyField from '../components/HotkeyField.vue';
 import LiquidToggle from '../components/LiquidToggle.vue';
 import LanguageSelect from '../../../components/LanguageSelect.vue';
+import ScaleSelect from '../../../components/ScaleSelect.vue';
 
 const { t } = useI18n();
 const shell = usePanelShell();
@@ -33,6 +34,9 @@ const themeOptions = computed(() => THEME_IDS.map(id => ({ id, label: t(`themes.
 		</SettingRow>
 		<SettingRow :title="$t('settings.language')" :description="$t('settings.languageHint')" :tooltip="$t('tooltips.language')">
 			<LanguageSelect />
+		</SettingRow>
+		<SettingRow :title="$t('settings.interfaceScale')" :description="$t('settings.interfaceScaleHint')" :tooltip="$t('tooltips.interfaceScale')">
+			<ScaleSelect />
 		</SettingRow>
 		<SettingRow v-for="hotkey in hotkeys" :key="hotkey.action" :title="$t(hotkey.label)">
 			<HotkeyField
