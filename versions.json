@@ -251,6 +251,12 @@
       "date": "2026-09-19",
       "comment": "5.0.2+build.31 chore: minor patch",
       "hash": "b9a2b46344743c913081fedc9ec57a3a683783c4"
+    },
+    {
+      "version": "5.0.2+build.32",
+      "date": "2026-09-19",
+      "comment": "5.0.2+build.32 feat: add interface scaling and tooltip adjustments",
+      "hash": "1f2d91765e4026175c2ee244c9cf23a6e7db13ed"
     }
   ]
 }
