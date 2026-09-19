@@ -165,6 +165,7 @@ jobs:
           git push origin builds
 
       - name: Clean up old Vercel deployments
+        continue-on-error: true
         run: npx vercel remove diaphantium-builds --safe --yes --token "$VERCEL_TOKEN" --scope "$VERCEL_SCOPE"
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
