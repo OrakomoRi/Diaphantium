@@ -269,6 +269,12 @@
       "date": "2026-09-20",
       "comment": "5.0.2+build.34 feat: update liquid glass translation",
       "hash": "f76a4c1278f04bdeba85235009abac8c2125bdc5"
+    },
+    {
+      "version": "6.0.0",
+      "date": "2026-09-20",
+      "comment": "6.0.0",
+      "hash": "2c7b5297aae175d84d2eaec7b6ae3a6a27eae72b"
     }
   ]
 }

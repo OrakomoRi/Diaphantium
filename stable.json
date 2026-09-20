@@ -29,6 +29,11 @@
       "version": "5.0.2",
       "date": "2026-05-02",
       "hash": "73e36c1a35d2437c59d59af78dff1941e21914a0"
+    },
+    {
+      "version": "6.0.0",
+      "date": "2026-09-20",
+      "hash": "2c7b5297aae175d84d2eaec7b6ae3a6a27eae72b"
     }
   ]
 }
