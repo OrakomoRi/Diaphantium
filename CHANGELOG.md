@@ -1,12 +1,50 @@
 # CHANGELOG
 
+## [6.0.0] - 2026-09-20
+
+### Added
+
+- Plugin API for other userscripts to add a settings toggle, take over a click feature, add translations or a whole new language, and keep their own isolated storage :tada:
+- Branch channels and a development userscript for testing builds before release :tada:
+- About tab with version, release date, author, licence and a link to the repository
+- Second panel theme, Liquid glass, with its own layout and animations
+- Language setting: Auto, English, Русский or Українська
+- Tooltips explaining every control
+- Toggle for click mines in the Clicker tab, next to mine delay
+- Automated unit tests, run by CI before publishing
+- Interface size setting (80%, 100%, 125%, 150%, 200%) in Settings, in both themes: the whole panel, its hints and lists, and the settings added by plugins scale together with a smooth transition around the panel's anchored corner, and the panel is drawn smaller than chosen only when the window cannot hold it
+
+### Changed
+
+- Loader rewritten in TypeScript, clicker rewritten in Vue 3 with TypeScript :tada:
+- Panel rebuilt as a persistent shadow-root host, more compact and responsive, with smoother animations and dragging
+- Supplies, auto self-destruct, mines and anti-AFK now run on a shared clock that keeps ticking even when the window is minimized or unfocused, instead of stalling like before
+- Supply and auto self-destruct presses capped so they no longer multiply on high refresh rate monitors - Menu, close and hotkey reset icons switched from Ionicons to Lucide
+- Supported browsers raised to Chrome/Edge 121+, Safari 16.4+, Firefox 114+, Opera 97+; mobile support is no longer listed
+
+### Fixed
+
+- Panel could end up off-screen or misplaced after resizing the window or a quick drag-and-close
+- Toggling supplies, auto self-destruct, mines or anti-AFK off and on quickly could start duplicate loops running in the background
+- A setting changed right before closing or reloading the page was not saved
+- Assorted smaller bugs: a typo, a stray focus ring, console log colours, git hooks on a fresh clone
+- The Tampermonkey bridge injected a fetched response as a script even on a non-200 HTTP status (e.g. a 404 page from the build CDN), throwing a `SyntaxError` in the page instead of surfacing the actual network error
+
+### Look of the classic theme:
+
+![](./images/changelog/6.0.0/classic.png)
+
+### Look of the liquid glass theme:
+
+![](./images/changelog/6.0.0/liquid-glass.png)
+
 ## [5.0.2] - 2026-05-02
 
 ### Added
 
 - New API endpoints:
-	- for latest stable web build: https://diaphantium-builds.vercel.app/api/stable/web
-	- for latest stable client build: https://diaphantium-builds.vercel.app/api/stable/client (currently there's no client build)
+    - for latest stable web build: https://diaphantium-builds.vercel.app/api/stable/web
+    - for latest stable client build: https://diaphantium-builds.vercel.app/api/stable/client (currently there's no client build)
 
 ### Changed
 
@@ -31,7 +69,7 @@
 
 ### Added
 
-- :tada: Complete project rewrite with modern website :tada:
+- Complete project rewrite with modern website :tada:
 - Automated `GitHub Actions` for builds and releases
 - Webpack bundling for production
 - Interactive console demo on landing page
@@ -84,7 +122,7 @@
 
 ### Added
 
-- :tada: ```CHANGELOG.md``` to record changes :tada:
+- `CHANGELOG.md` to record changes :tada:
 - Source icons in the repository
 - NodeJS to compile source JS files into one minified script
 - Icons for mobile devices with quick actions
@@ -95,10 +133,10 @@
 ### Changed
 
 - Renamed to "Diaphantium"
-- Renamed the function ```popupMove()``` to ```elementMove()```; changed the function, so it can be applied to every element
-- Now function ```elementMove()``` also works on mobile devices
-- Renamed the function ```initializePopup()``` to ```elementInitialize()```; now it can work with any element
-- Also added support to the ```elementInitialize()``` function for complex items from ```localStorage```, e.g. ```item: {name: '', value: ''}, {name: '', value: ''}```; they can be saved via ```item[index]``` and retrieved the same way
+- Renamed the function `popupMove()` to `elementMove()`; changed the function, so it can be applied to every element
+- Now function `elementMove()` also works on mobile devices
+- Renamed the function `initializePopup()` to `elementInitialize()`; now it can work with any element
+- Also added support to the `elementInitialize()` function for complex items from `localStorage`, e.g. `item: {name: '', value: ''}, {name: '', value: ''}`; they can be saved via `item[index]` and retrieved the same way
 - Optimized hotkeys' appearance to support different languages (if I were to add them later on)
 - Demo website update
 - Popup styles update (less rounded edges)

@@ -4,9 +4,15 @@
 
 ## :star: Reborn from ashes...
 
-Free open-source tool. Made with love :heart:
+> Free open-source tool. Made with love :heart:
 
-The idea was to create a popup with a simple UI that would allow a continuous input on the desired keys. Now evolved into a professional automation userscript for Tanki Online with customizable hotkeys, auto-clicking, and supply management. Features modern website, internationalization support, and automated builds.
+![Stable](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FOrakomoRi%2FDiaphantium%2Fbuilds%2Fstable.json&query=%24.versions%5B-1%3A%5D.version&label=stable&color=7C3AED)
+![Dev](https://img.shields.io/github/package-json/v/OrakomoRi/Diaphantium?label=dev&color=F59E0B)
+[![Build](https://img.shields.io/github/actions/workflow/status/OrakomoRi/Diaphantium/auto-build-and-release.yml?branch=main&label=Build&logo=github)](https://github.com/OrakomoRi/Diaphantium/actions/workflows/auto-build-and-release.yml)
+![Vue](https://img.shields.io/github/package-json/dependency-version/OrakomoRi/Diaphantium/dev/vue?logo=vuedotjs&label=Vue&color=42b883)
+![TypeScript](https://img.shields.io/github/package-json/dependency-version/OrakomoRi/Diaphantium/dev/typescript?logo=typescript&label=TypeScript&color=3178c6)
+
+The idea was to create a popup with a simple UI that would allow a continuous input on the desired keys. Now evolved into a professional automation userscript for Tanki Online with customizable hotkeys, auto-clicking, and supply management. Features internationalization support, and automated builds.
 
 To find out compatibility, check [browser compatibility](#-browser-compatibility)
 
@@ -28,7 +34,13 @@ Default mines' delay (ms): ```100```
 
 ## :fire: Appearance
 
-![](./images/changelog/5.0.0/popup.png)
+### Classic theme
+
+![](./images/changelog/6.0.0/classic.png)
+
+### Liquid glass theme
+
+![](./images/changelog/6.0.0/liquid-glass.png)
 
 ## :rocket: Browser Compatibility
 
@@ -39,6 +51,7 @@ To use the code, you'll need the Tampermonkey extension installed. Here's a list
 - :x: Not compatible with IE11
 - :x: Not compatible with Opera Mini
 - :x: Does not fully support Safari for iOS
+- :x: We do not support any mobile browsers
 
 ### :white_check_mark: PC
 
@@ -46,29 +59,18 @@ Browser|Version
 -|:-:
 Google Chrome|121+
 Edge|121+
-Safary|16+
-Firefox|103+
-Opera|76+
-
-### :white_check_mark: Mobile
-
-Browser|Version
--|:-:
-Opera Mobile|80+
-Android Browser|122+
-Google Chrome for Android|122+
-Firefox for Android|123+
-Safary for iOS|16+
-Samsung Internet|15+
+Safari|16.4+
+Firefox|114+
+Opera|97+
 
 ## :zap: Built With
 
-- [HTML5](https://developer.mozilla.org/en-US/docs/Web/HTML)
-- [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS)
-- [JavaScript](https://www.javascript.com/)
-- [Webpack](https://webpack.js.org/)
-- [SweetAlert2](https://sweetalert2.github.io/)
-- [Ionicons](https://ionic.io/ionicons)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vue](https://vuejs.org/) and [Vue I18n](https://vue-i18n.intlify.dev/)
+- [Vite](https://vite.dev/)
+- [Vitest](https://vitest.dev/) and [Playwright](https://playwright.dev/)
+- [Ark UI](https://ark-ui.com/)
+- [Lucide](https://lucide.dev/)
 
 ## :wave: Special Thanks
 
