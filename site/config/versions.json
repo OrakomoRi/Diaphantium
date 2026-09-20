@@ -79,7 +79,23 @@
 				"ru": "Полная переработка: новая структура, автоматическая сборка, поддержка языков и обновлённый сайт. Быстрее, удобнее и красивее."
 			},
 			"image": "./images/changelog/5.0.0/popup.png"
+		},
+		{
+			"version": "6.0.0",
+			"date": {
+				"en": "September 2026",
+				"ru": "Сентябрь 2026"
+			},
+			"title": {
+				"en": "Version 6 — Plugins and Themes",
+				"ru": "Версия 6.0 — Плагины и темы"
+			},
+			"description": {
+				"en": "Clicker rewritten in Vue 3 with TypeScript and a more compact, responsive panel. Added a plugin API for other userscripts, a second Liquid Glass theme, interface scaling, language selection, tooltips and an About tab.",
+				"ru": "Кликер переписан на Vue 3 и TypeScript, панель стала компактнее и отзывчивее. Добавлены API плагинов, вторая тема Liquid Glass, масштаб интерфейса, выбор языка, подсказки и вкладка «О программе»."
+			},
+			"image": "./images/changelog/6.0.0/classic.png"
 		}
 	]
-	
+
 }
