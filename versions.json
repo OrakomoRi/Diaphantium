@@ -263,6 +263,12 @@
       "date": "2026-09-19",
       "comment": "5.0.2+build.33 chore: update cleanup step in build workflow",
       "hash": "a318658e2582c76e557abd91af87bb271e6a4ca5"
+    },
+    {
+      "version": "5.0.2+build.34",
+      "date": "2026-09-20",
+      "comment": "5.0.2+build.34 feat: update liquid glass translation",
+      "hash": "f76a4c1278f04bdeba85235009abac8c2125bdc5"
     }
   ]
 }
