@@ -1,7 +1,7 @@
 // ==UserScript==
 
 // @name			Diaphantium
-// @version			6.0.0+build.2
+// @version			6.0.1
 // @description		The tool created to make your life easier
 // @author			OrakomoRi
 

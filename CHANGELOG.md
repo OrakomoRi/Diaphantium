@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## [6.0.1] - 2026-09-21
+
+### Fixed
+
+- With reduced motion enabled in the system, turning on the signature in Settings did not show it; it now appears at once and is erased at once, in both themes
+- In the Liquid glass theme, the toggle knob no longer stretches while moving when reduced motion is enabled
+- In the Classic theme, a long language name such as "Українська" no longer squeezes the check mark and the language code in the language list
+
 ## [6.0.0] - 2026-09-20
 
 ### Added
