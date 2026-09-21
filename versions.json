@@ -287,6 +287,12 @@
       "date": "2026-09-21",
       "comment": "6.0.0+build.2 feat: enhance motion handling in UI components",
       "hash": "bec7402d8a84a54e9b6124c994c9d67b088b2600"
+    },
+    {
+      "version": "6.0.1",
+      "date": "2026-09-21",
+      "comment": "6.0.1",
+      "hash": "85b106b78a3973f5530d4175237aa4db46a45239"
     }
   ]
 }
