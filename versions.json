@@ -281,6 +281,12 @@
       "date": "2026-09-21",
       "comment": "6.0.0+build.1 fix: correct capitalization in English locale",
       "hash": "8f54a23b6d6d9ab1724541283d6a1e5dd61d1b32"
+    },
+    {
+      "version": "6.0.0+build.2",
+      "date": "2026-09-21",
+      "comment": "6.0.0+build.2 feat: enhance motion handling in UI components",
+      "hash": "bec7402d8a84a54e9b6124c994c9d67b088b2600"
     }
   ]
 }
