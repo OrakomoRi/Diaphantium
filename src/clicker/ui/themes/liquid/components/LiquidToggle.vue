@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { clamp, toValue } from '../../../motion/springs';
+import { clamp, prefersReducedMotion, toValue } from '../../../motion/springs';
 import { usePress } from '../../../motion/gestures';
 import { useMotionValues } from '../../../motion/values';
 import { useStateLayer } from '../motion';
@@ -29,6 +29,11 @@ const values = useMotionValues({ x: props.checked ? TRAVEL : 0, lit: props.check
 	const element = knob.value;
 	if (!element) return;
 	const position = values.x.get();
+	if (prefersReducedMotion()) {
+		element.style.transform = `translate3d(${INSET + position}px, 0, 0)`;
+		element.style.borderRadius = '';
+		return;
+	}
 	const velocity = values.x.getVelocity();
 	const stretch = Math.min(MAX_STRETCH, Math.abs(velocity) * 0.02);
 	const grow = clamp(values.pressed.get(), 0, 1) * PRESS_GROW;

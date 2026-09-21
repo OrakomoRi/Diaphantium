@@ -357,6 +357,26 @@ test.describe('motion', () => {
 		});
 	}
 
+	test('shows and erases the signature instantly with reduced motion', async ({ clicker, page }) => {
+		await page.emulateMedia({ reducedMotion: 'reduce' });
+		for (const theme of ['classic', 'liquid']) {
+			await clicker.load({ theme, showSignature: false });
+			await page.keyboard.press('Slash');
+			await clicker.grabPanel();
+			await clicker.themeTab('settings').click();
+
+			await clicker.control('show-signature').click();
+			await expect(clicker.signature).toHaveText('Powered by OrakomoRi');
+			if (theme === 'liquid') {
+				const knob = clicker.control('show-signature').locator('.toggle__knob');
+				expect(await knob.evaluate(element => (element as HTMLElement).style.transform)).not.toContain('scale');
+			}
+
+			await clicker.control('show-signature').click();
+			await expect(clicker.hiddenSignature).toHaveText('');
+		}
+	});
+
 	for (const [from, to] of [['classic', 'liquid'], ['liquid', 'classic']] as const) {
 		test(`keeps typing and erasing the signature through a switch from ${from} to ${to}`, async ({ clicker, page }) => {
 			await clicker.load({ theme: from, showSignature: false, language: 'en' });

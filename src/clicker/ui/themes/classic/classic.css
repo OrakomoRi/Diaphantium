@@ -1102,17 +1102,20 @@
 .select__item-mark {
 	display: flex;
 	width: 1em;
+	flex-shrink: 0;
 	font-size: inherit;
 	color: rgb(81, 221, 97);
 }
 
 .select__item-text {
 	flex: 1;
+	min-width: 0;
 	font-size: inherit;
 	white-space: nowrap;
 }
 
 .select__item-code {
+	flex-shrink: 0;
 	font-size: .75em;
 	font-weight: 600;
 	letter-spacing: .06em;

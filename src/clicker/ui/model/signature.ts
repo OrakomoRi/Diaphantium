@@ -61,6 +61,11 @@ export function createSignatureState(initiallyVisible: boolean, text: () => stri
 			else typewriter.show(false);
 			return;
 		}
+		if (prefersReducedMotion()) {
+			open.jump(1);
+			typewriter.show(true);
+			return;
+		}
 		if (open.get() >= 1 && !open.isAnimating()) {
 			typewriter.show(true);
 			return;
